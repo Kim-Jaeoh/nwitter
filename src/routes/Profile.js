@@ -53,26 +53,39 @@ const Profile = ({ refreshUser, userObj }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (userObj.displayName !== newDisplayName) {
-      await updateProfile(userObj, {
+      // await updateProfile(userObj, { // #방법 3
+      await updateProfile(authService.currentUser, {
         displayName: newDisplayName,
       });
     }
     refreshUser();
+    setNewDisplayName("");
   };
 
   return (
-    <>
-      <form onSubmit={onSubmit}>
+    <div className="container">
+      <form onSubmit={onSubmit} className="profileForm">
         <input
+          className="formInput"
           type="text"
           value={newDisplayName}
           placeholder="Display name"
           onChange={onChange}
+          autoFocus
         />
-        <input type="submit" value="update profile" />
+        <input
+          type="submit"
+          value="Update Profile"
+          className="formBtn"
+          style={{
+            marginTop: 10,
+          }}
+        />
       </form>
-      <button onClick={onLogOutClick}>Log Out</button>
-    </>
+      <span className="formBtn cancelBtn logOut" onClick={onLogOutClick}>
+        Log Out
+      </span>
+    </div>
   );
 };
 

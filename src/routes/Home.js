@@ -1,21 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { dbService, storageService } from "../fbase";
-import {
-  addDoc,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { dbService } from "../fbase";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import Nweet from "../components/Nweet";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { v4 } from "uuid";
+import NweetFactory from "../components/NweetFactory";
 
 const Home = ({ userObj }) => {
-  const fileInput = useRef();
-  const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState("");
 
   // // getNweets 아래 로직은 오래된 방식
   // const getNweets = async () => {
@@ -61,91 +51,10 @@ const Home = ({ userObj }) => {
     });
   }, []);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    let attachmentUrl = "";
-
-    // 빈 문자가 아닐 때 사진 URL에 주소 넣기
-    if (attachment !== "") {
-      //파일 경로 참조 만들기
-      const attachmentfileRef = ref(storageService, `${userObj.uid}/${v4()}`);
-
-      //storage 참조 경로로 파일 업로드 하기
-      await uploadString(attachmentfileRef, attachment, "data_url");
-
-      //storage 참조 경로에 있는 파일의 URL을 다운로드해서 attachmentUrl 변수에 넣어서 업데이트
-      attachmentUrl = await getDownloadURL(ref(attachmentfileRef));
-    }
-
-    const attachmentNweet = {
-      text: nweet, // nweet: nweet (useState의 nweet 값)
-      createdAt: Date.now(),
-      creatorId: userObj.uid,
-      attachmentUrl,
-    };
-    await addDoc(collection(dbService, "nweets"), attachmentNweet);
-    setNweet("");
-    setAttachment("");
-    fileInput.current.value = ""; // 완료 후 파일 문구 없애기
-  };
-
-  const onChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setNweet(value);
-  };
-
-  const onFileChange = (e) => {
-    const {
-      target: { files },
-    } = e;
-    const theFile = files[0]; // 사진 1장만 첨부
-    const reader = new FileReader();
-    reader.onloadend = (finishedEvent) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent;
-      setAttachment(result);
-    };
-    reader.readAsDataURL(theFile);
-  };
-
-  const onClearAttachment = () => {
-    setAttachment("");
-    fileInput.current.value = ""; // 취소 시 파일 문구 없애기
-  };
-
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          value={nweet}
-          placeholder="What's on your mind?"
-          maxLength={120}
-          onChange={onChange}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={onFileChange}
-          ref={fileInput}
-        />
-        <input type="submit" value="Nweet" />
-        {attachment && (
-          <div>
-            <img
-              src={attachment}
-              alt="upload file"
-              width="50px"
-              height="50px"
-            />
-            <button onClick={onClearAttachment}>Clear</button>
-          </div>
-        )}
-      </form>
-      <div>
+    <div className="container">
+      <NweetFactory userObj={userObj} />
+      <div style={{ marginTop: 30 }}>
         {nweets.map((nweet) => (
           <Nweet
             key={nweet.id}

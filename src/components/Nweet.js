@@ -1,17 +1,12 @@
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadString,
-} from "firebase/storage";
+import { deleteObject, ref } from "firebase/storage";
 import React, { useState } from "react";
-import { v4 } from "uuid";
 import { dbService, storageService } from "../fbase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
-const Nweet = ({ nweetObj, isOwner, userObj }) => {
+const Nweet = ({ nweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
-  const [attachment, setAttachment] = useState("");
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
     nweetObj.attachmentUrl
@@ -24,8 +19,13 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     const ok = window.confirm("Are you sure your want to delete this nweet?");
     if (ok === true) {
       // delete nweet
-      await deleteDoc(dbRef);
-      await deleteObject(dbAttachmentRef);
+      await deleteDoc(dbRef); // 문서 삭제
+    }
+
+    // 이미지 없는 글 삭제 시 에러가 나와서 예외 처리
+    // (삭제 시 nweetObj.attachmentUrl로 찾아가기 때문)
+    if (newNweetAttachment) {
+      await deleteObject(dbAttachmentRef); // 이미지 삭제
     }
   };
 
@@ -49,23 +49,26 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   return (
-    <div>
+    <div className="nweet">
       {editing ? (
         <>
           {isOwner && (
             <>
-              <form onSubmit={onSubmit}>
+              <form onSubmit={onSubmit} className="container nweetEdit">
                 <input
                   type="text"
                   placeholder="Edit your nweet"
                   value={newNweet}
                   onChange={onChange}
                   required
+                  autoFocus
+                  className="formInput"
                 />
-                <input type="submit" value="Update Nweet" />
-                {/* <input type="file" accept="image/*" /> */}
+                <input type="submit" value="Update Nweet" className="formBtn" />
               </form>
-              <button onClick={toggleEditing}>Cancel</button>
+              <span onClick={toggleEditing} className="formBtn cancelBtn">
+                Cancel
+              </span>
             </>
           )}
         </>
@@ -73,18 +76,17 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
         <>
           <h4>{nweetObj.text}</h4>
           {nweetObj.attachmentUrl && (
-            <img
-              src={nweetObj.attachmentUrl}
-              alt="uploaded file"
-              width="50px"
-              height="50px"
-            />
+            <img src={nweetObj.attachmentUrl} alt="uploaded file" />
           )}
           {isOwner && (
-            <>
-              <button onClick={onDeleteClick}>Delete Nweet</button>
-              <button onClick={toggleEditing}>Edit Nweet</button>
-            </>
+            <div className="nweet__actions">
+              <span onClick={onDeleteClick}>
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+              <span onClick={toggleEditing}>
+                <FontAwesomeIcon icon={faPencilAlt} />
+              </span>
+            </div>
           )}
         </>
       )}

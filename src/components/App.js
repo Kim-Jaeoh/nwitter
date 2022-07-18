@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import AppRouters from "./Router";
 import { authService } from "../fbase";
-import { getIdToken } from "firebase/auth";
 
 function App() {
   const [init, setInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
-  const [newName, setNewName] = useState(false); // #방법 3
+  // const [newName, setNewName] = useState(false); // #방법 3
 
   useEffect(() => {
     // 유저 상태 변화 추적(로그인, 로그아웃, 어플리케이션 초기화 시)
@@ -50,6 +49,7 @@ function App() {
           refreshUser={refreshUser}
           isLoggedIn={Boolean(userObj)}
           userObj={userObj}
+          // newName={newName} // #방법 3
         />
       ) : (
         "Initializing..."
