@@ -11,11 +11,12 @@ const NweetFactory = ({ userObj }) => {
   const fileInput = useRef();
   const [nweet, setNweet] = useState("");
   const [attachment, setAttachment] = useState("");
-  const [loading, setLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(null);
+  const [displayName, setDisplayName] = useState(userObj.displayName);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
     let attachmentUrl = "";
 
     // 이미지 없이 텍스트만 업로드 할 때
@@ -35,6 +36,7 @@ const NweetFactory = ({ userObj }) => {
       createdAt: Date.now(),
       creatorId: userObj.uid,
       attachmentUrl,
+      displayName,
     };
 
     // 입력 값 없을 시 업로드 X
@@ -42,11 +44,11 @@ const NweetFactory = ({ userObj }) => {
       await addDoc(collection(dbService, "nweets"), attachmentNweet);
       setNweet("");
       setAttachment("");
-      setLoading(false);
+      setIsLoading(false);
       // fileInput.current.value = ""; // 완료 후 파일 문구 없애기
     } else {
       alert("글자를 입력하세요");
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -85,7 +87,7 @@ const NweetFactory = ({ userObj }) => {
 
   return (
     <>
-      {loading && <Loading />} {/* 업로드 후 로딩 시 스피너 */}
+      {isLoading && <Loading />} {/* 업로드 후 로딩 시 스피너 */}
       <form onSubmit={onSubmit} className="factoryForm">
         <div className="factoryInput__container">
           <input

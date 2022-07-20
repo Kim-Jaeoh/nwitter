@@ -1,8 +1,10 @@
 import { updateProfile } from "firebase/auth";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
+// import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { authService, dbService } from "../fbase";
+import useNweetData from "../hook/useNweetData";
 
 const Profile = ({ refreshUser, userObj }) => {
   const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
@@ -50,6 +52,8 @@ const Profile = ({ refreshUser, userObj }) => {
     setNewDisplayName(value);
   };
 
+  // console.log(userObj.displayName);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (userObj.displayName !== newDisplayName) {
@@ -60,6 +64,8 @@ const Profile = ({ refreshUser, userObj }) => {
     }
     refreshUser();
     setNewDisplayName("");
+    alert(`닉네임이 '${newDisplayName}'로 변경되었습니다.`);
+    history.push("/");
   };
 
   return (

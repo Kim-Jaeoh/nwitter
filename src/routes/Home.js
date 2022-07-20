@@ -3,9 +3,11 @@ import { dbService } from "../fbase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import Nweet from "../components/Nweet";
 import NweetFactory from "../components/NweetFactory";
+import Loading from "../components/Loading";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
+  const [isLoading, setIsLoading] = useState(null);
 
   // // getNweets 아래 로직은 오래된 방식
   // const getNweets = async () => {
@@ -25,6 +27,8 @@ const Home = ({ userObj }) => {
   // };
 
   useEffect(() => {
+    setIsLoading(true); // 렌더링 후 로딩 스피너 on
+
     // query는 데이터를 요청할 때 사용됨
     const q = query(
       collection(dbService, "nweets"),
@@ -39,6 +43,7 @@ const Home = ({ userObj }) => {
         ...doc.data(),
       }));
       setNweets(nweetArray);
+      setIsLoading(false); // obj 부른 후 로딩 종료 시 스피너 off
 
       // // forEach 사용 시 (리턴값 반환 X)
       // const nweetArrays = snapshot.docs.forEach((doc) => {
@@ -54,6 +59,7 @@ const Home = ({ userObj }) => {
   return (
     <div className="container">
       <NweetFactory userObj={userObj} />
+      {isLoading && <Loading />} {/* 로딩 시 스피너 */}
       <div style={{ marginTop: 30 }}>
         {nweets.map((nweet) => (
           <Nweet

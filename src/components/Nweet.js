@@ -5,7 +5,7 @@ import { dbService, storageService } from "../fbase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
-const Nweet = ({ nweetObj, isOwner }) => {
+const Nweet = ({ nweetObj, isOwner, userObj }) => {
   const [editing, setEditing] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
@@ -37,6 +37,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
     await updateDoc(dbRef, {
       text: newNweet,
       attachmentUrl: newNweetAttachment,
+      displayName: userObj.displayName, // 닉네임 변경 후 업로드 수정 시 변경된 닉네임 노출
     });
     setEditing(false);
   };
@@ -74,6 +75,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
         </>
       ) : (
         <>
+          <h3>{nweetObj.displayName}</h3>
           <h4>{nweetObj.text}</h4>
           {nweetObj.attachmentUrl && (
             <img src={nweetObj.attachmentUrl} alt="uploaded file" />
