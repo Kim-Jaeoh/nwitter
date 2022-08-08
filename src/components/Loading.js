@@ -14,7 +14,7 @@ function Loading() {
         }}
       >
         <SyncLoader
-          color="#28A6FF"
+          color="#429170"
           size={5}
           margin={2}
           style={{ opacity: "80%" }}

@@ -2,10 +2,15 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { authService } from "../fbase";
+import { useDispatch } from "react-redux";
+import { authService, dbService } from "../fbase";
+import noneProfile from "../image/noneProfile.jpg";
+import { setCurrentUser, setLoginToken } from "../reducer/user";
 
 const AuthForm = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [newAccount, setNewAccount] = useState(true);
   const [password, setPassword] = useState("");
@@ -25,9 +30,32 @@ const AuthForm = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      let user;
       if (newAccount) {
         // create account
-        await createUserWithEmailAndPassword(authService, email, password);
+        await createUserWithEmailAndPassword(authService, email, password).then(
+          async (result) => {
+            user = result.user;
+            console.log(user);
+            const usersRef = collection(dbService, "users");
+            await setDoc(doc(usersRef, user.email), {
+              displayName: user.email.split("@")[0],
+              email: user.email,
+              photoURL: noneProfile,
+              uid: user.uid,
+            });
+            dispatch(setLoginToken("login"));
+            dispatch(
+              setCurrentUser({
+                displayName: user.displayName,
+                email: user.email,
+                photoURL: noneProfile,
+                uid: user.uid,
+              })
+            );
+          }
+        );
+        // const userRef = collection(dbService, "users");
       } else {
         // log in
         await signInWithEmailAndPassword(authService, email, password);

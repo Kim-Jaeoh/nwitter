@@ -1,0 +1,67 @@
+.nweet {
+  background: #fff;
+  padding: 16px;
+  /* border-radius: 10px; */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  /* width: 100%; */
+  flex: 1 1 auto;
+  color: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid #ebebeb;
+  /* margin-bottom: 20px; */
+  box-sizing: border-box;
+}
+
+.nweet__container {
+  width: 100%;
+  display: flex;
+}
+
+.nweet__profile {
+  margin-right: 12px;
+  height: 100%;
+}
+
+.profile__image {
+  width: 48px;
+  height: 48px;
+  border-radius: 100%;
+}
+
+.userInfo {
+  width: 100%;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+.userInfo .userInfo__top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.userInfo__name {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.userInfo__name p:first-child {
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.nweet__text {
+  width: 100%;
+  /* max-width: 600px; */
+  /* letter-spacing: 2px; */
+  /* word-wrap: break-word; */
+  /* overflow-wrap: break-word; */
+  /* overflow: hidden; */
+}
+
+.nweet__createdAt {
+  font-size: 12px;
+}

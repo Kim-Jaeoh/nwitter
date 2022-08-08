@@ -1,25 +1,63 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { v4 } from "uuid";
 import { dbService, storageService } from "../fbase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faImage,
+  faTimes,
+  faFaceGrin,
+} from "@fortawesome/free-solid-svg-icons";
 import Loading from "./Loading";
+import styled from "./NweetFactory.module.css";
+import noneProfile from "../image/noneProfile.jpg";
+import Picker from "emoji-picker-react";
 
 const NweetFactory = ({ userObj }) => {
   const fileInput = useRef();
+  const textRef = useRef();
+  const emojiRef = useRef();
   const [nweet, setNweet] = useState("");
   const [attachment, setAttachment] = useState("");
   const [isLoading, setIsLoading] = useState(null);
-  const [displayName, setDisplayName] = useState(userObj.displayName);
+  const [creatorInfo, setCreatorInfo] = useState({});
+  const [clickEmoji, setClickEmoji] = useState(false);
+
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+      setCreatorInfo(doc.data());
+    });
+  }, [userObj]);
+
+  // 이모지 모달 밖 클릭 시 창 끔
+  useEffect(() => {
+    if (!clickEmoji) return;
+    if (clickEmoji === true) {
+      function handleClick(e) {
+        if (emojiRef.current === null) {
+          return;
+        } else if (!emojiRef.current.contains(e.target)) {
+          // emojiRef 내의 클릭한 영역의 타겟이 없으면 true
+          setClickEmoji(false);
+        }
+      }
+      window.addEventListener("click", handleClick);
+      return () => window.removeEventListener("click", handleClick);
+    }
+  }, [clickEmoji]);
+
+  useEffect(() => {
+    textRef.current.style.height = "50px";
+    textRef.current.style.height = textRef.current.scrollHeight + "px";
+  }, [textRef]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     let attachmentUrl = "";
 
-    // 이미지 없이 텍스트만 업로드 할 때
+    // 이미지 있을 때만 첨부
     if (attachment !== "") {
       //파일 경로 참조 만들기
       const attachmentfileRef = ref(storageService, `${userObj.uid}/${v4()}`);
@@ -32,11 +70,11 @@ const NweetFactory = ({ userObj }) => {
     }
 
     const attachmentNweet = {
-      text: nweet, // nweet: nweet (useState의 nweet 값)
+      text: nweet,
       createdAt: Date.now(),
       creatorId: userObj.uid,
       attachmentUrl,
-      displayName,
+      email: userObj.email,
     };
 
     // 입력 값 없을 시 업로드 X
@@ -45,19 +83,19 @@ const NweetFactory = ({ userObj }) => {
       setNweet("");
       setAttachment("");
       setIsLoading(false);
+      textRef.current.value = "";
       // fileInput.current.value = ""; // 완료 후 파일 문구 없애기
     } else {
       alert("글자를 입력하세요");
       setIsLoading(false);
     }
+    textRef.current.style.height = "50px";
   };
 
-  const onChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    setNweet(value);
-  };
+  const onChange = useCallback((e) => {
+    setNweet(e.target.value);
+    // console.log(nweet);
+  }, []);
 
   const onFileChange = (e) => {
     const {
@@ -85,50 +123,112 @@ const NweetFactory = ({ userObj }) => {
     fileInput.current.value = ""; // 취소 시 파일 문구 없애기
   };
 
+  // 메세지 글자 수(높이)에 따라 인풋창 크기 조절
+  const handleResizeHeight = useCallback(() => {
+    if (textRef === null || textRef.current === null) {
+      return;
+    }
+    textRef.current.style.height = "50px";
+    textRef.current.style.height = textRef.current.scrollHeight + "px";
+  }, []);
+
+  const toggleEmoji = () => {
+    setClickEmoji(!clickEmoji);
+    if (clickEmoji) {
+      textRef.current.focus();
+    }
+  };
+
+  const onEmojiClick = (event, emojiObject) => {
+    const textEmoji =
+      nweet.slice(0, textRef.current.selectionStart) +
+      emojiObject.emoji +
+      nweet.slice(textRef.current.selectionEnd, nweet.length);
+    setNweet(textEmoji);
+  };
+
   return (
     <>
       {isLoading && <Loading />} {/* 업로드 후 로딩 시 스피너 */}
-      <form onSubmit={onSubmit} className="factoryForm">
-        <div className="factoryInput__container">
-          <input
-            className="factoryInput__input"
-            type="text"
-            value={nweet}
-            placeholder="What's on your mind?"
-            maxLength={120}
-            onChange={onChange}
-          />
-          <input type="submit" value="&rarr;" className="factoryInput__arrow" />
-        </div>
-        <label htmlFor="attach-file" className="factoryInput__label">
-          <span>Add photos</span>
-          <FontAwesomeIcon icon={faPlus} />
-        </label>
-        <input
-          id="attach-file"
-          type="file"
-          accept="image/*"
-          onChange={onFileChange}
-          style={{
-            opacity: 0,
-          }}
-        />
-        {attachment && (
-          <div className="factoryForm__attachment">
+      <div className={styled.factoryForm}>
+        <div className={styled.factoryInput__container}>
+          <div className={styled.nweet__profile}>
             <img
-              src={attachment}
-              alt="upload file"
-              style={{
-                backgroundImage: attachment,
-              }}
+              src={creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile}
+              alt="profileImg"
+              className={styled.profile__image}
             />
-            <div className="factoryForm__clear" onClick={onClearAttachment}>
-              <span>Remove</span>
-              <FontAwesomeIcon icon={faTimes} />
-            </div>
           </div>
-        )}
-      </form>
+          <form onSubmit={onSubmit} className={styled.factoryInput}>
+            <div className={styled.factoryForm__content}>
+              <textarea
+                spellcheck="false"
+                className={styled.factoryInput__input}
+                type="text"
+                value={nweet}
+                ref={textRef}
+                onChange={onChange}
+                onInput={handleResizeHeight}
+                maxLength={280}
+                placeholder="무슨 일이 일어나고 있나요?"
+              />
+
+              {attachment && (
+                <div className={styled.factoryForm__attachment}>
+                  <img
+                    src={attachment}
+                    alt="upload file"
+                    style={{
+                      backgroundImage: attachment,
+                    }}
+                  />
+                  <div
+                    className={styled.factoryForm__clear}
+                    onClick={onClearAttachment}
+                  >
+                    <span>Remove</span>
+                    <FontAwesomeIcon icon={faTimes} />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className={styled.factoryInput__add}>
+              <div className={styled.factoryInput__image}>
+                <label
+                  htmlFor="attach-file"
+                  className={styled.factoryInput__label}
+                >
+                  <FontAwesomeIcon icon={faImage} />
+                </label>
+                <input
+                  id="attach-file"
+                  type="file"
+                  accept="image/*"
+                  onChange={onFileChange}
+                />
+              </div>
+              <div ref={emojiRef} className={styled.factoryInput__emoji}>
+                <FontAwesomeIcon icon={faFaceGrin} onClick={toggleEmoji} />
+                {/* 해결: clickEmoji이 true일 때만 실행해서textarea 버벅이지 않음 */}
+                {clickEmoji && (
+                  <div
+                    className={`${styled.emoji} 
+                    ${clickEmoji ? styled.emoji__block : styled.emoji__hidden}
+                  `}
+                  >
+                    <Picker onEmojiClick={onEmojiClick} />
+                  </div>
+                )}
+              </div>
+              <input
+                type="submit"
+                value="트윗하기"
+                className={styled.factoryInput__arrow}
+              />
+            </div>
+          </form>
+        </div>
+      </div>
     </>
   );
 };

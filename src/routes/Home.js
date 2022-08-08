@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import styled from "./Home.module.css";
 import Nweet from "../components/Nweet";
 import NweetFactory from "../components/NweetFactory";
 import Loading from "../components/Loading";
+import { FiRepeat } from "react-icons/fi";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
@@ -57,18 +59,24 @@ const Home = ({ userObj }) => {
   }, []);
 
   return (
-    <div className="container">
-      <NweetFactory userObj={userObj} />
-      {isLoading && <Loading />} {/* 로딩 시 스피너 */}
-      <div style={{ marginTop: 30 }}>
-        {nweets.map((nweet) => (
-          <Nweet
-            key={nweet.id}
-            nweetObj={nweet}
-            userObj={userObj}
-            isOwner={nweet.creatorId === userObj.uid}
-          />
-        ))}
+    <div className={styled.container}>
+      <div className={styled.main__container}>
+        {isLoading && <Loading />} {/* 로딩 시 스피너 */}
+        <div className={styled.main__category}>
+          <p>홈</p>
+          <FiRepeat />
+        </div>
+        <NweetFactory userObj={userObj} />
+        <div>
+          {nweets.map((nweet) => (
+            <Nweet
+              key={nweet.id}
+              nweetObj={nweet}
+              userObj={userObj}
+              isOwner={nweet.creatorId === userObj.uid}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

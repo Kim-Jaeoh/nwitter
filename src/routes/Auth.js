@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
 import AuthForm from "../components/AuthForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

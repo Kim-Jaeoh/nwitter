@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AppRouters from "./Router";
 import { authService } from "../fbase";
+import { AiOutlineTwitter } from "react-icons/ai";
+import styled from "./App.module.css";
 
 function App() {
   const [init, setInit] = useState(false);
@@ -52,7 +54,9 @@ function App() {
           // newName={newName} // #방법 3
         />
       ) : (
-        "Initializing..."
+        <div className={styled.render__loading}>
+          <AiOutlineTwitter className={styled.render__logo} />
+        </div>
       )}
       {/* <footer>&copy; {new Date().getFullYear()} Nwitter</footer> */}
     </>
