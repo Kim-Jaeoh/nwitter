@@ -12,26 +12,26 @@ import styled from "./LeftBar.module.css";
 const LeftBar = ({ userObj }) => {
   const [creatorInfo, setCreatorInfo] = useState({});
 
-  if (userObj.displayName === null) {
-    const name = userObj.email.split("@")[0];
-    userObj.displayName = name;
-  }
-
-  // const currentUsers = useSelector((state) => state.user.currentUser);
-
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
     });
   }, [userObj]);
 
+  // if (creatorInfo.email) {
+  //   const email = creatorInfo.email.split("@")[0];
+  //   creatorInfo.email = email;
+  // }
+
   return (
-    <div className={styled.container}>
-      <div className={styled.wrapper}>
-        <div className={styled.leftBar__logo}>
-          <Link to="/">
-            <AiOutlineTwitter />
-          </Link>
+    <article className={styled.container}>
+      <section className={styled.wrapper}>
+        <div className={styled.leftBar__logobox}>
+          <div className={styled.leftBar__logo}>
+            <Link to="/">
+              <AiOutlineTwitter />
+            </Link>
+          </div>
         </div>
         <nav className={styled.leftBar__container}>
           <ul>
@@ -77,8 +77,11 @@ const LeftBar = ({ userObj }) => {
             </li>
           </ul>
         </nav>
-      </div>
-      <div className={styled.leftBar__user}>
+        <section className={styled.leftBar__nweet}>
+          <div>트윗하기</div>
+        </section>
+      </section>
+      <section className={styled.leftBar__user}>
         <Link to="/">
           <div className={styled.leftBar__userInfo}>
             <div className={styled.userInfo__profile}>
@@ -90,15 +93,15 @@ const LeftBar = ({ userObj }) => {
             </div>
             <div className={styled.userInfo__name}>
               <p>{creatorInfo.displayName}</p>
-              <p>@{creatorInfo.email.split(["@"], 1)}</p>
+              <p>@{userObj.email.split("@")[0]}</p>
             </div>
             <div className={styled.userInfo__etc}>
               <FiMoreHorizontal />
             </div>
           </div>
         </Link>
-      </div>
-    </div>
+      </section>
+    </article>
   );
 };
 

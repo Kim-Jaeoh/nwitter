@@ -14,16 +14,41 @@
 }
 
 .container .main__container .main__category {
+  position: sticky;
+  top: 0px;
+  z-index: 3;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 53px;
+  height: 60px;
   font-size: 20px;
   font-weight: bold;
   padding: 0 16px;
-  border-bottom: 1px solid #ebebeb;
+  /* border-bottom: 1px solid #ebebeb; */
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
 }
 
-.container .main__container .main__category svg {
+.container .main__container .main__category .change__emoji {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.container .main__container .main__category .change__emoji svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.container .main__container .main__category .change__emoji:hover {
+  background: #ececec;
 }

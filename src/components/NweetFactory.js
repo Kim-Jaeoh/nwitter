@@ -3,12 +3,8 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { v4 } from "uuid";
 import { dbService, storageService } from "../fbase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faImage,
-  faTimes,
-  faFaceGrin,
-} from "@fortawesome/free-solid-svg-icons";
+import { IoImageOutline } from "react-icons/io5";
+import { GrEmoji } from "react-icons/gr";
 import Loading from "./Loading";
 import styled from "./NweetFactory.module.css";
 import noneProfile from "../image/noneProfile.jpg";
@@ -23,6 +19,7 @@ const NweetFactory = ({ userObj }) => {
   const [isLoading, setIsLoading] = useState(null);
   const [creatorInfo, setCreatorInfo] = useState({});
   const [clickEmoji, setClickEmoji] = useState(false);
+  const [focus, setFocus] = useState(false);
 
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
@@ -32,19 +29,18 @@ const NweetFactory = ({ userObj }) => {
 
   // 이모지 모달 밖 클릭 시 창 끔
   useEffect(() => {
-    if (!clickEmoji) return;
-    if (clickEmoji === true) {
-      function handleClick(e) {
-        if (emojiRef.current === null) {
-          return;
-        } else if (!emojiRef.current.contains(e.target)) {
-          // emojiRef 내의 클릭한 영역의 타겟이 없으면 true
-          setClickEmoji(false);
-        }
+    const handleClick = (e) => {
+      // node.contains는 주어진 인자가 자손인지 아닌지에 대한 Boolean 값을 리턴함
+      // emojiRef 내의 클릭한 영역의 타겟이 없으면 true
+      if (!emojiRef.current.contains(e.target)) {
+        setClickEmoji(false);
       }
-      window.addEventListener("click", handleClick);
-      return () => window.removeEventListener("click", handleClick);
-    }
+      if (!textRef.current.contains(e.target)) {
+        setFocus(false);
+      }
+    };
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
   }, [clickEmoji]);
 
   useEffect(() => {
@@ -97,6 +93,15 @@ const NweetFactory = ({ userObj }) => {
     // console.log(nweet);
   }, []);
 
+  const onClick = useCallback(
+    (e) => {
+      setFocus(!focus);
+      textRef.current.focus();
+      console.log(focus);
+    },
+    [focus]
+  );
+
   const onFileChange = (e) => {
     const {
       target: { files },
@@ -135,6 +140,7 @@ const NweetFactory = ({ userObj }) => {
   const toggleEmoji = () => {
     setClickEmoji(!clickEmoji);
     if (clickEmoji) {
+      setClickEmoji(true);
       textRef.current.focus();
     }
   };
@@ -160,19 +166,23 @@ const NweetFactory = ({ userObj }) => {
             />
           </div>
           <form onSubmit={onSubmit} className={styled.factoryInput}>
-            <div className={styled.factoryForm__content}>
+            <div
+              className={`${styled.factoryForm__content} ${
+                focus && styled.focus
+              }`}
+            >
               <textarea
-                spellcheck="false"
+                spellCheck="false"
                 className={styled.factoryInput__input}
                 type="text"
                 value={nweet}
                 ref={textRef}
                 onChange={onChange}
+                onClick={onClick}
                 onInput={handleResizeHeight}
                 maxLength={280}
                 placeholder="무슨 일이 일어나고 있나요?"
               />
-
               {attachment && (
                 <div className={styled.factoryForm__attachment}>
                   <img
@@ -187,7 +197,6 @@ const NweetFactory = ({ userObj }) => {
                     onClick={onClearAttachment}
                   >
                     <span>Remove</span>
-                    <FontAwesomeIcon icon={faTimes} />
                   </div>
                 </div>
               )}
@@ -198,7 +207,9 @@ const NweetFactory = ({ userObj }) => {
                   htmlFor="attach-file"
                   className={styled.factoryInput__label}
                 >
-                  <FontAwesomeIcon icon={faImage} />
+                  <div>
+                    <IoImageOutline />
+                  </div>
                 </label>
                 <input
                   id="attach-file"
@@ -207,8 +218,10 @@ const NweetFactory = ({ userObj }) => {
                   onChange={onFileChange}
                 />
               </div>
-              <div ref={emojiRef} className={styled.factoryInput__emoji}>
-                <FontAwesomeIcon icon={faFaceGrin} onClick={toggleEmoji} />
+              <div ref={emojiRef} onClick={toggleEmoji}>
+                <div className={styled.factoryInput__emoji}>
+                  <GrEmoji />
+                </div>
                 {/* 해결: clickEmoji이 true일 때만 실행해서textarea 버벅이지 않음 */}
                 {clickEmoji && (
                   <div
@@ -216,7 +229,10 @@ const NweetFactory = ({ userObj }) => {
                     ${clickEmoji ? styled.emoji__block : styled.emoji__hidden}
                   `}
                   >
-                    <Picker onEmojiClick={onEmojiClick} />
+                    <Picker
+                      onEmojiClick={onEmojiClick}
+                      disableAutoFocus={true}
+                    />
                   </div>
                 )}
               </div>

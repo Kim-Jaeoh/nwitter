@@ -63,8 +63,10 @@ const Home = ({ userObj }) => {
       <div className={styled.main__container}>
         {isLoading && <Loading />} {/* 로딩 시 스피너 */}
         <div className={styled.main__category}>
-          <p>홈</p>
-          <FiRepeat />
+          <h2>홈</h2>
+          <div className={styled.change__emoji}>
+            <FiRepeat />
+          </div>
         </div>
         <NweetFactory userObj={userObj} />
         <div>

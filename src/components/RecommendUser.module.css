@@ -1,0 +1,50 @@
+/* 팔로우 추천 */
+.follow__user {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.follows .follow__user:hover,
+.more:hover {
+  background: #e9f1ef;
+}
+
+.follows .follow__user .follow__image {
+  width: 48px;
+  height: 48px;
+  margin-right: 12px;
+  border-radius: 50%;
+  object-fit: contain;
+  object-fit: contain;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.follows .follow__user .follow__name p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.follows .follow__user .follow__name p:first-child {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.follow__user .follow__name p:last-child {
+  font-size: 14px;
+  color: #536471;
+}
+
+.more {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #0099ff;
+}

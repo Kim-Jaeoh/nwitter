@@ -3,27 +3,48 @@
   width: 275px;
   height: 100%;
   padding: 0 16px;
-  background-color: rgba(255, 255, 255, 0.253);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-right: 1px solid #ebebeb;
+  /* border: 1px solid red; */
 }
 
-.container .leftBar__logo {
+/* 리스트 */
+.container .wrapper .leftBar__container {
+  margin-bottom: 24px;
+}
+
+.container .wrapper .leftBar__logobox {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 53px;
-  margin-bottom: 16px;
-  padding-left: 12px;
-  /* border-bottom: 1px solid #ebebeb; */
+  height: 60px;
+  margin-left: 3px;
 }
 
-.container .leftBar__logo svg {
-  font-size: 32px;
-  font-weight: bold;
+.container .wrapper .leftBar__logobox .leftBar__logo {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.container .wrapper .leftBar__logobox .leftBar__logo svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   color: #429170;
+}
+
+.container .wrapper .leftBar__logo:hover {
+  background: #5cb69134;
 }
 
 .leftBar__container ul li {
@@ -39,10 +60,6 @@
   font-size: 28px;
 }
 
-.leftBar__container ul li .leftBar__list:hover {
-  background-color: #dddddd;
-}
-
 .leftBar__container ul li .leftBar__list {
   display: flex;
   align-items: center;
@@ -51,15 +68,51 @@
   padding: 12px;
   padding-right: 16px;
   transition: background-color 0.2s;
-  /* border: 1px solid red; */
 }
 
+.leftBar__container ul li .leftBar__list:hover {
+  background-color: #e9f1ef;
+}
+
+/* 트윗하기 */
+.leftBar__nweet {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+}
+
+.leftBar__nweet > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: 52px;
+  min-height: 52px;
+  padding: 12px;
+  background: #429170;
+  box-shadow: 0px 5px 5px #42917046;
+  border-radius: 9999px;
+  transition: all 0.2s;
+  user-select: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.leftBar__nweet > div:hover {
+  background: #337258;
+}
+
+/* 유저 정보 */
 .container .leftBar__user {
   margin: 12px 0;
   padding: 12px;
-  border-radius: 50px;
+  border-radius: 9999px;
   user-select: none;
   transition: background-color 0.2s;
+  min-width: 52px;
+  min-height: 52px;
 }
 
 .container .leftBar__userInfo {
@@ -68,30 +121,37 @@
 }
 
 .container .userInfo__profile {
-  margin-right: 12px;
   height: 100%;
-  /* border: 1px solid blue; */
 }
 
 .container .profile__image {
-  width: 48px;
-  height: 48px;
-  border-radius: 100%;
-}
-
-.container .leftBar__user p {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .container .leftBar__user:hover {
   background-color: #dddddd;
 }
 
+.container .leftBar__user .leftBar__userInfo .userInfo__name {
+  margin: 0 12px;
+  overflow: hidden;
+}
+
+.container .leftBar__user p {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .container .leftBar__user .leftBar__userInfo .userInfo__name p:first-child {
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .container .leftBar__user .leftBar__userInfo .userInfo__name p:last-child {
