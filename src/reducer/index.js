@@ -17,8 +17,4 @@ const rootReducer = (state, action) => {
   return appReducer(state, action);
 };
 
-// export function* rootSaga() {
-//   // yield all([itemSaga()])
-// }
-
 export default rootReducer;

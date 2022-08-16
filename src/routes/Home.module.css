@@ -1,9 +1,8 @@
 .container {
-  /* position: sticky; */
-  /* overflow-y: scroll; */
-  /* top: 0; */
-  /* width: 100%; */
-  /* margin: 0 auto; */
+  /* width: 1400px;
+  height: 100vh;
+  padding-left: 275px;
+  border-right: 1px solid #ebebeb; */
 }
 
 .container::-webkit-scrollbar {

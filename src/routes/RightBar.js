@@ -47,13 +47,7 @@ const RightBar = ({ userObj }) => {
           />
         </div>
       </section>
-      <section className={styled.followBox}>
-        <div className={styled.followBox__name}>
-          <h2>팔로우 추천</h2>
-        </div>
-        <RecommendUser userObj={userObj} />
-        <div className={styled.more}>더 보기</div>
-      </section>
+      <RecommendUser userObj={userObj} />
     </article>
   );
 };

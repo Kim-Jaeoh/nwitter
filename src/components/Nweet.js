@@ -1,31 +1,29 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-  query,
-  updateDoc,
-} from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import React, { useEffect, useState } from "react";
-import { dbService, storageService } from "../fbase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { dbService } from "../fbase";
 import styled from "./Nweet.module.css";
 import noneProfile from "../image/noneProfile.jpg";
+import { FiMoreHorizontal } from "react-icons/fi";
+import ModifyBtn from "./ModifyBtn";
+import UpdateNweetModal from "./UpdateNweetModal";
 
 const Nweet = ({ nweetObj, isOwner, userObj }) => {
-  const [editing, setEditing] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
     nweetObj.attachmentUrl
   );
   const [creatorInfo, setCreatorInfo] = useState({});
-  // const currentUsers = useSelector((state) => state.user.currentUser);
-  const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
+  const [nweetEct, setNweetEct] = useState(false);
 
-  const dbAttachmentRef = ref(storageService, newNweetAttachment);
+  const etcRef = useRef();
+  const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
+  // const dbAttachmentRef = ref(storageService, newNweetAttachment);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const toggleEdit = () => {
+    setIsEditing((prev) => !prev);
+    console.log(isEditing);
+  };
 
   useEffect(() => {
     onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
@@ -33,22 +31,19 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     });
   }, [nweetObj]);
 
-  const onDeleteClick = async () => {
-    const ok = window.confirm("Are you sure your want to delete this nweet?");
-    if (ok === true) {
-      // delete nweet
-      await deleteDoc(dbRef); // 문서 삭제
-    }
-
-    // 이미지 없는 글 삭제 시 에러가 나와서 예외 처리
-    // (삭제 시 nweetObj.attachmentUrl로 찾아가기 때문)
-    if (newNweetAttachment) {
-      await deleteObject(dbAttachmentRef); // 이미지 삭제
-    }
-  };
-
-  // 함수형 업데이트 = 이전 값
-  const toggleEditing = () => setEditing((prev) => !prev);
+  useEffect(() => {
+    // if (!nweetEct) return;
+    const handleClick = (e) => {
+      if (!etcRef.current.contains(e.target)) {
+        setNweetEct(false);
+      }
+      // else if (etcRef.current === null) {
+      // return;
+      // }
+    };
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, []);
 
   const onChange = (e) => {
     const {
@@ -58,11 +53,13 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   const onSubmit = async (e) => {
+    alert("업데이트 되었습니다");
     e.preventDefault();
     await updateDoc(dbRef, {
       text: newNweet,
+      attachmentUrl: newNweetAttachment,
     });
-    setEditing(false);
+    setIsEditing(false);
   };
 
   const timeToString = (timestamp) => {
@@ -77,41 +74,13 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     return str;
   };
 
+  const toggleNweetEct = useCallback(() => {
+    setNweetEct((prev) => !prev);
+  }, []);
+
   return (
-    <div className={styled.nweet}>
-      {editing ? (
-        <>
-          {isOwner && (
-            <>
-              <form
-                onSubmit={onSubmit}
-                className={`${styled.container} ${styled.nweetEdit}`}
-              >
-                <input
-                  type="text"
-                  placeholder="Edit your nweet"
-                  value={newNweet}
-                  onChange={onChange}
-                  required
-                  autoFocus
-                  className={styled.formInput}
-                />
-                <input
-                  type="submit"
-                  value="Update Nweet"
-                  className={styled.formBtn}
-                />
-              </form>
-              <span
-                onClick={toggleEditing}
-                className={`${styled.formBtn} ${styled.cancelBtn}`}
-              >
-                Cancel
-              </span>
-            </>
-          )}
-        </>
-      ) : (
+    <>
+      <div className={styled.nweet}>
         <div className={styled.nweet__container}>
           <div className={styled.nweet__profile}>
             <img
@@ -132,33 +101,52 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
                   {timeToString(nweetObj.createdAt)}
                 </p>
               </div>
-              <div className={styled.nweet__edit}>
-                {isOwner && (
-                  <div className={styled.nweet__actions}>
-                    <span onClick={onDeleteClick}>
-                      <FontAwesomeIcon icon={faTrash} />
-                    </span>
-                    <span onClick={toggleEditing}>
-                      <FontAwesomeIcon icon={faPencilAlt} />
-                    </span>
+              {isOwner && (
+                <div className={styled.nweet__edit} ref={etcRef}>
+                  <div
+                    className={styled.nweet__actions}
+                    onClick={toggleNweetEct}
+                  >
+                    <FiMoreHorizontal />
+                    <div className={styled.horizontal__bg}></div>
                   </div>
-                )}
-              </div>
+                  {nweetEct && (
+                    <ModifyBtn
+                      newNweetAttachment={newNweetAttachment}
+                      nweetObj={nweetObj}
+                      toggleEdit={toggleEdit}
+                    />
+                  )}
+                </div>
+              )}
             </div>
             <div>
               <div className={styled.nweet__text}>
                 <h4>{nweetObj.text}</h4>
               </div>
-              <div>
-                {nweetObj.attachmentUrl && (
-                  <img src={nweetObj.attachmentUrl} alt="uploaded file" />
-                )}
-              </div>
             </div>
           </div>
         </div>
+        {nweetObj.attachmentUrl ? (
+          <div className={styled.nweet__image}>
+            <img src={nweetObj.attachmentUrl} alt="uploaded file" />
+          </div>
+        ) : null}
+      </div>
+      {isEditing && (
+        <UpdateNweetModal
+          creatorInfo={creatorInfo}
+          setNewNweet={setNewNweet}
+          onChange={onChange}
+          onSubmit={onSubmit}
+          newNweet={newNweet}
+          newNweetAttachment={newNweetAttachment}
+          setNewNweetAttachment={setNewNweetAttachment}
+          isEditing={isEditing}
+          toggleEdit={toggleEdit}
+        />
       )}
-    </div>
+    </>
   );
 };
 

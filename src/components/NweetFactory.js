@@ -3,8 +3,8 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { v4 } from "uuid";
 import { dbService, storageService } from "../fbase";
-import { IoImageOutline } from "react-icons/io5";
-import { GrEmoji } from "react-icons/gr";
+import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
+import { GrClose, GrEmoji } from "react-icons/gr";
 import Loading from "./Loading";
 import styled from "./NweetFactory.module.css";
 import noneProfile from "../image/noneProfile.jpg";
@@ -53,38 +53,38 @@ const NweetFactory = ({ userObj }) => {
     setIsLoading(true);
     let attachmentUrl = "";
 
-    // 이미지 있을 때만 첨부
-    if (attachment !== "") {
-      //파일 경로 참조 만들기
-      const attachmentfileRef = ref(storageService, `${userObj.uid}/${v4()}`);
-
-      //storage 참조 경로로 파일 업로드 하기
-      await uploadString(attachmentfileRef, attachment, "data_url");
-
-      //storage 참조 경로에 있는 파일의 URL을 다운로드해서 attachmentUrl 변수에 넣어서 업데이트
-      attachmentUrl = await getDownloadURL(ref(attachmentfileRef));
-    }
-
-    const attachmentNweet = {
-      text: nweet,
-      createdAt: Date.now(),
-      creatorId: userObj.uid,
-      attachmentUrl,
-      email: userObj.email,
-    };
-
     // 입력 값 없을 시 업로드 X
     if (nweet !== "") {
+      // 이미지 있을 때만 첨부
+      if (attachment !== "") {
+        //파일 경로 참조 만들기
+        const attachmentfileRef = ref(storageService, `${userObj.uid}/${v4()}`);
+
+        //storage 참조 경로로 파일 업로드 하기
+        await uploadString(attachmentfileRef, attachment, "data_url");
+
+        //storage 참조 경로에 있는 파일의 URL을 다운로드해서 attachmentUrl 변수에 넣어서 업데이트
+        attachmentUrl = await getDownloadURL(ref(attachmentfileRef));
+      }
+
+      const attachmentNweet = {
+        text: nweet,
+        createdAt: Date.now(),
+        creatorId: userObj.uid,
+        attachmentUrl,
+        email: userObj.email,
+      };
+
       await addDoc(collection(dbService, "nweets"), attachmentNweet);
+      setIsLoading(false);
       setNweet("");
       setAttachment("");
-      setIsLoading(false);
-      textRef.current.value = "";
-      // fileInput.current.value = ""; // 완료 후 파일 문구 없애기
+      // textRef.current.value = "";
     } else {
       alert("글자를 입력하세요");
       setIsLoading(false);
     }
+
     textRef.current.style.height = "50px";
   };
 
@@ -125,7 +125,6 @@ const NweetFactory = ({ userObj }) => {
 
   const onClearAttachment = () => {
     setAttachment("");
-    fileInput.current.value = ""; // 취소 시 파일 문구 없애기
   };
 
   // 메세지 글자 수(높이)에 따라 인풋창 크기 조절
@@ -196,7 +195,8 @@ const NweetFactory = ({ userObj }) => {
                     className={styled.factoryForm__clear}
                     onClick={onClearAttachment}
                   >
-                    <span>Remove</span>
+                    {/* <GrClose /> */}
+                    <IoCloseSharp />
                   </div>
                 </div>
               )}
@@ -240,6 +240,7 @@ const NweetFactory = ({ userObj }) => {
                 type="submit"
                 value="트윗하기"
                 className={styled.factoryInput__arrow}
+                disabled={nweet === "" && attachment === ""}
               />
             </div>
           </form>

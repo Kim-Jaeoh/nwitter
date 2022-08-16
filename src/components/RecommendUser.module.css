@@ -1,8 +1,21 @@
 /* 팔로우 추천 */
-.follow__user {
+.followBox {
+  background: #42806613;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.followBox .followBox__name h2 {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 16px;
+}
+
+.followBox .follow__user {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 12px 16px;
   cursor: pointer;
 }
@@ -10,6 +23,10 @@
 .follows .follow__user:hover,
 .more:hover {
   background: #e9f1ef;
+}
+
+.followBox .follows .follow__user .follow__userInfo {
+  display: flex;
 }
 
 .follows .follow__user .follow__image {
@@ -21,6 +38,12 @@
   object-fit: contain;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+}
+
+.follows .follow__user .follow__name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .follows .follow__user .follow__name p {
@@ -39,7 +62,25 @@
   color: #536471;
 }
 
-.more {
+.follow__user .follow__btn {
+  min-width: 76px;
+  min-height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 9999px;
+  background: #0f1419;
+  font-size: 14px;
+  color: #fff;
+  padding-bottom: 2px;
+  /* margin-left: 12px; */
+}
+
+.follow__user .follow__btn:hover {
+  background: #272c30;
+}
+
+.followBox .more {
   width: 100%;
   display: flex;
   align-items: center;

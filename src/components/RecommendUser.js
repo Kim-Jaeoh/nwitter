@@ -26,23 +26,32 @@ const RecommendUser = ({ userObj }) => {
   }, []);
 
   return (
-    <ul className={styled.follows}>
-      {users.map((user) => {
-        return (
-          <li key={user.id} className={styled.follow__user}>
-            <img
-              src={user.photoURL ? user.photoURL : noneProfile}
-              alt="profileImg"
-              className={styled.follow__image}
-            />
-            <div className={styled.follow__name}>
-              <p>{user.displayName}</p>
-              <p>@{user.email.split("@")[0]}</p>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+    <section className={styled.followBox}>
+      <div className={styled.followBox__name}>
+        <h2>팔로우 추천</h2>
+      </div>
+      <ul className={styled.follows}>
+        {users.map((user) => {
+          return (
+            <li key={user.id} className={styled.follow__user}>
+              <div className={styled.follow__userInfo}>
+                <img
+                  src={user.photoURL ? user.photoURL : noneProfile}
+                  alt="profileImg"
+                  className={styled.follow__image}
+                />
+                <div className={styled.follow__name}>
+                  <p>{user.displayName}</p>
+                  <p>@{user.email.split("@")[0]}</p>
+                </div>
+              </div>
+              <div className={styled.follow__btn}>팔로우</div>
+            </li>
+          );
+        })}
+      </ul>
+      <div className={styled.more}>더 보기</div>
+    </section>
   );
 };
 

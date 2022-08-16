@@ -26,31 +26,24 @@ form {
   width: 100%;
 }
 
-/*  */
-
 .container {
+  width: 100%;
   display: flex;
-  padding: 0 208px;
+  justify-content: center;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
-::-webkit-scrollbar {
-  /* display: none; */
-}
-
 .center__container {
-  /* width: 100%; */
-  width: 1400px;
-  height: 100vh;
-  /* margin: 0 auto; */
-  padding-left: 275px;
+  flex: 1 1 auto;
+  max-width: 600px;
   border-right: 1px solid #ebebeb;
 }
 
 .render__loading {
   width: 100vw;
   height: 100vh;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -60,3 +53,8 @@ form {
   color: #429170;
   font-size: 80px;
 }
+
+/* @media screen and (max-width: 705px) {
+  .center__container {
+  }
+} */
