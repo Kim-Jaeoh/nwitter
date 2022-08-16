@@ -8,11 +8,11 @@ import { useDispatch } from "react-redux";
 import { authService, dbService } from "../fbase";
 import noneProfile from "../image/noneProfile.jpg";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
+import styled from "./AuthForm.module.css";
 
-const AuthForm = () => {
+const AuthForm = ({ newAccount }) => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
-  const [newAccount, setNewAccount] = useState(true);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -66,11 +66,9 @@ const AuthForm = () => {
     }
   };
 
-  const toggleAccount = () => setNewAccount(!newAccount);
-
   return (
-    <>
-      <form onSubmit={onSubmit} className="container">
+    <div className={styled.container}>
+      <form onSubmit={onSubmit} className={styled.wrapper}>
         <input
           name="email"
           type="email"
@@ -78,7 +76,7 @@ const AuthForm = () => {
           required
           value={email}
           onChange={onChange}
-          className="authInput"
+          className={styled.authInput}
         />
         <input
           name="password"
@@ -86,20 +84,17 @@ const AuthForm = () => {
           placeholder="Password"
           required
           value={password}
-          className="authInput"
+          className={styled.authInput}
           onChange={onChange}
         />
         <input
           type="submit"
-          className="authInput authSubmit"
-          value={newAccount ? "Create Account" : "Sign In"}
+          className={`${styled.authInput} ${styled.authSubmit}`}
+          value={newAccount ? "가입하기" : "로그인 하기"}
         />
-        {error && <span className="authError">{error}</span>}
+        {error && <span className={styled.authError}>{error}</span>}
       </form>
-      <span onClick={toggleAccount} className="authSwitch">
-        {newAccount ? "Sign In" : "Create Account"}
-      </span>
-    </>
+    </div>
   );
 };
 

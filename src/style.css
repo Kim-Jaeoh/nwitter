@@ -85,7 +85,7 @@ form {
 /* Nweet */
 
 /* Auth */
-
+/* 
 .authContainer {
   display: flex;
   flex-direction: column;
@@ -111,10 +111,10 @@ form {
   width: 150px;
   background: white;
   cursor: pointer;
-}
+} */
 
 /* AuthForm */
-
+/* 
 .authInput {
   max-width: 320px;
   width: 100%;
@@ -149,4 +149,4 @@ form {
   display: block;
   font-size: 12px;
   text-decoration: underline;
-}
+} */

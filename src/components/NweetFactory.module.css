@@ -1,9 +1,5 @@
 .factoryForm {
   display: flex;
-  /* flex: 1 1 auto; */
-  /* height: 100%; */
-  /* border-radius: 10px; */
-  /* margin-bottom: 20px; */
   position: relative;
   background-color: white;
   padding: 16px;

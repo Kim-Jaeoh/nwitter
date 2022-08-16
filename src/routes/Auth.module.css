@@ -1,0 +1,150 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* 이미지 */
+.authImage {
+  width: 50%;
+  height: 100%;
+}
+
+.authImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: rotate(-180deg);
+}
+
+/* 가입 폼 */
+.auth {
+  padding: 40px;
+  width: 50%;
+  max-width: 760px;
+  min-width: 437px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 140px;
+}
+
+.auth .nwitter__logo {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.auth .nwitter__logo svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  color: #429170;
+}
+
+.auth .nwitter__notice {
+  font-size: 64px;
+  font-weight: 700;
+  margin: 48px 0;
+}
+
+.auth .nwitter__info {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 48px;
+}
+
+.auth .authBtns {
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+  justify-content: space-between;
+}
+
+.auth .authBtn {
+  border-radius: 20px;
+  border: none;
+  padding: 10px 0px;
+  font-size: 12px;
+  text-align: center;
+  width: 195px;
+  background: #fff;
+  border: 1px solid #ebebeb;
+  margin-bottom: 48px;
+  cursor: pointer;
+  align-items: center;
+}
+
+.auth .authBtn svg {
+  margin-right: 6px;
+}
+
+.auth .auth__notice {
+  font-weight: 700;
+  display: flex;
+}
+
+.auth .auth__notice > span {
+  margin-right: 8px;
+}
+
+.authSwitch {
+  cursor: pointer;
+  color: #1d9bf0;
+  text-decoration: underline;
+  text-underline-position: under;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    overflow: auto;
+  }
+
+  .authImage {
+    display: none;
+  }
+
+  .auth {
+    min-width: 370px;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 16px;
+    /* padding-top: 100px; */
+  }
+
+  .auth .nwitter__notice {
+    font-size: 50px;
+    margin: 35px 0;
+  }
+
+  .auth .nwitter__info {
+    font-size: 26px;
+  }
+
+  .auth .auth__notice {
+    flex-direction: column;
+  }
+
+  .auth .auth__notice > span {
+    margin-bottom: 12px;
+  }
+
+  .nwitter__notice,
+  .nwitter__info,
+  .nwitter__logo,
+  .auth .authBtns,
+  .auth__notice {
+    margin: 0 auto;
+    text-align: center;
+  }
+}

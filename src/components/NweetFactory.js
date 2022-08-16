@@ -195,7 +195,6 @@ const NweetFactory = ({ userObj }) => {
                     className={styled.factoryForm__clear}
                     onClick={onClearAttachment}
                   >
-                    {/* <GrClose /> */}
                     <IoCloseSharp />
                   </div>
                 </div>
