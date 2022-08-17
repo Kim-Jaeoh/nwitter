@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import styled from "./UpdateNweetModal.module.css";
 import Modal from "@mui/material/Modal";
 import noneProfile from "../image/noneProfile.jpg";
-import { IoImageOutline } from "react-icons/io5";
-import { GrEmoji } from "react-icons/gr";
+import { IoClose } from "react-icons/io5";
+import { GrClose } from "react-icons/gr";
 import Picker from "emoji-picker-react";
-import { deleteObject, ref } from "firebase/storage";
-import { storageService } from "../fbase";
 
 const UpdateNweetModal = ({
   creatorInfo,
@@ -71,64 +69,15 @@ const UpdateNweetModal = ({
       onClose={toggleEdit}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      className={styled.container}
     >
-      <div className={styled.editForm}>
-        <div className={styled.editInput__container}>
-          <div className={styled.nweet__profile}>
-            <img
-              src={creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile}
-              alt="profileImg"
-              className={styled.profile__image}
-            />
-          </div>
-          <form onSubmit={onSubmit} className={styled.editInput}>
-            <div className={styled.editForm__content}>
-              <textarea
-                spellCheck="false"
-                className={`${styled.editInput__input} ${
-                  focus && styled.focus
-                }`}
-                type="text"
-                value={newNweet}
-                ref={editRef}
-                onChange={onChange}
-                onClick={onClick}
-                onInput={handleResizeHeight}
-                maxLength={280}
-                placeholder="무슨 일이 일어나고 있나요?"
-              />
-              {attachment && (
-                <div className={styled.editForm__attachment}>
-                  <img
-                    src={attachment}
-                    alt="upload file"
-                    style={{
-                      backgroundImage: attachment,
-                    }}
-                  />
-                </div>
-              )}
+      <div className={styled.container}>
+        <form className={styled.editForm} onSubmit={onSubmit}>
+          <div className={styled.topBox}>
+            <div className={styled.close} onClick={toggleEdit}>
+              <GrClose />
+              {/* <IoClose /> */}
             </div>
-            <div className={styled.editInput__add}>
-              <div ref={emojiRef} onClick={toggleEmoji}>
-                <div className={styled.editInput__emoji}>
-                  <GrEmoji />
-                </div>
-                {/* 해결: clickEmoji이 true일 때만 실행해서textarea 버벅이지 않음 */}
-                {clickEmoji && (
-                  <div
-                    className={`${styled.emoji} 
-                    ${clickEmoji ? styled.emoji__block : styled.emoji__hidden}
-                  `}
-                  >
-                    <Picker
-                      onEmojiClick={onEmojiClick}
-                      disableAutoFocus={true}
-                    />
-                  </div>
-                )}
-              </div>
+            <div className={styled.submit}>
               <input
                 type="submit"
                 value="트윗하기"
@@ -136,8 +85,68 @@ const UpdateNweetModal = ({
                 disabled={newNweet === "" && newNweetAttachment === ""}
               />
             </div>
-          </form>
-        </div>
+          </div>
+          <div className={styled.editInput__container}>
+            <div className={styled.nweet__profile}>
+              <img
+                src={creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile}
+                alt="profileImg"
+                className={styled.profile__image}
+              />
+            </div>
+            <div className={styled.editInput}>
+              <div className={styled.editForm__content}>
+                <textarea
+                  spellCheck="false"
+                  className={`${styled.editInput__input} ${
+                    focus && styled.focus
+                  }`}
+                  type="text"
+                  value={newNweet}
+                  ref={editRef}
+                  onChange={onChange}
+                  onClick={onClick}
+                  onInput={handleResizeHeight}
+                  maxLength={280}
+                  placeholder="무슨 일이 일어나고 있나요?"
+                />
+                {attachment && (
+                  <div className={styled.editForm__attachment}>
+                    <img
+                      src={attachment}
+                      alt="upload file"
+                      style={{
+                        backgroundImage: attachment,
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* <div className={styled.editInput__add}>
+            <div ref={emojiRef} onClick={toggleEmoji}>
+              <div className={styled.editInput__emoji}>
+                <GrEmoji />
+              </div>
+              {clickEmoji && (
+                <div
+                  className={`${styled.emoji} 
+                    ${clickEmoji ? styled.emoji__block : styled.emoji__hidden}
+                  `}
+                >
+                  <Picker onEmojiClick={onEmojiClick} disableAutoFocus={true} />
+                </div>
+              )}
+            </div>
+            <input
+              type="submit"
+              value="트윗하기"
+              className={styled.editInput__arrow}
+              disabled={newNweet === "" && newNweetAttachment === ""}
+            />
+          </div> */}
+        </form>
       </div>
     </Modal>
   );

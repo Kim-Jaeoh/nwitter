@@ -125,6 +125,7 @@ const NweetFactory = ({ userObj }) => {
 
   const onClearAttachment = () => {
     setAttachment("");
+    fileInput.current.value = ""; // 취소 시 파일 문구 없애기
   };
 
   // 메세지 글자 수(높이)에 따라 인풋창 크기 조절
@@ -184,13 +185,15 @@ const NweetFactory = ({ userObj }) => {
               />
               {attachment && (
                 <div className={styled.factoryForm__attachment}>
-                  <img
-                    src={attachment}
-                    alt="upload file"
-                    style={{
-                      backgroundImage: attachment,
-                    }}
-                  />
+                  <div className={styled.factoryForm__Image}>
+                    <img
+                      src={attachment}
+                      alt="upload file"
+                      style={{
+                        backgroundImage: attachment,
+                      }}
+                    />
+                  </div>
                   <div
                     className={styled.factoryForm__clear}
                     onClick={onClearAttachment}
@@ -211,6 +214,7 @@ const NweetFactory = ({ userObj }) => {
                   </div>
                 </label>
                 <input
+                  ref={fileInput}
                   id="attach-file"
                   type="file"
                   accept="image/*"

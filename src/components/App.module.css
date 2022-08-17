@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  /* margin: 0; */
   /* overflow: hidden; */
 }
 
@@ -26,6 +27,23 @@ form {
   width: 100%;
 }
 
+/* 스크롤바 */
+/* ::-webkit-scrollbar {
+  width: auto;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8d8d8d;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(230, 230, 230);
+} */
+
+/* 컴포넌트 */
 .container {
   width: 100%;
   display: flex;

@@ -1,27 +1,62 @@
-.editForm {
-  display: flex;
-  width: 33.333333%;
-  max-height: 100%;
+.container {
+  overflow: hidden;
+  border-radius: 16px;
   position: absolute;
   top: 25%;
   left: 50%;
   transform: translate(-50%, -25%);
-  border-radius: 4px;
-  padding: 12px;
+  box-sizing: border-box;
+  outline: none;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.363);
+  background: #fff;
+}
+
+.editForm {
+  overflow: auto;
+  min-width: 600px;
+  max-width: 80vw;
+  max-height: 90vh;
+}
+
+.topBox {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  /* height: 53px; */
+  border-bottom: 1px solid #ebebeb;
+  background-color: #fff;
+  /* background-color: rgba(255, 255, 255, 0.85); */
+  backdrop-filter: blur(12px);
+}
+
+.topBox .close {
+  width: 34px;
+  height: 34px;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  background: #fff;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.363);
-  padding: 16px;
-  box-sizing: border-box;
-  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
 }
 
-.editInput__container {
+.topBox .close:hover {
+  background-color: rgba(15, 20, 25, 0.2);
+}
+
+.topBox .close svg {
   display: flex;
-  /* align-items: center; */
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.editForm .editInput__container {
+  display: flex;
+  padding: 16px;
   width: 100%;
 }
 
@@ -48,12 +83,9 @@
   box-sizing: border-box;
   resize: none;
   border: none;
-  border-bottom: 1px solid #ebebeb;
   font-weight: 500;
-  overflow-y: hidden;
   font-size: 20px;
-  padding-bottom: 12px;
-  margin-bottom: 2px;
+  margin-bottom: 12px;
   outline: none;
   font-size: 16px;
   line-height: 24px;
@@ -71,11 +103,15 @@
   transition: all 0.2s;
 }
 
+/* 아래 칸 */
 .editInput__add {
   display: flex;
   align-items: center;
-  margin-top: 4px;
-  margin-bottom: -6px;
+  /* position: sticky; */
+  /* bottom: 0; */
+  padding: 10px;
+  background-color: #ffffffd9;
+  backdrop-filter: blur(12px);
 }
 
 /* 배경 아이콘 */
@@ -136,7 +172,7 @@
   color: #429170;
 }
 
-.editInput__emoji:hover {
+.editInput__emoji:active {
   background-color: #5cb69134;
 }
 
@@ -181,38 +217,32 @@
   cursor: auto;
 }
 
+/* 이미지 */
 .editForm__attachment {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-height: 600px;
-  max-width: 600px;
+  max-height: 100%;
+  max-width: 100%;
+  margin-bottom: 12px;
 }
 
 .editForm__attachment img {
   width: 100%;
   height: 100%;
-  /* border-radius: 40px; */
+  border-radius: 15px;
 }
 
-.editForm__clear {
-  margin-top: 10px;
-  color: #4d826c;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  transition: all 0.6s;
-}
+@media screen and (max-width: 687px) {
+  .container {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
 
-.editForm__clear:hover {
-  color: #ff2222;
-}
-
-.editForm__clear span {
-  margin-right: 10px;
-  font-size: 12px;
-}
-
-.editForm__clear svg {
+  .editForm {
+    min-width: 100%;
+    /* max-width: 100%; */
+  }
 }

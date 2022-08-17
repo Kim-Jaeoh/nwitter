@@ -74,6 +74,19 @@ const LeftBar = ({ userObj }) => {
                   <div className={styled.leftBar__list}>
                     <BsPerson />
                     <span>프로필</span>
+                    {/* <div
+                      className={`${styled.userInfo__profile__hidden} ${styled.userInfo__profile__block}`}
+                    >
+                      <img
+                        src={
+                          creatorInfo.photoURL
+                            ? creatorInfo.photoURL
+                            : noneProfile
+                        }
+                        alt="profileImg"
+                        className={styled.profile__image}
+                      />
+                    </div> */}
                   </div>
                 </Link>
               </li>
