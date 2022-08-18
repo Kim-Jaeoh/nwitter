@@ -19,6 +19,7 @@
 }
 
 .topBox {
+  z-index: 10;
   position: sticky;
   top: 0;
   display: flex;
@@ -39,11 +40,12 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  /* margin-left: -8px; */
   border-radius: 50%;
 }
 
 .topBox .close:hover {
-  background-color: rgba(15, 20, 25, 0.2);
+  background-color: #0f141933;
 }
 
 .topBox .close svg {
@@ -75,18 +77,19 @@
 }
 
 .editInput {
-  /* width: 100%; */
+  width: 100%;
 }
 
 .editInput__input {
   width: 100%;
   box-sizing: border-box;
+  outline: none;
   resize: none;
   border: none;
+  border-bottom: 1px solid #ebebeb;
   font-weight: 500;
   font-size: 20px;
-  margin-bottom: 12px;
-  outline: none;
+  margin-bottom: 6px;
   font-size: 16px;
   line-height: 24px;
   caret-color: #429170;
@@ -107,9 +110,6 @@
 .editInput__add {
   display: flex;
   align-items: center;
-  /* position: sticky; */
-  /* bottom: 0; */
-  padding: 10px;
   background-color: #ffffffd9;
   backdrop-filter: blur(12px);
 }
@@ -178,8 +178,8 @@
 
 .emoji {
   position: absolute;
-  top: 90px;
-  left: 123px;
+  top: 15px;
+  left: 15px;
   z-index: 2;
   color: black;
   user-select: none;
@@ -225,7 +225,7 @@
   align-items: center;
   max-height: 100%;
   max-width: 100%;
-  margin-bottom: 12px;
+  margin: 10px 0 16px;
 }
 
 .editForm__attachment img {
@@ -236,13 +236,23 @@
 
 @media screen and (max-width: 687px) {
   .container {
+    /* width: 100vw; */
+    /* height: 100vh; */
     width: 100%;
     height: 100%;
+    z-index: 10;
     border-radius: 0;
+  }
+
+  .topBox {
   }
 
   .editForm {
     min-width: 100%;
     /* max-width: 100%; */
+  }
+
+  .editInput__add {
+    display: none;
   }
 }

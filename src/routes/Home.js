@@ -5,7 +5,8 @@ import styled from "./Home.module.css";
 import Nweet from "../components/Nweet";
 import NweetFactory from "../components/NweetFactory";
 import Loading from "../components/Loading";
-import { FiRepeat } from "react-icons/fi";
+import { TbRepeat } from "react-icons/tb";
+import { HiOutlineSparkles } from "react-icons/hi";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
@@ -63,9 +64,12 @@ const Home = ({ userObj }) => {
       <div className={styled.main__container}>
         {isLoading && <Loading />} {/* 로딩 시 스피너 */}
         <div className={styled.main__category}>
-          <h2>홈</h2>
+          <div className={styled.main_text}>
+            <h2>홈</h2>
+          </div>
           <div className={styled.change__emoji}>
-            <FiRepeat />
+            <HiOutlineSparkles />
+            {/* <TbRepeat /> */}
           </div>
         </div>
         <NweetFactory userObj={userObj} />

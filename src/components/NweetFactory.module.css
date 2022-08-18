@@ -207,3 +207,13 @@
 
 .factoryForm__clear:hover {
 }
+
+@media screen and (max-width: 500px) {
+  .nweet__profile {
+    display: none;
+  }
+
+  .factoryInput__emoji {
+    display: none;
+  }
+}

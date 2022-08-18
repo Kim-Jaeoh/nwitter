@@ -3,9 +3,17 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { dbService } from "../fbase";
 import styled from "./Nweet.module.css";
 import noneProfile from "../image/noneProfile.jpg";
-import { FiMoreHorizontal } from "react-icons/fi";
+import { FiMoreHorizontal, FiRepeat } from "react-icons/fi";
 import ModifyBtn from "./ModifyBtn";
 import UpdateNweetModal from "./UpdateNweetModal";
+import {
+  FaRegBookmark,
+  FaRegComment,
+  FaRegHeart,
+  FaRetweet,
+} from "react-icons/fa";
+import { AiOutlineRetweet } from "react-icons/ai";
+import { BsBookmark } from "react-icons/bs";
 
 const Nweet = ({ nweetObj, isOwner, userObj }) => {
   const [newNweet, setNewNweet] = useState(nweetObj.text);
@@ -90,9 +98,11 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
             />
           </div>
           <div className={styled.userInfo}>
-            <div className={styled.userInfo__top}>
-              <div className={styled.userInfo__name}>
+            <div className={styled.userInfo__name}>
+              <div className={styled.userInfo__one}>
                 <p>{creatorInfo.displayName}</p>
+              </div>
+              <div className={styled.userInfo__two}>
                 <p>
                   @{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
                 </p>
@@ -101,37 +111,60 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
                   {timeToString(nweetObj.createdAt)}
                 </p>
               </div>
-              {isOwner && (
-                <div className={styled.nweet__edit} ref={etcRef}>
-                  <div
-                    className={styled.nweet__actions}
-                    onClick={toggleNweetEct}
-                  >
-                    <FiMoreHorizontal />
-                    <div className={styled.horizontal__bg}></div>
-                  </div>
-                  {nweetEct && (
-                    <ModifyBtn
-                      newNweetAttachment={newNweetAttachment}
-                      nweetObj={nweetObj}
-                      toggleEdit={toggleEdit}
-                    />
-                  )}
+            </div>
+            {isOwner && (
+              <div className={styled.nweet__edit} ref={etcRef}>
+                <div
+                  className={styled.nweet__editIcon}
+                  onClick={toggleNweetEct}
+                >
+                  <FiMoreHorizontal />
+                  <div className={styled.horizontal__bg}></div>
                 </div>
-              )}
-            </div>
-            <div>
-              <div className={styled.nweet__text}>
-                <h4>{nweetObj.text}</h4>
+                {nweetEct && (
+                  <ModifyBtn
+                    newNweetAttachment={newNweetAttachment}
+                    nweetObj={nweetObj}
+                    toggleEdit={toggleEdit}
+                  />
+                )}
               </div>
-            </div>
+            )}
           </div>
+        </div>
+        <div className={styled.nweet__text}>
+          <h4>{nweetObj.text}</h4>
         </div>
         {nweetObj.attachmentUrl ? (
           <div className={styled.nweet__image}>
             <img src={nweetObj.attachmentUrl} alt="uploaded file" />
           </div>
         ) : null}
+        <nav className={styled.nweet__actions}>
+          <div className={`${styled.actionBox} ${styled.comment}`}>
+            <div className={styled.actions__icon}>
+              <FaRegComment />
+            </div>
+            <p>5</p>
+          </div>
+          <div className={`${styled.actionBox} ${styled.retweet}`}>
+            <div className={styled.actions__icon}>
+              <FaRetweet />
+            </div>
+            <p>4</p>
+          </div>
+          <div className={`${styled.actionBox} ${styled.like}`}>
+            <div className={styled.actions__icon}>
+              <FaRegHeart />
+            </div>
+            <p>3</p>
+          </div>
+          <div className={`${styled.actionBox} ${styled.bookmark}`}>
+            <div className={styled.actions__icon}>
+              <FaRegBookmark />
+            </div>
+          </div>
+        </nav>
       </div>
       {isEditing && (
         <UpdateNweetModal

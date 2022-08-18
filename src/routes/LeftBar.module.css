@@ -1,6 +1,7 @@
 .container {
   position: relative;
   width: 275px;
+  max-height: 100%;
 }
 
 .container .wrapper {
@@ -89,7 +90,6 @@
 }
 
 .leftBar__nweet svg {
-  /* border: 1px solid red; */
   display: none;
 }
 
@@ -132,7 +132,7 @@
 }
 
 .container .leftBar__user:hover {
-  background-color: #dddddd;
+  background-color: #e9f1ef;
 }
 
 .container .userInfo__profile {
@@ -147,13 +147,11 @@
   border-radius: 50%;
   object-fit: contain;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
 }
 
 .container .leftBar__user .leftBar__userInfo .userInfo__name {
   margin: 0 12px;
   overflow: hidden;
-  /* border: 1px solid red; */
 }
 
 .container .leftBar__user p {
@@ -261,6 +259,12 @@
     position: relative;
   }
 
+  .container .wrapper .leftBar__category .leftBar__logobox,
+  .container .wrapper .leftBar__category .leftBar__nweet,
+  .container .wrapper .leftBar__user {
+    display: none;
+  }
+
   .container .wrapper .leftBar__category .leftBar__container ul {
     display: flex;
     align-items: center;
@@ -280,38 +284,74 @@
     display: none;
   }
 
-  .container .wrapper .leftBar__category .leftBar__logobox {
+  .container
+    .wrapper
+    .leftBar__category
+    .leftBar__container
+    ul
+    li:nth-child(5)
+    svg {
     display: none;
   }
 
-  .container .wrapper .leftBar__category .leftBar__nweet {
-    /* position: relative; */
-    /* top: 0px; */
-    /* right: 20px; */
-    /* bottom: 20px; */
+  .container
+    .wrapper
+    .leftBar__category
+    .leftBar__container
+    ul
+    li:nth-child(5)
+    .leftBar__list {
+    padding: 0;
+  }
+
+  /* 프로필 아이콘 */
+  .container
+    .wrapper
+    .leftBar__category
+    .leftBar__container
+    ul
+    li:nth-child(5)
+    .leftBar__list
+    .userInfo__profileHidden
+    .userInfo__profile {
+    width: 48px;
+    height: 48px;
+  }
+
+  .container
+    .wrapper
+    .leftBar__category
+    .leftBar__container
+    ul
+    li:nth-child(5)
+    .leftBar__list
+    .userInfo__profileHidden
+    .userInfo__profile
+    .profile__image {
+    width: 36px;
+    height: 36px;
   }
 
   .container .wrapper .leftBar__category .leftBar__nweet > div {
-    position: absolute;
+    /* position: absolute;
     top: -80px;
     right: 20px;
     width: 56px;
-    height: 56px;
+    height: 56px; */
   }
 
   .container .wrapper .leftBar__category .leftBar__nweet > div svg {
-    width: 22px;
-    height: 22px;
+    /* width: 22px;
+    height: 22px; */
   }
 
   .container .leftBar__user {
-    position: absolute;
+    /* position: absolute;
     display: none;
-    /* z-index: 20; */
     width: 58px;
     height: 58px;
     right: 16px;
     padding: 0;
-    margin: 0;
+    margin: 0; */
   }
 }

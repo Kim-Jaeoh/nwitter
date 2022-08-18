@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "./UpdateNweetModal.module.css";
 import Modal from "@mui/material/Modal";
 import noneProfile from "../image/noneProfile.jpg";
 import { IoClose } from "react-icons/io5";
+import { GrEmoji } from "react-icons/gr";
 import { GrClose } from "react-icons/gr";
 import Picker from "emoji-picker-react";
 
@@ -23,11 +24,22 @@ const UpdateNweetModal = ({
   const [attachment, setAttachment] = useState(newNweetAttachment);
   const [focus, setFocus] = useState(false);
 
-  // useEffect(() => {
-  //   if (isEditing) {
-  //     editRef.current.focus();
-  //   }
-  // }, [isEditing]);
+  // 이모지 모달 밖 클릭 시 창 끔
+  useEffect(() => {
+    if (!clickEmoji) return;
+    const handleClick = (e) => {
+      // node.contains는 주어진 인자가 자손인지 아닌지에 대한 Boolean 값을 리턴함
+      // emojiRef 내의 클릭한 영역의 타겟이 없으면 true
+      if (!emojiRef.current.contains(e.target)) {
+        setClickEmoji(false);
+      }
+      if (!editRef.current.contains(e.target)) {
+        setFocus(false);
+      }
+    };
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, [clickEmoji]);
 
   const onClick = useCallback(
     (e) => {
@@ -110,18 +122,37 @@ const UpdateNweetModal = ({
                   maxLength={280}
                   placeholder="무슨 일이 일어나고 있나요?"
                 />
-                {attachment && (
-                  <div className={styled.editForm__attachment}>
-                    <img
-                      src={attachment}
-                      alt="upload file"
-                      style={{
-                        backgroundImage: attachment,
-                      }}
-                    />
+                <div className={styled.editInput__add}>
+                  <div ref={emojiRef} onClick={toggleEmoji}>
+                    <div className={styled.editInput__emoji}>
+                      <GrEmoji />
+                    </div>
+                    {clickEmoji && (
+                      <div
+                        className={`${styled.emoji} 
+                    ${clickEmoji ? styled.emoji__block : styled.emoji__hidden}
+                  `}
+                      >
+                        <Picker
+                          onEmojiClick={onEmojiClick}
+                          disableAutoFocus={true}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
+              {attachment && (
+                <div className={styled.editForm__attachment}>
+                  <img
+                    src={attachment}
+                    alt="upload file"
+                    style={{
+                      backgroundImage: attachment,
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
           {/* <div className={styled.editInput__add}>

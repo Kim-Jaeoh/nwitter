@@ -10,6 +10,8 @@
 }
 
 .main__container {
+  padding-bottom: 57px;
+  /* padding-bottom: 104px; */
 }
 
 .container .main__container .main__category {
@@ -23,15 +25,25 @@
   height: 60px;
   font-size: 20px;
   font-weight: bold;
-  padding: 0 16px;
-  /* border-bottom: 1px solid #ebebeb; */
+  border-bottom: 1px solid #ebebeb;
   background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
+}
+
+.container .main__container .main__category .main_text {
+  margin-left: 16px;
+}
+
+.container .main__container .main__category h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .container .main__container .main__category .change__emoji {
   width: 34px;
   height: 34px;
+  margin-right: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
