@@ -9,6 +9,7 @@ import Loading from "./Loading";
 import styled from "./NweetFactory.module.css";
 import noneProfile from "../image/noneProfile.jpg";
 import Picker from "emoji-picker-react";
+import imageCompression from "browser-image-compression";
 
 const NweetFactory = ({ userObj }) => {
   const fileInput = useRef();
@@ -29,6 +30,7 @@ const NweetFactory = ({ userObj }) => {
 
   // 이모지 모달 밖 클릭 시 창 끔
   useEffect(() => {
+    if (!clickEmoji) return;
     const handleClick = (e) => {
       // node.contains는 주어진 인자가 자손인지 아닌지에 대한 Boolean 값을 리턴함
       // emojiRef 내의 클릭한 영역의 타겟이 없으면 true
@@ -102,17 +104,31 @@ const NweetFactory = ({ userObj }) => {
     [focus]
   );
 
-  const onFileChange = (e) => {
+  // 이미지 압축
+  const compressImage = async (image) => {
+    try {
+      const options = {
+        maxSizeMb: 1,
+        maxWidthOrHeight: 500,
+      };
+      return await imageCompression(image, options);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onFileChange = async (e) => {
     const {
       target: { files },
     } = e;
     const theFile = files[0]; // 파일 1개만 첨부
+    const compressedImage = await compressImage(theFile); // 이미지 압축
     const reader = new FileReader(); // 파일 이름 읽기
 
     /* 파일 선택 누르고 이미지 한 개 선택 뒤 다시 파일선택 누르고 취소 누르면
     Failed to execute 'readAsDataURL' on 'FileReader': parameter 1 is not of type 'Blob'. 이런 오류가 나옴. -> if문으로 예외 처리 */
     if (theFile) {
-      reader.readAsDataURL(theFile);
+      reader.readAsDataURL(compressedImage);
     }
 
     reader.onloadend = (finishedEvent) => {

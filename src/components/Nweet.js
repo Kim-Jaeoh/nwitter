@@ -40,7 +40,9 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   }, [nweetObj]);
 
   useEffect(() => {
-    // if (!nweetEct) return;
+    // nweetEct가 true면 return;으로 인해 함수 종료(렌더 후 클릭 시 에러 방지)
+    if (!nweetEct) return;
+
     const handleClick = (e) => {
       if (!etcRef.current.contains(e.target)) {
         setNweetEct(false);

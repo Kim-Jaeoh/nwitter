@@ -68,7 +68,7 @@ const Auth = () => {
             className={styled.authBtn}
           >
             <FontAwesomeIcon icon={faGoogle} />
-            {newAccount ? "Google로 로그인 하기" : "Google로 가입하기"}{" "}
+            {newAccount ? "Google로 가입하기" : "Google로 로그인 하기"}
           </button>
           <button
             onClick={onSocialClick}
@@ -76,7 +76,7 @@ const Auth = () => {
             className={styled.authBtn}
           >
             <FontAwesomeIcon icon={faGithub} />
-            {newAccount ? "Github로 로그인 하기" : "Github로 가입하기"}
+            {newAccount ? "Github로 가입하기" : "Github로 로그인 하기"}
           </button>
         </div>
         {newAccount ? (

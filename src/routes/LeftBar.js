@@ -18,6 +18,7 @@ const LeftBar = ({ userObj }) => {
   const [resize, setResize] = useState(false);
 
   useEffect(() => {
+    // 렌더 시
     if (size < 500) {
       setResize(true);
     } else if (size > 500) {

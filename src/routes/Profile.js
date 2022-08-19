@@ -16,6 +16,7 @@ import noneProfile from "../image/noneProfile.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import styled from "./Profile.module.css";
+import imageCompression from "browser-image-compression";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
@@ -100,10 +101,24 @@ const Profile = ({ refreshUser, userObj }) => {
     setNewDisplayName(e.target.value);
   };
 
+  // 이미지 압축
+  const compressImage = async (image) => {
+    try {
+      const options = {
+        maxSizeMb: 1,
+        maxWidthOrHeight: 500,
+      };
+      return await imageCompression(image, options);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   // 이미지 URL로 바꾸는 로직 - hook 예정(useFileChange)
-  const onFileChange = (e) => {
+  const onFileChange = async (e) => {
     setIsAddFile(true);
     const theFile = e.target.files[0]; // 파일 1개만 첨부
+    const compressedImage = await compressImage(theFile); // 이미지 압축
     const reader = new FileReader(); // 파일 이름 읽기
 
     reader.onloadend = (finishedEvent) => {
@@ -113,7 +128,7 @@ const Profile = ({ refreshUser, userObj }) => {
     /* 파일 선택 누르고 이미지 한 개 선택 뒤 다시 파일선택 누르고 취소 누르면
         Failed to execute 'readAsDataURL' on 'FileReader': parameter 1 is not of type 'Blob'. 이런 오류가 나옴. -> if문으로 예외 처리 */
     if (theFile) {
-      reader.readAsDataURL(theFile);
+      reader.readAsDataURL(compressedImage);
     }
   };
 

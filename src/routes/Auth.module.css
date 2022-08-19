@@ -26,7 +26,7 @@
   min-width: 437px;
   display: flex;
   flex-direction: column;
-  padding-top: 140px;
+  padding-top: 135px;
 }
 
 .auth .nwitter__logo {
@@ -65,6 +65,7 @@
   display: flex;
   width: 100%;
   max-width: 400px;
+  gap: 12px;
   justify-content: space-between;
 }
 
@@ -78,6 +79,7 @@
   background: #fff;
   border: 1px solid #ebebeb;
   margin-bottom: 48px;
+
   cursor: pointer;
   align-items: center;
 }
@@ -137,6 +139,10 @@
 
   .auth .auth__notice > span {
     margin-bottom: 12px;
+  }
+
+  .authBtns .authBtn {
+    /* width: 175px; */
   }
 
   .nwitter__notice,
