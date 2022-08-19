@@ -53,7 +53,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     };
     window.addEventListener("click", handleClick);
     return () => window.removeEventListener("click", handleClick);
-  }, []);
+  }, [nweetEct]);
 
   const onChange = (e) => {
     const {
