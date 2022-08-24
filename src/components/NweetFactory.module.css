@@ -164,7 +164,7 @@
 }
 
 .factoryInput__arrow:disabled {
-  background-color: #82918a;
+  background-color: #6ba087a9;
   transition: all 0.3s;
   cursor: auto;
 }

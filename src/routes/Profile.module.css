@@ -1,19 +1,249 @@
-.container {
-  /* padding-left: 275px; */
-  flex: 1 1 0%;
+/* 카테고리 */
+.container .main__container .main__category {
+  position: sticky;
+  top: 0px;
+  z-index: 3;
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+  /* justify-content: space-between; */
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #ebebeb;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 0 16px;
 }
 
+/* 이모지 */
+.container .main__container .main__category .main__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  margin-right: 30px;
+}
+
+.container .main__container .main__category .main__icon::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.2s;
+}
+
+.container .main__container .main__category .main__icon svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.container .main__container .main__category .main__icon:hover::after {
+  background: #ececec;
+}
+
+/* 닉네임 */
+.container .main__container .main__category .userInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.container .main__container .main__category .userInfo p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.container .main__container .main__category .userInfo p:first-child {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.container .main__container .main__category .userInfo p:last-child {
+  font-size: 13px;
+  color: #536471;
+}
+
+/* 프로필 수정 칸 */
+.container .main__container .setUserInfo {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 430px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+/* 배경 */
+.container .main__container .backImage {
+  width: 100%;
+  height: 100%;
+  background: #c1dbd1;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  overflow: hidden;
+}
+
+.container .main__container .backImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* padding-bottom: 33.333%; */
+}
+
+/* 프로필 */
+.container .main__container .profile {
+  width: 100%;
+  height: 100%;
+  /* flex: 1 0 auto; */
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  background: #fff;
+}
+
+.container .main__container .profile .profile__edit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.container .main__container .profile .profile__edit .profile__image {
+  position: absolute;
+  top: 28%;
+  /* transform: translateY(-25%); */
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid #fff;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.container .main__container .profile .profile__edit .profile__image:hover {
+  background: #ececec;
+}
+
+.container .main__container .profile .profile__edit .profile__image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  z-index: 1;
+}
+
+/* 프로필 수정 버튼 */
+.container .main__container .profile .profile__edit .profile__editBtn {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0 16px;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1.5px solid #c1dbd1;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.container .main__container .profile .profile__edit .profile__editBtn:hover {
+  background: #ececec;
+}
+
+/* 프로필 안내 */
+.container .main__container .profile .profile__info .userInfo {
+  /* height: 100%; */
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  margin: 4px 0 16px;
+}
+
+.container .main__container .profile .profile__info .userInfo p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.container .main__container .profile .profile__info .userInfo p:first-child {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.container .main__container .profile .profile__info .userInfo p:last-child {
+  font-size: 15px;
+  color: #536471;
+}
+
+/* 자기소개 */
+.container .main__container .profile .profile__info .profile__desc {
+  max-height: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.container .main__container .profile .profile__info .profile__desc .notDesc {
+  color: #536471;
+  opacity: 0.7;
+}
+
+/* 가입일 */
+.container .main__container .profile .profile__info .profile__createdAt {
+  display: flex;
+  align-items: center;
+  color: #536471;
+}
+
+.container .main__container .profile .profile__info .profile__createdAt svg {
+  margin-right: 8px;
+}
+
+.container .main__container .profile .profile__info .profile__createdAt p {
+  font-size: 14px;
+}
+
+/* 카테고리 버튼 */
+.container .main__container .categoryList {
+  display: flex;
+  width: 100%;
+  height: 53px;
+  user-select: none;
+  border-bottom: 2px solid #ebebeb;
+}
+
+/*  */
 .profileForm {
   border-bottom: 1px solid rgba(255, 255, 255, 0.9);
   padding-bottom: 30px;
-  flex: 1 1 0%;
+  /* flex: 1 1 0%; */
   display: flex;
   flex-direction: column;
-  width: 100%;
-  /* border: 1px solid green; */
+  width: 50%;
 }
 
 .logOut {

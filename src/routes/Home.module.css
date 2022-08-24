@@ -1,19 +1,4 @@
-.container {
-  /* width: 1400px;
-  height: 100vh;
-  padding-left: 275px;
-  border-right: 1px solid #ebebeb; */
-}
-
-.container::-webkit-scrollbar {
-  /* width: 2px; */
-}
-
-.main__container {
-  padding-bottom: 57px;
-  /* padding-bottom: 104px; */
-}
-
+/* 카테고리 */
 .container .main__container .main__category {
   position: sticky;
   top: 0px;
@@ -28,10 +13,7 @@
   border-bottom: 1px solid #ebebeb;
   background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-}
-
-.container .main__container .main__category .main_text {
-  margin-left: 16px;
+  padding: 0 16px;
 }
 
 .container .main__container .main__category h2 {
@@ -41,15 +23,22 @@
 }
 
 .container .main__container .main__category .change__emoji {
-  width: 34px;
-  height: 34px;
-  margin-right: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s;
+  position: relative;
+}
+
+.container .main__container .main__category .change__emoji::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.2s;
 }
 
 .container .main__container .main__category .change__emoji svg {
@@ -60,6 +49,6 @@
   height: 20px;
 }
 
-.container .main__container .main__category .change__emoji:hover {
+.container .main__container .main__category .change__emoji:hover::after {
   background: #ececec;
 }

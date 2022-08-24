@@ -1,8 +1,8 @@
 .container {
+  flex: 0 1 auto;
   z-index: 2;
   position: sticky;
   top: 0;
-  flex: 0 1 auto;
   width: 350px;
   height: 100%;
   padding: 0 16px;
@@ -31,6 +31,7 @@
 
 .container .searchbox .search__bar::placeholder {
   color: #9e9e9e;
+  user-select: none;
 }
 
 .container .searchbox .search__focus {

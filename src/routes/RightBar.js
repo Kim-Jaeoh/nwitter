@@ -8,16 +8,14 @@ const RightBar = ({ userObj }) => {
   const textRef = useRef();
   const [focus, setFocus] = useState(false);
 
-  const onClick = useCallback(
-    (e) => {
-      setFocus(!focus);
-      textRef.current.focus();
-      console.log(focus);
-    },
-    [focus]
-  );
+  const onClick = useCallback((e) => {
+    // setFocus(!focus);
+    setFocus(true);
+    textRef.current.focus();
+  }, []);
 
   useEffect(() => {
+    if (!focus) return;
     const handleClick = (e) => {
       if (!searchRef.current.contains(e.target)) {
         setFocus(false);

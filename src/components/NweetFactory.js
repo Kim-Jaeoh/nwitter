@@ -95,21 +95,18 @@ const NweetFactory = ({ userObj }) => {
     // console.log(nweet);
   }, []);
 
-  const onClick = useCallback(
-    (e) => {
-      setFocus(!focus);
-      textRef.current.focus();
-      console.log(focus);
-    },
-    [focus]
-  );
+  const onClick = useCallback((e) => {
+    // setFocus(!focus);
+    setFocus(true);
+    textRef.current.focus();
+  }, []);
 
   // 이미지 압축
   const compressImage = async (image) => {
     try {
       const options = {
         maxSizeMb: 1,
-        maxWidthOrHeight: 500,
+        maxWidthOrHeight: 400,
       };
       return await imageCompression(image, options);
     } catch (error) {

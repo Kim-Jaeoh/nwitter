@@ -13,6 +13,8 @@ const UpdateNweetModal = ({
   setNewNweet,
   newNweetAttachment,
   setNewNweetAttachment,
+  isAreaHeight,
+  setIsAreaHeight,
   onChange,
   onSubmit,
   isEditing,
@@ -55,9 +57,10 @@ const UpdateNweetModal = ({
     if (editRef === null || editRef.current === null) {
       return;
     }
-    editRef.current.style.height = "50px";
+    editRef.current.style.height = "auto";
     editRef.current.style.height = editRef.current.scrollHeight + "px";
-  }, []);
+    setIsAreaHeight(editRef.current.style.height);
+  }, [setIsAreaHeight]);
 
   const toggleEmoji = () => {
     setClickEmoji(!clickEmoji);
@@ -120,6 +123,7 @@ const UpdateNweetModal = ({
                   onClick={onClick}
                   onInput={handleResizeHeight}
                   maxLength={280}
+                  style={{ height: isAreaHeight }}
                   placeholder="무슨 일이 일어나고 있나요?"
                 />
                 <div className={styled.editInput__add}>

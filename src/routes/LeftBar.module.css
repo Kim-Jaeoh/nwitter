@@ -1,4 +1,5 @@
 .container {
+  flex: 0 1 auto;
   position: relative;
   width: 275px;
   max-height: 100%;
@@ -17,40 +18,52 @@
   border-right: 1px solid #ebebeb;
 }
 
-/* 리스트 */
-.container .wrapper .leftBar__container {
-  position: relative;
-  margin-bottom: 24px;
-}
-
+/* 트위터 로고 */
 .container .wrapper .leftBar__logobox {
   display: flex;
   align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding-left: 12px;
   height: 60px;
-  /* height: 100%; */
-  /* margin-left: 3px; */
 }
 
 .container .wrapper .leftBar__logobox .leftBar__logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  padding: 12px;
   cursor: pointer;
-  transition: all 0.3s;
+  position: relative;
+}
+
+.container .wrapper .leftBar__logobox .leftBar__logo::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.2s;
 }
 
 .container .wrapper .leftBar__logobox .leftBar__logo svg {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 35px;
+  width: 24px;
+  height: 24px;
   color: #429170;
 }
 
-.container .wrapper .leftBar__logo:hover {
+.container .wrapper .leftBar__logobox .leftBar__logo:hover::after {
   background: #5cb69134;
+}
+
+/* 리스트 */
+.container .wrapper .leftBar__container {
+  position: relative;
+  margin-bottom: 24px;
 }
 
 .leftBar__container ul {
@@ -59,8 +72,12 @@
 .leftBar__container ul li {
   display: flex;
   align-items: center;
-  padding: 4px;
+  padding: 8px 0;
   user-select: none;
+}
+
+.leftBar__container ul li b {
+  font-weight: bold;
 }
 
 .leftBar__container ul li svg {
@@ -74,7 +91,7 @@
   font-size: 20px;
   border-radius: 50px;
   padding: 12px;
-  transition: background-color 0.2s;
+  transition: all 0.3s;
 }
 
 .leftBar__container ul li .leftBar__list:hover {
@@ -85,7 +102,7 @@
 .leftBar__nweet {
   display: flex;
   align-items: center;
-  width: 100%;
+  width: 95%;
   color: #fff;
 }
 
@@ -187,6 +204,13 @@
     justify-content: center;
   }
 
+  .container .wrapper .leftBar__logobox {
+    padding: 0;
+  }
+
+  .leftBar__container ul li {
+  }
+
   .leftBar__container ul li .leftBar__list span {
     display: none;
   }
@@ -241,8 +265,9 @@
 @media screen and (max-width: 500px) {
   .container {
     position: fixed;
-    width: 100%;
-    height: 58px;
+    overflow: hidden;
+    width: 100vw;
+    height: 54px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -265,14 +290,29 @@
     display: none;
   }
 
+  .container .wrapper .leftBar__category .leftBar__container {
+    margin: 0;
+    width: 100vw;
+    height: 53px;
+  }
+
   .container .wrapper .leftBar__category .leftBar__container ul {
     display: flex;
-    align-items: center;
-    border-bottom: 2px solid #ebebeb;
+    height: 100%;
   }
 
   .container .wrapper .leftBar__category .leftBar__container ul li {
     flex: 1 1 auto;
+  }
+
+  .container
+    .wrapper
+    .leftBar__category
+    .leftBar__container
+    ul
+    li
+    .leftBar__list {
+    padding: 8px;
   }
 
   .container
@@ -314,8 +354,8 @@
     .leftBar__list
     .userInfo__profileHidden
     .userInfo__profile {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
   }
 
   .container
@@ -328,8 +368,8 @@
     .userInfo__profileHidden
     .userInfo__profile
     .profile__image {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
   }
 
   .container .wrapper .leftBar__category .leftBar__nweet > div {

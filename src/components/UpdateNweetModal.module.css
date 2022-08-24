@@ -2,7 +2,7 @@
   overflow: hidden;
   border-radius: 16px;
   position: absolute;
-  top: 25%;
+  top: 26%;
   left: 50%;
   transform: translate(-50%, -25%);
   box-sizing: border-box;
@@ -11,10 +11,11 @@
   background: #fff;
 }
 
-.editForm {
+.container .editForm {
   overflow: auto;
+  /* overflow: hidden; */
   min-width: 600px;
-  max-width: 80vw;
+  /* max-width: 80vw; */
   max-height: 90vh;
 }
 
@@ -82,6 +83,10 @@
 
 .editInput__input {
   width: 100%;
+  max-height: 100%;
+  /* min-height: 100%; */
+  height: 50px;
+  overflow: hidden;
   box-sizing: border-box;
   outline: none;
   resize: none;
@@ -93,7 +98,6 @@
   font-size: 16px;
   line-height: 24px;
   caret-color: #429170;
-  height: 50px;
 }
 
 .editInput__input::placeholder {
@@ -215,6 +219,7 @@
   background-color: #75837d;
   transition: all 0.3s;
   cursor: auto;
+  z-index: 10;
 }
 
 /* 이미지 */
@@ -247,12 +252,13 @@
   .topBox {
   }
 
-  .editForm {
+  .container .editForm {
     min-width: 100%;
+    /* width: 100%; */
     /* max-width: 100%; */
   }
 
-  .editInput__add {
+  .container .editInput__add {
     display: none;
   }
 }

@@ -14,11 +14,13 @@ import RightBar from "../routes/RightBar";
 import Navigation from "./Navigation";
 import styled from "./App.module.css";
 import NotFound from "../routes/NotFound";
+import Explore from "../routes/Explore";
+import Bookmark from "../routes/Bookmark";
+import Notice from "../routes/Notice";
 
 const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
   return (
     <Router>
-      {/* {isLoggedIn && <LeftBar userObj={userObj} />} */}
       <Switch>
         <>
           {isLoggedIn ? (
@@ -29,7 +31,10 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
                   <Route exact path="/" replace>
                     <Home userObj={userObj} />
                   </Route>
-                  <Route exact path="/profile" replace>
+                  <Route path="/explore" component={Explore} />
+                  <Route path="/notice" component={Notice} />
+                  <Route path="/bookmark" component={Bookmark} />
+                  <Route path="/profile/:type/:id">
                     <Profile userObj={userObj} refreshUser={refreshUser} />
                   </Route>
                 </div>
@@ -45,7 +50,6 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
           )}
         </>
       </Switch>
-      {/* {isLoggedIn && <RightBar userObj={userObj} />} */}
     </Router>
   );
 };

@@ -3,14 +3,54 @@
   background: #42806613;
   border-radius: 16px;
   overflow: hidden;
+  user-select: none;
+}
+
+.followBox .followBox__name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
 }
 
 .followBox .followBox__name h2 {
   font-size: 18px;
   font-weight: bold;
-  padding: 16px;
 }
 
+/* 아이콘 */
+.followBox .followBox__name .actions__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.followBox .followBox__name .actions__icon::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.2s;
+}
+
+.followBox .followBox__name .actions__icon svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.followBox .followBox__name .actions__icon:hover::after {
+  background: #e0ebe8;
+}
+
+/* 프로필 리스트 */
 .followBox .follow__user {
   width: 100%;
   display: flex;
@@ -18,51 +58,51 @@
   justify-content: space-between;
   padding: 12px 16px;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-.follows .follow__user:hover,
+.followBox .follows .follow__user:hover,
 .more:hover {
-  background: #e9f1ef;
+  background: #e0ebe8;
 }
 
 .followBox .follows .follow__user .follow__userInfo {
   display: flex;
 }
 
-.follows .follow__user .follow__image {
+.followBox .follows .follow__user .follow__image {
   width: 48px;
   height: 48px;
   margin-right: 12px;
   border-radius: 50%;
   object-fit: contain;
-  object-fit: contain;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
-.follows .follow__user .follow__name {
+.followBox .follows .follow__user .follow__name {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.follows .follow__user .follow__name p {
+.followBox .follows .follow__user .follow__name p {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.follows .follow__user .follow__name p:first-child {
+.followBox .follows .follow__user .follow__name p:first-child {
   font-weight: bold;
   margin-bottom: 6px;
 }
 
-.follow__user .follow__name p:last-child {
+.followBox .follows .follow__user .follow__name p:last-child {
   font-size: 14px;
   color: #536471;
 }
 
-.follow__user .follow__btn {
+.followBox .follows .follow__user .follow__btn {
   min-width: 76px;
   min-height: 32px;
   display: flex;
@@ -73,13 +113,13 @@
   font-size: 14px;
   color: #fff;
   padding-bottom: 2px;
-  /* margin-left: 12px; */
 }
 
-.follow__user .follow__btn:hover {
+.followBox .follows .follow__user .follow__btn:hover {
   background: #272c30;
 }
 
+/* 더 보기 */
 .followBox .more {
   width: 100%;
   display: flex;
@@ -88,4 +128,5 @@
   font-size: 14px;
   cursor: pointer;
   color: #0099ff;
+  transition: all 0.2s;
 }

@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { authService, dbService } from "../fbase";
 import noneProfile from "../image/noneProfile.jpg";
+import bgimg from "../image/bgimg.jpg";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import styled from "./AuthForm.module.css";
 
@@ -39,18 +40,32 @@ const AuthForm = ({ newAccount }) => {
             console.log(user);
             const usersRef = collection(dbService, "users");
             await setDoc(doc(usersRef, user.email), {
+              uid: user.uid,
               displayName: user.email.split("@")[0],
               email: user.email,
               photoURL: noneProfile,
-              uid: user.uid,
+              createdAtId: Date.now(),
+              description: "",
+              bgURL: bgimg,
+              // bookmark: [],
+              // follower: [],
+              // following: [],
+              // rejweet: [],
             });
             dispatch(setLoginToken("login"));
             dispatch(
               setCurrentUser({
-                displayName: user.displayName,
+                uid: user.uid,
+                displayName: user.email.split("@")[0],
                 email: user.email,
                 photoURL: noneProfile,
-                uid: user.uid,
+                createdAtId: Date.now(),
+                description: "",
+                bgURL: bgimg,
+                // bookmark: [],
+                // follower: [],
+                // following: [],
+                // rejweet: [],
               })
             );
           }

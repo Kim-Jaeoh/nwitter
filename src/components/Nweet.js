@@ -12,8 +12,6 @@ import {
   FaRegHeart,
   FaRetweet,
 } from "react-icons/fa";
-import { AiOutlineRetweet } from "react-icons/ai";
-import { BsBookmark } from "react-icons/bs";
 
 const Nweet = ({ nweetObj, isOwner, userObj }) => {
   const [newNweet, setNewNweet] = useState(nweetObj.text);
@@ -25,12 +23,12 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
 
   const etcRef = useRef();
   const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
-  // const dbAttachmentRef = ref(storageService, newNweetAttachment);
+
+  const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
 
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
-    console.log(isEditing);
   };
 
   useEffect(() => {
@@ -94,7 +92,10 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
         <div className={styled.nweet__container}>
           <div className={styled.nweet__profile}>
             <img
-              src={creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile}
+              src={
+                creatorInfo.photoURL
+                //  ? creatorInfo.photoURL : noneProfile
+              }
               alt="profileImg"
               className={styled.profile__image}
             />
@@ -147,19 +148,25 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
             <div className={styled.actions__icon}>
               <FaRegComment />
             </div>
-            <p>5</p>
+            <div className={styled.actions__text}>
+              <p>5</p>
+            </div>
           </div>
           <div className={`${styled.actionBox} ${styled.retweet}`}>
             <div className={styled.actions__icon}>
               <FaRetweet />
             </div>
-            <p>4</p>
+            <div className={styled.actions__text}>
+              <p>4</p>
+            </div>
           </div>
           <div className={`${styled.actionBox} ${styled.like}`}>
             <div className={styled.actions__icon}>
               <FaRegHeart />
             </div>
-            <p>3</p>
+            <div className={styled.actions__text}>
+              <p>15</p>
+            </div>
           </div>
           <div className={`${styled.actionBox} ${styled.bookmark}`}>
             <div className={styled.actions__icon}>
@@ -179,6 +186,8 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
           setNewNweetAttachment={setNewNweetAttachment}
           isEditing={isEditing}
           toggleEdit={toggleEdit}
+          isAreaHeight={isAreaHeight}
+          setIsAreaHeight={setIsAreaHeight}
         />
       )}
     </>
