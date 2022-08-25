@@ -10,22 +10,23 @@ import {
 } from "react-icons/bs";
 import { FaFeatherAlt, FaHashtag, FaTwitter } from "react-icons/fa";
 import { FiHash } from "react-icons/fi";
-import { HiHashtag, HiOutlineHashtag } from "react-icons/hi";
-import { RiHashtag } from "react-icons/ri";
 import { doc, onSnapshot } from "firebase/firestore";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { dbService } from "../fbase";
 import noneProfile from "../image/noneProfile.jpg";
 import styled from "./LeftBar.module.css";
-import { BiHash } from "react-icons/bi";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
+import UserEtcBtn from "../components/UserEtcBtn";
 
 const LeftBar = ({ userObj }) => {
+  const userEtcRef = useRef();
+
   const [creatorInfo, setCreatorInfo] = useState({});
   const [selected, setSelected] = useState(1);
   const [size, setSize] = useState(window.innerWidth);
   const [resize, setResize] = useState(false);
+  const [userEtc, setUserEtc] = useState(false);
 
   const location = useLocation();
 
@@ -42,6 +43,20 @@ const LeftBar = ({ userObj }) => {
       setSelected(5);
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!userEtc) return;
+    const handleClick = (e) => {
+      if (!userEtcRef.current.contains(e.target)) {
+        setUserEtc(false);
+      } else if (userEtcRef.current === null) {
+        console.log("?");
+        return;
+      }
+    };
+    window.addEventListener("click", handleClick);
+    return () => window.addEventListener("click", handleClick);
+  }, [userEtc]);
 
   useEffect(() => {
     // 렌더 시
@@ -67,6 +82,10 @@ const LeftBar = ({ userObj }) => {
   const onSelect = (num) => {
     setSelected(num);
   };
+
+  const toggleUserEtc = useCallback(() => {
+    setUserEtc((prev) => !prev);
+  }, []);
 
   return (
     <article className={styled.container}>
@@ -200,24 +219,31 @@ const LeftBar = ({ userObj }) => {
             </div>
           </section>
         </section>
-        <section className={styled.leftBar__user}>
-          <div className={styled.leftBar__userInfo}>
-            <div className={styled.userInfo__profile}>
-              <img
-                src={creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile}
-                alt="profileImg"
-                className={styled.profile__image}
-              />
+        <div style={{ position: "relative" }} ref={userEtcRef}>
+          {userEtc && (
+            <UserEtcBtn creatorInfo={creatorInfo} userObj={userObj} />
+          )}
+          <section className={styled.leftBar__user}>
+            <div className={styled.leftBar__userInfo} onClick={toggleUserEtc}>
+              <div className={styled.userInfo__profile}>
+                <img
+                  src={
+                    creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile
+                  }
+                  alt="profileImg"
+                  className={styled.profile__image}
+                />
+              </div>
+              <div className={styled.userInfo__name}>
+                <p>{creatorInfo.displayName}</p>
+                <p>@{userObj.email.split("@")[0]}</p>
+              </div>
+              <div className={styled.userInfo__etc}>
+                <FiMoreHorizontal />
+              </div>
             </div>
-            <div className={styled.userInfo__name}>
-              <p>{creatorInfo.displayName}</p>
-              <p>@{userObj.email.split("@")[0]}</p>
-            </div>
-            <div className={styled.userInfo__etc}>
-              <FiMoreHorizontal />
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </section>
     </article>
   );

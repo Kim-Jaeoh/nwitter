@@ -2,9 +2,9 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { dbService, storageService } from "../fbase";
-import styled from "./ModifyBtn.module.css";
+import styled from "./NweetEtcBtn.module.css";
 
-const ModifyBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
+const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
   const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
   const dbAttachmentRef = ref(storageService, newNweetAttachment);
 
@@ -35,4 +35,4 @@ const ModifyBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
     </div>
   );
 };
-export default ModifyBtn;
+export default NweetEtcBtn;

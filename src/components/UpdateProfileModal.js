@@ -131,16 +131,20 @@ const UpdateProfileModal = ({
 
     await updateDoc(doc(dbService, "users", creatorInfo.email), {
       displayName: newDisplayName, // 바뀐 이름 업데이트
-      photoURL: editAttachment === "" ? noneProfile : editAttachment,
-      bgURL: editAttachmentBg === "" ? bgImg : editAttachmentBg,
+      // photoURL: editAttachment === "" ? noneProfile : editAttachment,
+      // bgURL: editAttachmentBg === "" ? bgImg : editAttachmentBg,
+      photoURL: editAttachment,
+      bgURL: editAttachmentBg,
       description: desc,
     });
     await dispatch(
       setCurrentUser({
         // uid: currentUsers.uid,
         displayName: newDisplayName, // 바뀐 이름 디스패치
-        photoURL: editAttachment === "" ? noneProfile : editAttachment,
-        bgURL: editAttachmentBg === "" ? bgImg : editAttachmentBg,
+        photoURL: editAttachment,
+        bgURL: editAttachmentBg,
+        // photoURL: editAttachment === "" ? noneProfile : editAttachment,
+        // bgURL: editAttachmentBg === "" ? bgImg : editAttachmentBg,
         description: desc,
         // email: currentUsers.email,
         // bookmark: currentUsers.bookmark,
@@ -256,7 +260,11 @@ const UpdateProfileModal = ({
                 />
               </div>
               <div className={styled.bgImageBox}>
-                <img src={editAttachmentBg} alt="배경화면 이미지" />
+                <img
+                  // src={editAttachmentBg ? editAttachmentBg : bgImg}
+                  src={editAttachmentBg}
+                  alt="배경화면 이미지"
+                />
               </div>
             </div>
             <div className={styled.editBox}>

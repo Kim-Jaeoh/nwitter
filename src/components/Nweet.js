@@ -4,7 +4,7 @@ import { dbService } from "../fbase";
 import styled from "./Nweet.module.css";
 import noneProfile from "../image/noneProfile.jpg";
 import { FiMoreHorizontal, FiRepeat } from "react-icons/fi";
-import ModifyBtn from "./ModifyBtn";
+import NweetEtcBtn from "./NweetEtcBtn";
 import UpdateNweetModal from "./UpdateNweetModal";
 import {
   FaRegBookmark,
@@ -19,7 +19,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     nweetObj.attachmentUrl
   );
   const [creatorInfo, setCreatorInfo] = useState({});
-  const [nweetEct, setNweetEct] = useState(false);
+  const [nweetEtc, setNweetEtc] = useState(false);
 
   const etcRef = useRef();
   const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
@@ -39,11 +39,11 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
 
   useEffect(() => {
     // nweetEct가 true면 return;으로 인해 함수 종료(렌더 후 클릭 시 에러 방지)
-    if (!nweetEct) return;
+    if (!nweetEtc) return;
 
     const handleClick = (e) => {
       if (!etcRef.current.contains(e.target)) {
-        setNweetEct(false);
+        setNweetEtc(false);
       }
       // else if (etcRef.current === null) {
       // return;
@@ -51,7 +51,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     };
     window.addEventListener("click", handleClick);
     return () => window.removeEventListener("click", handleClick);
-  }, [nweetEct]);
+  }, [nweetEtc]);
 
   const onChange = (e) => {
     const {
@@ -83,7 +83,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   const toggleNweetEct = useCallback(() => {
-    setNweetEct((prev) => !prev);
+    setNweetEtc((prev) => !prev);
   }, []);
 
   return (
@@ -124,8 +124,8 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
                   <FiMoreHorizontal />
                   <div className={styled.horizontal__bg}></div>
                 </div>
-                {nweetEct && (
-                  <ModifyBtn
+                {nweetEtc && (
+                  <NweetEtcBtn
                     newNweetAttachment={newNweetAttachment}
                     nweetObj={nweetObj}
                     toggleEdit={toggleEdit}

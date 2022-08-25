@@ -1,0 +1,122 @@
+.container__box {
+  filter: drop-shadow(rgba(101, 119, 134, 0.5) 0px 0px 4px);
+  /* box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
+    rgb(101 119 134 / 15%) 0px 0px 3px 1px; */
+}
+
+.container__box .box__triangle {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 30px;
+  color: white;
+}
+
+.container {
+  position: absolute;
+  top: -130px;
+  /* top: 0px; */
+  left: 0;
+  width: 100%;
+  z-index: 3;
+  border-radius: 4px;
+  background-color: #fff;
+
+  /* box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
+    rgb(101 119 134 / 15%) 0px 0px 3px 1px; */
+}
+
+.container .btn {
+  padding: 16px;
+  /* width: 100%; */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.container .btn svg {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container .updateBtn {
+  border-bottom: 1px solid #ebebeb;
+  cursor: default;
+}
+
+.container .deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.container .deleteBtn svg {
+  margin-right: 12px;
+  margin-left: 8px;
+  color: rgb(19, 19, 19);
+}
+
+.container .deleteBtn:hover {
+  background: #ececec70;
+}
+
+/*  */
+.container .btn .leftBar__userInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.container .btn .userInfo__profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container .btn .profile__image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.container .btn .leftBar__userInfo .userInfo__name {
+  margin: 0 12px;
+  overflow: hidden;
+}
+
+.container .btn p {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.container .btn .leftBar__userInfo .userInfo__name p:first-child {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.container .btn .leftBar__userInfo .userInfo__name p:last-child {
+  font-size: 14px;
+  color: #536471;
+}
+
+.container .btn .leftBar__userInfo .userInfo__etc {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.container .btn .leftBar__userInfo .userInfo__etc svg {
+  color: #429170;
+}

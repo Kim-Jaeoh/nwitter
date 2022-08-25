@@ -78,6 +78,7 @@
   object-fit: contain;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  background: white;
 }
 
 .followBox .follows .follow__user .follow__name {

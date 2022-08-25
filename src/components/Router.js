@@ -4,14 +4,12 @@ import {
   Redirect,
   Route,
   Switch,
-  useParams,
 } from "react-router-dom";
 import Auth from "../routes/Auth";
 import Home from "../routes/Home";
 import LeftBar from "../routes/LeftBar";
 import Profile from "../routes/Profile";
 import RightBar from "../routes/RightBar";
-import Navigation from "./Navigation";
 import styled from "./App.module.css";
 import NotFound from "../routes/NotFound";
 import Explore from "../routes/Explore";
@@ -28,7 +26,7 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
               <div className={styled.container}>
                 <LeftBar userObj={userObj} />
                 <div className={styled.center__container}>
-                  <Route exact path="/" replace>
+                  <Route exact path="/">
                     <Home userObj={userObj} />
                   </Route>
                   <Route path="/explore" component={Explore} />
@@ -43,9 +41,10 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
             </>
           ) : (
             <>
-              <Route exact path="/" replace>
+              <Route exact path="/">
                 <Auth />
               </Route>
+              <Redirect from="*" to="/" />
             </>
           )}
         </>

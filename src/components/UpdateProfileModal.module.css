@@ -98,7 +98,7 @@
   position: relative;
   width: 100%;
   height: 200px;
-  background: #c1dbd1;
+  /* background: #c1dbd1; */
   overflow: hidden;
 }
 
@@ -156,7 +156,7 @@
 /* 프로필 이미지 */
 .container .editBox .edit .profile__image {
   position: absolute;
-  top: 30%;
+  top: 27.5%;
   /* transform: translateY(-25%); */
   width: 130px;
   height: 130px;
@@ -277,5 +277,18 @@
 
   .container .editInput__add {
     display: none;
+  }
+
+  /* 프로필 이미지 */
+  .container .editBox .edit .profile__image {
+    top: 19.2%;
+    /* transform: translateY(-50%); */
+    width: 130px;
+    height: 130px;
+  }
+
+  /* 배경 이미지*/
+  .container .backImage {
+    height: 150px;
   }
 }

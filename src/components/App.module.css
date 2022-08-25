@@ -74,7 +74,8 @@ form {
   font-size: 80px;
 }
 
-/* @media screen and (max-width: 705px) {
+@media screen and (max-width: 705px) {
   .center__container {
+    height: 100%;
   }
-} */
+}

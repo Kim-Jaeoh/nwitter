@@ -10,21 +10,11 @@ import {
   useParams,
 } from "react-router-dom";
 import { authService, dbService } from "../fbase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
-// import { v4 } from "uuid";
 import noneProfile from "../image/noneProfile.jpg";
 import bgImg from "../image/bgimg.jpg";
-// import {
-//   deleteObject,
-//   getDownloadURL,
-//   ref,
-//   uploadString,
-// } from "firebase/storage";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import styled from "./Profile.module.css";
-// import imageCompression from "browser-image-compression";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { BsCalendar3 } from "react-icons/bs";
 import UpdateProfileModal from "../components/UpdateProfileModal";
@@ -33,10 +23,13 @@ import MyNweets from "../components/MyNweets";
 import ReNweets from "../components/ReNweets";
 import LikeNweets from "../components/LikeNweets";
 import SelectMenuBtn from "../components/SelectMenuBtn";
+import Loading from "../components/Loading";
+import { GrClose } from "react-icons/gr";
+import { IoMdExit } from "react-icons/io";
 
 const Profile = ({ refreshUser, userObj }) => {
   const currentUsers = useSelector((state) => state.user.currentUser);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const history = useHistory();
   // const { uid } = useParams(userObj.uid);
 
@@ -50,7 +43,7 @@ const Profile = ({ refreshUser, userObj }) => {
   // });
 
   const [creatorInfo, setCreatorInfo] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(null);
   const [myNweets, setMyNweets] = useState([]);
   const [selected, setSelected] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
@@ -102,53 +95,39 @@ const Profile = ({ refreshUser, userObj }) => {
 
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-    });
-    // setCreatorInfo({
-    //   displayName: currentUsers.displayName,
-    //   email: currentUsers.email,
-    //   photoURL: currentUsers.photoURL,
-    //   bgURL: currentUsers.bgURL,
-    //   createdAtId: currentUsers.createdAtId,
-    // });
-    // setIsNewEmail(creatorInfo.email);
-    // setAttachment(creatorInfo.photoURL);
-    // setAttachmentBg(creatorInfo.bgURL);
-    // setNewDisplayName(creatorInfo.displayName);
-    getMyNweets();
     setLoading(true);
 
-    return () => setLoading(false); // cleanup function을 이용
-  }, [
-    // creatorInfo.bgURL,
-    // creatorInfo.displayName,
-    // creatorInfo.email,
-    // creatorInfo.photoURL,
-    // currentUsers,
-    getMyNweets,
-    userObj,
-  ]);
+    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+      setCreatorInfo(doc.data());
+      setLoading(false);
+    });
+    getMyNweets();
 
-  // const onLogOutClick = () => {
-  //   authService.signOut();
-  //   dispatch(setLoginToken("logout"));
-  //   dispatch(
-  //     setCurrentUser({
-  //       photoURL: "",
-  //       uid: "",
-  //       displayName: "",
-  //       email: "",
-  //       description: "",
-  //       bgURL: "",
-  //       // bookmark: [],
-  //       // follower: [],
-  //       // following: [],
-  //       // rejweet: [],
-  //     })
-  //   );
-  //   history.push("/");
-  // };
+    return () => setLoading(false); // cleanup function을 이용
+  }, [getMyNweets, userObj]);
+
+  const onLogOutClick = () => {
+    const ok = window.confirm("로그아웃 하시겠어요?");
+    if (ok) {
+      authService.signOut();
+      dispatch(setLoginToken("logout"));
+      dispatch(
+        setCurrentUser({
+          photoURL: "",
+          uid: "",
+          displayName: "",
+          email: "",
+          description: "",
+          bgURL: "",
+          // bookmark: [],
+          // follower: [],
+          // following: [],
+          // rejweet: [],
+        })
+      );
+      history.push("/");
+    }
+  };
 
   // const onChange = (e, type) => {
   //   setNewDisplayName(e.target.value);
@@ -278,7 +257,7 @@ const Profile = ({ refreshUser, userObj }) => {
 
   return (
     <>
-      {loading && (
+      {!loading && (
         <section className={styled.container}>
           <div className={styled.main__container}>
             <div className={styled.main__category}>
@@ -291,6 +270,10 @@ const Profile = ({ refreshUser, userObj }) => {
               <div className={styled.userInfo}>
                 <p>{creatorInfo.displayName}</p>
                 <p>{myNweets.length} 트윗</p>
+              </div>
+              <div className={styled.main__icon} onClick={onLogOutClick}>
+                <IoMdExit />
+                {/* <GrClose /> */}
               </div>
             </div>
             <div className={styled.setUserInfo}>
@@ -355,7 +338,8 @@ const Profile = ({ refreshUser, userObj }) => {
 
             <Switch>
               <Route path="/profile/mynweets/:id">
-                <MyNweets myNweets={myNweets} userObj={userObj} />
+                {loading && <Loading />} {/* 로딩 시 스피너 */}
+                {!loading && <MyNweets myNweets={myNweets} userObj={userObj} />}
               </Route>
               <Route path="/profile/renweets/:id">
                 <ReNweets userObj={userObj} />

@@ -60,31 +60,35 @@ const Home = ({ userObj }) => {
   }, []);
 
   return (
-    <div className={styled.container}>
-      <div className={styled.main__container}>
-        {isLoading && <Loading />} {/* 로딩 시 스피너 */}
-        <div className={styled.main__category}>
-          <div className={styled.main_text}>
-            <h2>홈</h2>
-          </div>
-          <div className={styled.change__emoji}>
-            <HiOutlineSparkles />
-            {/* <TbRepeat /> */}
+    <>
+      {!isLoading && (
+        <div className={styled.container}>
+          <div className={styled.main__container}>
+            {isLoading && <Loading />} {/* 로딩 시 스피너 */}
+            <div className={styled.main__category}>
+              <div className={styled.main_text}>
+                <h2>홈</h2>
+              </div>
+              <div className={styled.change__emoji}>
+                <HiOutlineSparkles />
+                {/* <TbRepeat /> */}
+              </div>
+            </div>
+            <NweetFactory userObj={userObj} />
+            <div>
+              {nweets.map((nweet) => (
+                <Nweet
+                  key={nweet.id}
+                  nweetObj={nweet}
+                  userObj={userObj}
+                  isOwner={nweet.creatorId === userObj.uid}
+                />
+              ))}
+            </div>
           </div>
         </div>
-        <NweetFactory userObj={userObj} />
-        <div>
-          {nweets.map((nweet) => (
-            <Nweet
-              key={nweet.id}
-              nweetObj={nweet}
-              userObj={userObj}
-              isOwner={nweet.creatorId === userObj.uid}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
