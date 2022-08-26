@@ -1,0 +1,94 @@
+/* 프로필 리스트 */
+
+.follow__user {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.follow__user:hover,
+.more:hover {
+  background: #e0ebe8;
+}
+
+.follow__user .follow__userInfo {
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.follow__user .follow__image {
+  width: 60px;
+  height: 60px;
+  margin-right: 12px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  background: white;
+}
+
+.follow__user .follow__name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.follow__user .follow__name p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.follow__user .follow__name p:nth-child(1) {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.follow__user .follow__name p:nth-child(2) {
+  font-size: 14px;
+  color: #536471;
+}
+
+.follow__user .follow__name p:nth-child(3) {
+  font-size: 14px;
+  color: #536471;
+}
+
+.follow__user .follow__btn {
+  min-width: 76px;
+  min-height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 9999px;
+  background: #0f1419;
+  font-size: 14px;
+  color: #fff;
+  padding-bottom: 2px;
+}
+
+.follow__user .follow__btn:hover {
+  background: #272c30;
+}
+
+/* 트윗 리스트 */
+.searchText {
+  width: 100%;
+  height: 40px;
+  padding: 8px 0px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.searchText p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

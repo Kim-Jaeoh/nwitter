@@ -61,7 +61,7 @@ const UpdateProfileModal = ({
     try {
       const options = {
         maxSizeMb: 1,
-        maxWidthOrHeight: 400,
+        maxWidthOrHeight: 200,
       };
       return await imageCompression(image, options);
     } catch (e) {
@@ -221,6 +221,7 @@ const UpdateProfileModal = ({
                 className={styled.editInput__arrow}
                 disabled={
                   newDisplayName === creatorInfo.displayName &&
+                  desc === creatorInfo.description &&
                   !isAddFile &&
                   !isDeleteProfileURL &&
                   !isDeleteBgURL
@@ -342,11 +343,9 @@ const UpdateProfileModal = ({
                     spellCheck="false"
                     type="text"
                     value={desc}
-                    // ref={editRef}
                     onChange={(e) => {
                       onChangeInfo(e, "description");
                     }}
-                    // onInput={handleResizeHeight}
                     maxLength={280}
                   />
                 </div>

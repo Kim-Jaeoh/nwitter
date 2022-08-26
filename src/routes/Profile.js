@@ -96,13 +96,12 @@ const Profile = ({ refreshUser, userObj }) => {
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
     setLoading(true);
-
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
-      setLoading(false);
+      getMyNweets();
     });
-    getMyNweets();
 
+    setLoading(false);
     return () => setLoading(false); // cleanup function을 이용
   }, [getMyNweets, userObj]);
 
@@ -128,110 +127,6 @@ const Profile = ({ refreshUser, userObj }) => {
       history.push("/");
     }
   };
-
-  // const onChange = (e, type) => {
-  //   setNewDisplayName(e.target.value);
-  // };
-
-  // // 이미지 압축
-  // const compressImage = async (image) => {
-  //   try {
-  //     const options = {
-  //       maxSizeMb: 1,
-  //       maxWidthOrHeight: 500,
-  //     };
-  //     return await imageCompression(image, options);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // // 이미지 URL로 바꾸는 로직 - hook 예정(useFileChange)
-  // const onFileChange = async (e) => {
-  //   setIsAddFile(true);
-  //   const theFile = e.target.files[0]; // 파일 1개만 첨부
-  //   const compressedImage = await compressImage(theFile); // 이미지 압축
-  //   const reader = new FileReader(); // 파일 이름 읽기
-
-  //   reader.onloadend = (finishedEvent) => {
-  //     setAttachment(finishedEvent.currentTarget.result);
-  //   };
-
-  //   /* 파일 선택 누르고 이미지 한 개 선택 뒤 다시 파일선택 누르고 취소 누르면
-  //       Failed to execute 'readAsDataURL' on 'FileReader': parameter 1 is not of type 'Blob'. 이런 오류가 나옴. -> if문으로 예외 처리 */
-  //   if (theFile) {
-  //     reader.readAsDataURL(compressedImage);
-  //   }
-  // };
-
-  // const onFileBgChange = async (e) => {
-  //   setIsAddFile(true);
-  //   const theFile = e.target.files[0]; // 파일 1개만 첨부
-  //   const compressedImage = await compressImage(theFile); // 이미지 압축
-  //   const reader = new FileReader(); // 파일 이름 읽기
-
-  //   reader.onloadend = (finishedEvent) => {
-  //     setAttachmentBg(finishedEvent.currentTarget.result);
-  //   };
-
-  //   /* 파일 선택 누르고 이미지 한 개 선택 뒤 다시 파일선택 누르고 취소 누르면
-  //       Failed to execute 'readAsDataURL' on 'FileReader': parameter 1 is not of type 'Blob'. 이런 오류가 나옴. -> if문으로 예외 처리 */
-  //   if (theFile) {
-  //     reader.readAsDataURL(compressedImage);
-  //   }
-  // };
-
-  // const onSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   await updateDoc(doc(dbService, "users", userObj.email), {
-  //     displayName: newDisplayName, // 바뀐 이름 업데이트
-  //     photoURL: attachment === "" ? noneProfile : attachment,
-  //     bgURL: attachmentBg === "" ? bgImg : attachmentBg,
-  //     description: creatorInfo.description,
-  //   });
-  //   await dispatch(
-  //     setCurrentUser({
-  //       // uid: currentUsers.uid,
-  //       photoURL: attachment === "" ? noneProfile : attachment,
-  //       bgURL: attachmentBg === "" ? bgImg : attachmentBg,
-  //       displayName: newDisplayName, // 바뀐 이름 디스패치
-  //       description: creatorInfo.description,
-  //       // email: currentUsers.email,
-  //       // bookmark: currentUsers.bookmark,
-  //       // follower: currentUsers.follower,
-  //       // following: currentUsers.following,
-  //       // rejweet: currentUsers.rejweet,
-  //     })
-  //   );
-
-  //   if (isDeletePhotoURL) {
-  //     await updateDoc(doc(dbService, "users", userObj.email), {
-  //       photoURL: noneProfile,
-  //       bgURL: bgImg,
-  //     });
-  //     await dispatch(
-  //       setCurrentUser({
-  //         photoURL: noneProfile,
-  //         bgURL: bgImg,
-  //       })
-  //     );
-  //   }
-  //   alert(`프로필이 수정되었습니다.`);
-  //   // history.push("/");
-  // };
-
-  // const onDeleteClick = async () => {
-  //   const ok = window.confirm("Are you sure your want to delete this nweet?");
-  //   // 이미지 없는 글 삭제 시 에러가 나와서 예외 처리
-  //   // (삭제 시 nweetObj.attachmentUrl로 찾아가기 때문)
-  //   if (ok) {
-  //     setIsDeletePhotoURL(!isDeletePhotoURL);
-  //     setAttachment(noneProfile);
-  //     setAttachmentBg(bgImg);
-  //     setIsAddFile(false);
-  //   }
-  // };
 
   const timeToString = (timestamp) => {
     let date = new Date(timestamp);
@@ -337,8 +232,8 @@ const Profile = ({ refreshUser, userObj }) => {
             </nav>
 
             <Switch>
+              {loading && <Loading />} {/* 로딩 시 스피너 */}
               <Route path="/profile/mynweets/:id">
-                {loading && <Loading />} {/* 로딩 시 스피너 */}
                 {!loading && <MyNweets myNweets={myNweets} userObj={userObj} />}
               </Route>
               <Route path="/profile/renweets/:id">

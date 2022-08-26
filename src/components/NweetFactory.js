@@ -106,7 +106,7 @@ const NweetFactory = ({ userObj }) => {
     try {
       const options = {
         maxSizeMb: 1,
-        maxWidthOrHeight: 400,
+        maxWidthOrHeight: 600,
       };
       return await imageCompression(image, options);
     } catch (error) {

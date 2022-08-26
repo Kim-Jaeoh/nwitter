@@ -54,7 +54,7 @@
   background: #ececec;
 }
 
-/* 닉네임 */
+/* 상단 닉네임 */
 .container .main__container .main__category .userInfo {
   display: flex;
   flex-direction: column;
@@ -67,14 +67,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .container .main__container .main__category .userInfo p:first-child {
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .container .main__container .main__category .userInfo p:last-child {
   font-size: 13px;
+  font-weight: 400;
   color: #536471;
 }
 
@@ -256,5 +258,10 @@
   /* 배경 */
   .container .main__container .backImage {
     height: 150px;
+  }
+
+  /* 상단 닉네임 */
+  .container .main__container .main__category .userInfo p:first-child {
+    font-size: 17px;
   }
 }

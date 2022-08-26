@@ -9,7 +9,7 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
   const dbAttachmentRef = ref(storageService, newNweetAttachment);
 
   const onDeleteClick = async () => {
-    const ok = window.confirm("Are you sure your want to delete this nweet?");
+    const ok = window.confirm("트윗을 삭제할까요?");
     if (ok === true) {
       // delete nweet
       await deleteDoc(dbRef); // 문서 삭제

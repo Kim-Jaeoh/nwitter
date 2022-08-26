@@ -68,6 +68,7 @@
 
 /* 텍스트 */
 .nweet__text {
+  font-size: 15px;
   padding: 0 16px;
   margin: 12px 0;
   width: 100%;
