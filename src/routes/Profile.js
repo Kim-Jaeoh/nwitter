@@ -1,54 +1,31 @@
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Link,
-  Route,
-  Switch,
-  useHistory,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { collection, orderBy, query, where } from "firebase/firestore";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { authService, dbService } from "../fbase";
-import noneProfile from "../image/noneProfile.jpg";
-import bgImg from "../image/bgimg.jpg";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import styled from "./Profile.module.css";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { BsCalendar3 } from "react-icons/bs";
 import UpdateProfileModal from "../components/UpdateProfileModal";
-import Nweet from "../components/Nweet";
 import MyNweets from "../components/MyNweets";
 import ReNweets from "../components/ReNweets";
 import LikeNweets from "../components/LikeNweets";
 import SelectMenuBtn from "../components/SelectMenuBtn";
 import Loading from "../components/Loading";
-import { GrClose } from "react-icons/gr";
 import { IoMdExit } from "react-icons/io";
 
 const Profile = ({ refreshUser, userObj }) => {
-  const currentUsers = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
-  // const history = useHistory();
-  // const { uid } = useParams(userObj.uid);
-
-  // 회원가입 시 디스패치 된 정보 state에 담기
-  // const [creatorInfo, setCreatorInfo] = useState({
-  //   displayName: currentUsers.displayName,
-  //   email: currentUsers.email,
-  //   photoURL: currentUsers.photoURL,
-  //   bgURL: currentUsers.bgURL,
-  //   createdAtId: currentUsers.createdAtId,
-  // });
-
+  const history = useHistory();
   const [creatorInfo, setCreatorInfo] = useState({});
   const [loading, setLoading] = useState(null);
   const [myNweets, setMyNweets] = useState([]);
+  const [myLikeNweets, setMyLikeNweets] = useState([]);
+
   const [selected, setSelected] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
-
-  const history = useHistory();
 
   const location = useLocation();
   useEffect(() => {
@@ -71,27 +48,11 @@ const Profile = ({ refreshUser, userObj }) => {
     onSnapshot(q, (querySnapshot) => {
       const array = [];
       querySnapshot.forEach((doc) => {
-        array.push(doc.data());
+        array.push({ id: doc.id, ...doc.data() });
       });
       setMyNweets(array);
     });
   }, [userObj.uid]);
-
-  //   // 위와 같은 방식
-  //   // const querySnapshot = await getDocs(collection(dbService, "nweets"),
-  //   //   where("creatorId", "==", userObj.uid),
-  //   //   orderBy("createdAt", "desc")
-  //   // );
-
-  //   const querySnapshot = await getDocs(q);
-
-  //   console.log(querySnapshot.docs.map((doc) => doc.data()));
-
-  //   // forEach은 return 값(반환값)이 없다
-  //   // querySnapshot.forEach((doc) => {
-  //   //   console.log(doc.id, "HI", doc.data());
-  //   // });
-  // };
 
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
@@ -104,6 +65,24 @@ const Profile = ({ refreshUser, userObj }) => {
     setLoading(false);
     return () => setLoading(false); // cleanup function을 이용
   }, [getMyNweets, userObj]);
+
+  useEffect(() => {
+    // query는 데이터를 요청할 때 사용됨
+    const q = query(
+      collection(dbService, "nweets"),
+      where("like", "array-contains", userObj.uid)
+    );
+
+    onSnapshot(q, (querySnapshot) => {
+      const array = [];
+      querySnapshot.forEach((doc) => {
+        array.push({ id: doc.id, ...doc.data() });
+      });
+      setMyLikeNweets(array);
+    });
+  }, [userObj.uid]);
+
+  console.log(myLikeNweets);
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
@@ -118,13 +97,13 @@ const Profile = ({ refreshUser, userObj }) => {
           email: "",
           description: "",
           bgURL: "",
-          // bookmark: [],
-          // follower: [],
-          // following: [],
-          // rejweet: [],
+          bookmark: [],
+          follower: [],
+          following: [],
+          rejweet: [],
         })
       );
-      history.push("/");
+      history.push("/auth");
     }
   };
 
@@ -240,7 +219,7 @@ const Profile = ({ refreshUser, userObj }) => {
                 <ReNweets userObj={userObj} />
               </Route>
               <Route path="/profile/likenweets/:id">
-                <LikeNweets userObj={userObj} />
+                <LikeNweets myLikeNweets={myLikeNweets} userObj={userObj} />
               </Route>
             </Switch>
           </div>

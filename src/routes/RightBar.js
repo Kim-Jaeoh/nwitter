@@ -1,7 +1,7 @@
+import RecommendUser from "../components/RecommendUser";
 import styled from "./RightBar.module.css";
 import { FiSearch } from "react-icons/fi";
-import { useCallback, useEffect, useRef, useState } from "react";
-import RecommendUser from "../components/RecommendUser";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { collection, getDocs, onSnapshot, query } from "firebase/firestore";
 import { dbService } from "../fbase";
 import { debounce } from "lodash";
@@ -17,11 +17,8 @@ const RightBar = ({ userObj }) => {
   const [userResult, setUserResult] = useState([]);
   const [nweetResult, setNweetResult] = useState([]);
 
-  // console.log(userResult.id === nweetResult.id);
-  // console.log(users);
-  console.log(userResult);
-
   useEffect(() => {
+    // 유저 정보
     const userInfo = async () => {
       const q = query(collection(dbService, "users"));
       const data = await getDocs(q);
@@ -32,11 +29,11 @@ const RightBar = ({ userObj }) => {
       }));
 
       // 본인 제외 노출
-      // const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
-      // setUsers(exceptArray);
-      setUsers(userArray);
+      const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
+      setUsers(exceptArray);
     };
 
+    // 트윗 정보
     const nweetInfo = async () => {
       const q = query(collection(dbService, "nweets"));
       onSnapshot(
@@ -48,11 +45,10 @@ const RightBar = ({ userObj }) => {
           }));
 
           // 본인 제외 노출
-          // const exceptArray = nweetArray.filter(
-          //   (name) => name.id !== userObj.id
-          // );
-          // setNweets(exceptArray);
-          setNweets(nweetArray);
+          const exceptArray = nweetArray.filter(
+            (name) => name.creatorId !== userObj.uid
+          );
+          setNweets(exceptArray);
         },
         []
       );

@@ -75,6 +75,7 @@ const NweetFactory = ({ userObj }) => {
         creatorId: userObj.uid,
         attachmentUrl,
         email: userObj.email,
+        like: [],
       };
 
       await addDoc(collection(dbService, "nweets"), attachmentNweet);
@@ -106,7 +107,7 @@ const NweetFactory = ({ userObj }) => {
     try {
       const options = {
         maxSizeMb: 1,
-        maxWidthOrHeight: 600,
+        maxWidthOrHeight: 800,
       };
       return await imageCompression(image, options);
     } catch (error) {

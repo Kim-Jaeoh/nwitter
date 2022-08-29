@@ -4,7 +4,7 @@ import { authService } from "../fbase";
 import { AiOutlineTwitter } from "react-icons/ai";
 import styled from "./App.module.css";
 
-function App() {
+const App = () => {
   const [init, setInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
   // const [newName, setNewName] = useState(false); // #방법 3
@@ -13,11 +13,6 @@ function App() {
     // 유저 상태 변화 추적(로그인, 로그아웃, 어플리케이션 초기화 시)
     authService.onAuthStateChanged(async (user) => {
       if (user) {
-        // userObj 간소화
-        // setUserObj({
-        //   displayName: user.displayName,
-        //   uid: user.uid,
-        // });
         setUserObj(user);
       } else {
         setUserObj(null);
@@ -61,7 +56,7 @@ function App() {
       {/* <footer>&copy; {new Date().getFullYear()} Nwitter</footer> */}
     </>
   );
-}
+};
 
 export default App;
 

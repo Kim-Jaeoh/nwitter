@@ -1,17 +1,9 @@
-import { useEffect } from "react";
-import { useState } from "react";
 import Loading from "./Loading";
 import styled from "./SearchBox.module.css";
 import SearchNweetsBox from "./SearchNweetsBox";
+import SearchUsersBox from "./SearchUsersBox";
 
-const SearchBox = ({
-  userResult,
-  nweetResult,
-  nweets,
-  users,
-  search,
-  focus,
-}) => {
+const SearchBox = ({ userResult, nweetResult, users, search, focus }) => {
   return (
     <>
       {focus && (
@@ -36,24 +28,10 @@ const SearchBox = ({
                     <h2>유저</h2>
                   </div>
                   <ul className={styled.follows}>
-                    {userResult.map((user, index) => {
-                      return (
-                        <li key={user.id} className={styled.follow__user}>
-                          <div className={styled.follow__userInfo}>
-                            <img
-                              src={user.photoURL}
-                              alt="프로필 이미지"
-                              className={styled.follow__image}
-                            />
-                            <div className={styled.follow__name}>
-                              <p>{user.displayName}</p>
-                              <p>@{user.email.split("@")[0]}</p>
-                              {user.description && <p>{user.description}</p>}
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
+                    {/* {userResult.map((user, index) => (
+                      <SearchUsersBox key={user.uid} user={user} />
+                    ))} */}
+                    <SearchUsersBox userResult={userResult} />
                   </ul>
                 </section>
               )}
@@ -66,13 +44,13 @@ const SearchBox = ({
                     <h2>트윗</h2>
                   </div>
                   <ul className={styled.follows}>
-                    {nweetResult.map((nweet, index) => {
-                      return (
-                        <>
-                          <SearchNweetsBox users={users} nweet={nweet} />
-                        </>
-                      );
-                    })}
+                    {nweetResult.map((nweet) => (
+                      <SearchNweetsBox
+                        key={nweet.id}
+                        users={users}
+                        nweet={nweet}
+                      />
+                    ))}
                   </ul>
                 </section>
               )}

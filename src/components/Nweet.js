@@ -1,4 +1,10 @@
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { dbService } from "../fbase";
 import styled from "./Nweet.module.css";
@@ -7,29 +13,31 @@ import { FiMoreHorizontal, FiRepeat } from "react-icons/fi";
 import NweetEtcBtn from "./NweetEtcBtn";
 import UpdateNweetModal from "./UpdateNweetModal";
 import {
+  FaBookmark,
+  FaHeart,
   FaRegBookmark,
   FaRegComment,
   FaRegHeart,
   FaRetweet,
 } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentUser } from "../reducer/user";
 
 const Nweet = ({ nweetObj, isOwner, userObj }) => {
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const etcRef = useRef();
+  const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
     nweetObj.attachmentUrl
   );
   const [creatorInfo, setCreatorInfo] = useState({});
   const [nweetEtc, setNweetEtc] = useState(false);
-
-  const etcRef = useRef();
-  const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
-
+  const [liked, setLiked] = useState(false);
+  const [bookmark, setBookmark] = useState(false);
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
-
   const [isEditing, setIsEditing] = useState(false);
-  const toggleEdit = () => {
-    setIsEditing((prev) => !prev);
-  };
 
   useEffect(() => {
     onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
@@ -52,6 +60,16 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     window.addEventListener("click", handleClick);
     return () => window.removeEventListener("click", handleClick);
   }, [nweetEtc]);
+
+  // 좋아요 목록 중 로그인된 아이디 있으면 true
+  useEffect(() => {
+    setLiked(nweetObj.like.includes(userObj.uid));
+  }, [nweetObj.like, userObj.uid]);
+
+  // 북마크된 로그인된 아이디 있으면 true
+  useEffect(() => {
+    setBookmark(currentUser.bookmark.includes(nweetObj.id));
+  }, [currentUser.bookmark, nweetObj.id]);
 
   const onChange = (e) => {
     const {
@@ -86,16 +104,66 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     setNweetEtc((prev) => !prev);
   }, []);
 
+  const toggleEdit = () => {
+    setIsEditing((prev) => !prev);
+  };
+
+  const toggleLike = async () => {
+    if (nweetObj.like.includes(userObj.uid)) {
+      setLiked(false);
+      const copy = [...nweetObj.like];
+      copy.splice(userObj.uid, 1);
+      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+        like: copy,
+      });
+    } else if (!nweetObj.like.includes(userObj.uid)) {
+      setLiked(true);
+      const copy = [...nweetObj.like];
+      copy.push(userObj.uid);
+      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+        like: copy,
+      });
+    }
+  };
+
+  const toggleBookmark = async () => {
+    if (currentUser.bookmark.includes(nweetObj.id)) {
+      setBookmark(false);
+      const copy = [...currentUser.bookmark];
+      const filter = copy.filter((id) => id !== nweetObj.id);
+      // copy.splice(currentUser.bookmark.indexOf(nweetObj.id), 1);
+      await updateDoc(doc(dbService, "users", currentUser.email), {
+        bookmark: filter,
+      });
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          bookmark: filter,
+        })
+      );
+    } else if (!currentUser.bookmark.includes(nweetObj.id)) {
+      setBookmark(true);
+      const copy = [...currentUser.bookmark];
+      copy.push(nweetObj.id);
+      await updateDoc(doc(dbService, "users", currentUser.email), {
+        bookmark: copy,
+      });
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          bookmark: copy,
+        })
+      );
+    }
+  };
+
   return (
     <>
       <div className={styled.nweet}>
         <div className={styled.nweet__container}>
           <div className={styled.nweet__profile}>
             <img
-              src={
-                creatorInfo.photoURL
-                //  ? creatorInfo.photoURL : noneProfile
-              }
+              src={creatorInfo.photoURL}
               alt="profileImg"
               className={styled.profile__image}
             />
@@ -160,17 +228,17 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
               <p>4</p>
             </div>
           </div>
-          <div className={`${styled.actionBox} ${styled.like}`}>
-            <div className={styled.actions__icon}>
-              <FaRegHeart />
+          <div className={`${styled.actionBox} ${liked && styled.like}`}>
+            <div className={styled.actions__icon} onClick={toggleLike}>
+              {liked ? <FaHeart /> : <FaRegHeart />}
             </div>
             <div className={styled.actions__text}>
-              <p>15</p>
+              <p>{nweetObj.like.length === 0 ? "" : nweetObj.like.length}</p>
             </div>
           </div>
-          <div className={`${styled.actionBox} ${styled.bookmark}`}>
-            <div className={styled.actions__icon}>
-              <FaRegBookmark />
+          <div className={`${styled.actionBox} ${bookmark && styled.bookmark}`}>
+            <div className={styled.actions__icon} onClick={toggleBookmark}>
+              {bookmark ? <FaBookmark /> : <FaRegBookmark />}
             </div>
           </div>
         </nav>

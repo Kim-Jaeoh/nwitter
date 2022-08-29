@@ -6,16 +6,14 @@ const SearchNweetsBox = ({ users, nweet }) => {
   const [filter, setFilter] = useState([]);
 
   useEffect(() => {
-    const filtered = users.filter((user) => {
-      return user.uid === nweet.creatorId;
-    });
+    const filtered = users.filter((user) => user.uid === nweet.creatorId);
     setFilter(filtered);
   }, [nweet, users]);
 
   return (
     <>
       {filter[0] && (
-        <li key={nweet.creatorId} className={styled.follow__user}>
+        <div className={styled.follow__user}>
           <div className={styled.follow__userInfo}>
             <img
               src={filter[0].photoURL}
@@ -31,7 +29,7 @@ const SearchNweetsBox = ({ users, nweet }) => {
           <div className={styled.searchText}>
             <p>{nweet.text}</p>
           </div>
-        </li>
+        </div>
       )}
     </>
   );

@@ -10,10 +10,11 @@ import noneProfile from "../image/noneProfile.jpg";
 import bgimg from "../image/bgimg.jpg";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import styled from "./AuthForm.module.css";
+import { useHistory } from "react-router-dom";
 
 const AuthForm = ({ newAccount }) => {
   const dispatch = useDispatch();
-
+  const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,7 +36,6 @@ const AuthForm = ({ newAccount }) => {
     try {
       let user;
       if (newAccount) {
-        // create account
         await createUserWithEmailAndPassword(authService, email, password).then(
           async (result) => {
             user = result.user;
@@ -49,10 +49,10 @@ const AuthForm = ({ newAccount }) => {
               createdAtId: Date.now(),
               description: "",
               bgURL: bgimg,
-              // bookmark: [],
-              // follower: [],
-              // following: [],
-              // rejweet: [],
+              bookmark: [],
+              follower: [],
+              following: [],
+              rejweet: [],
             });
             dispatch(setLoginToken("login"));
             dispatch(
@@ -64,19 +64,19 @@ const AuthForm = ({ newAccount }) => {
                 createdAtId: Date.now(),
                 description: "",
                 bgURL: bgimg,
-                // bookmark: [],
-                // follower: [],
-                // following: [],
-                // rejweet: [],
+                bookmark: [],
+                follower: [],
+                following: [],
+                rejweet: [],
               })
             );
           }
         );
-        // const userRef = collection(dbService, "users");
       } else {
         // log in
         await signInWithEmailAndPassword(authService, email, password);
       }
+      history.push("/");
     } catch (error) {
       if (error.message.includes("(auth/email-already-in-use).")) {
         setError(

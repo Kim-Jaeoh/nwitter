@@ -1,27 +1,22 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { AiOutlineHome, AiFillHome } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
-import {
-  BsPerson,
-  BsBookmark,
-  BsBell,
-  BsBellFill,
-  BsBookmarkFill,
-  BsPersonFill,
-} from "react-icons/bs";
+import { BsPerson, BsBell, BsBellFill, BsPersonFill } from "react-icons/bs";
 import { FaFeatherAlt, FaHashtag, FaTwitter } from "react-icons/fa";
 import { FiHash } from "react-icons/fi";
 import { doc, onSnapshot } from "firebase/firestore";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { dbService } from "../fbase";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { authService, dbService } from "../fbase";
 import noneProfile from "../image/noneProfile.jpg";
 import styled from "./LeftBar.module.css";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import UserEtcBtn from "../components/UserEtcBtn";
+import { setCurrentUser, setLoginToken } from "../reducer/user";
 
 const LeftBar = ({ userObj }) => {
   const userEtcRef = useRef();
-
+  const dispatch = useDispatch();
   const [creatorInfo, setCreatorInfo] = useState({});
   const [selected, setSelected] = useState(1);
   const [size, setSize] = useState(window.innerWidth);
@@ -29,7 +24,7 @@ const LeftBar = ({ userObj }) => {
   const [userEtc, setUserEtc] = useState(false);
 
   const location = useLocation();
-
+  const history = useHistory();
   useEffect(() => {
     if (location.pathname === "/") {
       setSelected(1);
@@ -47,7 +42,7 @@ const LeftBar = ({ userObj }) => {
   useEffect(() => {
     if (!userEtc) return;
     const handleClick = (e) => {
-      if (!userEtcRef.current.contains(e.target)) {
+      if (!userEtcRef?.current?.contains(e.target)) {
         setUserEtc(false);
       } else if (userEtcRef.current === null) {
         console.log("?");
@@ -87,6 +82,28 @@ const LeftBar = ({ userObj }) => {
     setUserEtc((prev) => !prev);
   }, []);
 
+  const onLogOutClick = () => {
+    const ok = window.confirm("로그아웃 하시겠어요?");
+    if (ok) {
+      authService.signOut();
+      dispatch(setLoginToken("logout"));
+      dispatch(
+        setCurrentUser({
+          photoURL: "",
+          uid: "",
+          displayName: "",
+          email: "",
+          description: "",
+          bgURL: "",
+          // bookmark: [],
+          // follower: [],
+          // following: [],
+          // rejweet: [],
+        })
+      );
+      history.push("/auth");
+    }
+  };
   return (
     <article className={styled.container}>
       <section className={styled.wrapper}>
@@ -221,7 +238,10 @@ const LeftBar = ({ userObj }) => {
         </section>
         <div style={{ position: "relative" }} ref={userEtcRef}>
           {userEtc && (
-            <UserEtcBtn creatorInfo={creatorInfo} userObj={userObj} />
+            <UserEtcBtn
+              onLogOutClick={onLogOutClick}
+              creatorInfo={creatorInfo}
+            />
           )}
           <section className={styled.leftBar__user}>
             <div className={styled.leftBar__userInfo} onClick={toggleUserEtc}>

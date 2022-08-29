@@ -79,8 +79,8 @@
 
 /* 이미지 */
 .nweet__image {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -124,7 +124,7 @@
   position: relative;
 }
 
-/* 행동 */
+/* 트윗 액션 */
 .nweet .nweet__actions {
   display: flex;
   justify-content: space-between;
@@ -139,10 +139,9 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  /* transition: all 0.3s; */
 }
 
-/* 프로필 아이콘 */
+/* 트윗 액션 아이콘 */
 .nweet .nweet__actions .actionBox .actions__icon {
   position: relative;
   display: flex;
@@ -165,6 +164,22 @@
   background-color: #5cb69134;
 }
 
+/* 좋아요 */
+.nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon::after {
+  background-color: #f918801a;
+}
+
+.nweet .nweet__actions .actionBox:nth-child(3):hover,
+.nweet .nweet__actions .actionBox:nth-child(3).like,
+.nweet .nweet__actions .actionBox:nth-child(3).like:hover {
+  color: red;
+}
+
+/* 북마크 */
+.nweet .nweet__actions .actionBox.bookmark {
+  color: #429170;
+}
+
 .nweet .nweet__actions .actionBox:hover {
   color: #429170;
 }
@@ -177,6 +192,7 @@
   justify-content: center;
 }
 
+/* 트윗 액션 숫자 */
 .nweet .nweet__actions .actionBox .actions__text {
   max-width: 70px;
   white-space: nowrap;

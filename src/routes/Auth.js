@@ -4,15 +4,10 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
-  updateProfile,
 } from "firebase/auth";
 import AuthForm from "../components/AuthForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTwitter,
-  faGoogle,
-  faGithub,
-} from "@fortawesome/free-brands-svg-icons";
+import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { AiOutlineTwitter } from "react-icons/ai";
 import styled from "./Auth.module.css";
 import authBg from "../image/background.jpg";

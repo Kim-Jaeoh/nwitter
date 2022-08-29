@@ -41,10 +41,10 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
             </>
           ) : (
             <>
-              <Route exact path="/">
+              <Route path="/auth">
                 <Auth />
               </Route>
-              <Redirect from="*" to="/" />
+              <Redirect from="*" to="/auth" />
             </>
           )}
         </>

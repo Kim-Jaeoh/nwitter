@@ -140,17 +140,16 @@ const UpdateProfileModal = ({
     await dispatch(
       setCurrentUser({
         // uid: currentUsers.uid,
+        // ...currentUsers,
         displayName: newDisplayName, // 바뀐 이름 디스패치
         photoURL: editAttachment,
         bgURL: editAttachmentBg,
-        // photoURL: editAttachment === "" ? noneProfile : editAttachment,
-        // bgURL: editAttachmentBg === "" ? bgImg : editAttachmentBg,
         description: desc,
-        // email: currentUsers.email,
-        // bookmark: currentUsers.bookmark,
-        // follower: currentUsers.follower,
-        // following: currentUsers.following,
-        // rejweet: currentUsers.rejweet,
+        email: currentUsers.email,
+        bookmark: currentUsers.bookmark,
+        follower: currentUsers.follower,
+        following: currentUsers.following,
+        rejweet: currentUsers.rejweet,
       })
     );
 
