@@ -6,11 +6,14 @@ function Loading() {
     <div className="contentWrap">
       <div
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: "10",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          // position: "absolute",
+          // top: "50%",
+          // left: "50%",
+          // transform: "translate(-50%, -50%)",
+          // zIndex: "10",
         }}
       >
         <SyncLoader

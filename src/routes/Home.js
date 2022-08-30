@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import styled from "./Home.module.css";
 import Nweet from "../components/Nweet";
 import NweetFactory from "../components/NweetFactory";
@@ -10,6 +16,7 @@ import { HiOutlineSparkles } from "react-icons/hi";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
+  const [creatorInfo, setCreatorInfo] = useState({});
   const [isLoading, setIsLoading] = useState(null);
 
   // // getNweets 아래 로직은 오래된 방식

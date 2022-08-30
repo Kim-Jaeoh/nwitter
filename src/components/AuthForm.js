@@ -52,7 +52,7 @@ const AuthForm = ({ newAccount }) => {
               bookmark: [],
               follower: [],
               following: [],
-              rejweet: [],
+              reNweet: [],
             });
             dispatch(setLoginToken("login"));
             dispatch(
@@ -61,20 +61,55 @@ const AuthForm = ({ newAccount }) => {
                 displayName: user.email.split("@")[0],
                 email: user.email,
                 photoURL: noneProfile,
-                createdAtId: Date.now(),
-                description: "",
                 bgURL: bgimg,
+                description: "",
+                createdAtId: Date.now(),
                 bookmark: [],
                 follower: [],
                 following: [],
-                rejweet: [],
+                reNweet: [],
               })
             );
           }
         );
       } else {
         // log in
-        await signInWithEmailAndPassword(authService, email, password);
+        await signInWithEmailAndPassword(authService, email, password).then(
+          async (result) => {
+            let signUser = result.user;
+            const docRef = doc(dbService, "users", signUser.email);
+            const docSnap = await getDoc(docRef);
+            // .then((snap) => {
+            //   if (snap.exists()) {
+            //     console.log(snap.data());
+            //   }
+            // });
+            if (docSnap.exists()) {
+              dispatch(setLoginToken("login"));
+              dispatch(
+                setCurrentUser({
+                  ...docSnap.data(),
+                  bookmark: docSnap.data().bookmark
+                    ? docSnap.data().bookmark
+                    : [],
+                  follower: docSnap.data().follower
+                    ? docSnap.data().follower
+                    : [],
+                  following: docSnap.data().following
+                    ? docSnap.data().folloing
+                    : [],
+                  reNweet: docSnap.data().reNweet ? docSnap.data().reNweet : [],
+                  // bookmark: [],
+                  // follower: [],
+                  // following: [],
+                  // rejweet: [],
+                })
+              );
+            } else {
+              console.log("에러");
+            }
+          }
+        );
       }
       history.push("/");
     } catch (error) {

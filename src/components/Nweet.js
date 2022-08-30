@@ -38,11 +38,15 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   const [bookmark, setBookmark] = useState(false);
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  //  map 처리 된 유저 정보들
   useEffect(() => {
     onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
       setCreatorInfo(doc.data());
+      setLoading(true);
     });
+    return () => setLoading(false);
   }, [nweetObj]);
 
   useEffect(() => {
@@ -61,14 +65,14 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     return () => window.removeEventListener("click", handleClick);
   }, [nweetEtc]);
 
-  // 좋아요 목록 중 로그인된 아이디 있으면 true
+  // 좋아요 목록 중 본인 아이디 있으면 true
   useEffect(() => {
-    setLiked(nweetObj.like.includes(userObj.uid));
+    setLiked(nweetObj.like?.includes(userObj.uid));
   }, [nweetObj.like, userObj.uid]);
 
-  // 북마크된 로그인된 아이디 있으면 true
+  // 북마크된 본인 아이디 있으면 true
   useEffect(() => {
-    setBookmark(currentUser.bookmark.includes(nweetObj.id));
+    setBookmark(currentUser.bookmark?.includes(nweetObj.id));
   }, [currentUser.bookmark, nweetObj.id]);
 
   const onChange = (e) => {
@@ -109,14 +113,14 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   const toggleLike = async () => {
-    if (nweetObj.like.includes(userObj.uid)) {
+    if (nweetObj.like?.includes(userObj.uid)) {
       setLiked(false);
       const copy = [...nweetObj.like];
       copy.splice(userObj.uid, 1);
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         like: copy,
       });
-    } else if (!nweetObj.like.includes(userObj.uid)) {
+    } else if (!nweetObj.like?.includes(userObj.uid)) {
       setLiked(true);
       const copy = [...nweetObj.like];
       copy.push(userObj.uid);
@@ -127,7 +131,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   const toggleBookmark = async () => {
-    if (currentUser.bookmark.includes(nweetObj.id)) {
+    if (currentUser.bookmark?.includes(nweetObj.id)) {
       setBookmark(false);
       const copy = [...currentUser.bookmark];
       const filter = copy.filter((id) => id !== nweetObj.id);
@@ -141,7 +145,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
           bookmark: filter,
         })
       );
-    } else if (!currentUser.bookmark.includes(nweetObj.id)) {
+    } else if (!currentUser.bookmark?.includes(nweetObj.id)) {
       setBookmark(true);
       const copy = [...currentUser.bookmark];
       copy.push(nweetObj.id);
@@ -157,106 +161,118 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     }
   };
 
+  // console.log(currentUser);
+  // console.log(creatorInfo);
+
   return (
     <>
-      <div className={styled.nweet}>
-        <div className={styled.nweet__container}>
-          <div className={styled.nweet__profile}>
-            <img
-              src={creatorInfo.photoURL}
-              alt="profileImg"
-              className={styled.profile__image}
-            />
-          </div>
-          <div className={styled.userInfo}>
-            <div className={styled.userInfo__name}>
-              <div className={styled.userInfo__one}>
-                <p>{creatorInfo.displayName}</p>
+      {loading && (
+        <>
+          <div className={styled.nweet}>
+            <div className={styled.nweet__container}>
+              <div className={styled.nweet__profile}>
+                <img
+                  src={creatorInfo.photoURL}
+                  alt="profileImg"
+                  className={styled.profile__image}
+                />
               </div>
-              <div className={styled.userInfo__two}>
-                <p>
-                  @{creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
-                </p>
-                <p style={{ margin: "0 4px" }}>·</p>
-                <p className={styled.nweet__createdAt}>
-                  {timeToString(nweetObj.createdAt)}
-                </p>
-              </div>
-            </div>
-            {isOwner && (
-              <div className={styled.nweet__edit} ref={etcRef}>
-                <div
-                  className={styled.nweet__editIcon}
-                  onClick={toggleNweetEct}
-                >
-                  <FiMoreHorizontal />
-                  <div className={styled.horizontal__bg}></div>
+              <div className={styled.userInfo}>
+                <div className={styled.userInfo__name}>
+                  <div className={styled.userInfo__one}>
+                    <p>{creatorInfo.displayName}</p>
+                  </div>
+                  <div className={styled.userInfo__two}>
+                    <p>
+                      @
+                      {creatorInfo.email ? creatorInfo.email.split("@")[0] : ""}
+                    </p>
+                    <p style={{ margin: "0 4px" }}>·</p>
+                    <p className={styled.nweet__createdAt}>
+                      {timeToString(nweetObj.createdAt)}
+                    </p>
+                  </div>
                 </div>
-                {nweetEtc && (
-                  <NweetEtcBtn
-                    newNweetAttachment={newNweetAttachment}
-                    nweetObj={nweetObj}
-                    toggleEdit={toggleEdit}
-                  />
+                {isOwner && (
+                  <div className={styled.nweet__edit} ref={etcRef}>
+                    <div
+                      className={styled.nweet__editIcon}
+                      onClick={toggleNweetEct}
+                    >
+                      <FiMoreHorizontal />
+                      <div className={styled.horizontal__bg}></div>
+                    </div>
+                    {nweetEtc && (
+                      <NweetEtcBtn
+                        newNweetAttachment={newNweetAttachment}
+                        nweetObj={nweetObj}
+                        toggleEdit={toggleEdit}
+                      />
+                    )}
+                  </div>
                 )}
               </div>
-            )}
+            </div>
+            <div className={styled.nweet__text}>
+              <h4>{nweetObj.text}</h4>
+            </div>
+            {nweetObj.attachmentUrl ? (
+              <div className={styled.nweet__image}>
+                <img src={nweetObj.attachmentUrl} alt="uploaded file" />
+              </div>
+            ) : null}
+            <nav className={styled.nweet__actions}>
+              <div className={`${styled.actionBox} ${styled.comment}`}>
+                <div className={styled.actions__icon}>
+                  <FaRegComment />
+                </div>
+                <div className={styled.actions__text}>
+                  <p>5</p>
+                </div>
+              </div>
+              <div className={`${styled.actionBox} ${styled.retweet}`}>
+                <div className={styled.actions__icon}>
+                  <FaRetweet />
+                </div>
+                <div className={styled.actions__text}>
+                  <p>4</p>
+                </div>
+              </div>
+              <div className={`${styled.actionBox} ${liked && styled.like}`}>
+                <div className={styled.actions__icon} onClick={toggleLike}>
+                  {liked ? <FaHeart /> : <FaRegHeart />}
+                </div>
+                <div className={styled.actions__text}>
+                  <p>
+                    {nweetObj.like.length === 0 ? "" : nweetObj.like.length}
+                  </p>
+                </div>
+              </div>
+              <div
+                className={`${styled.actionBox} ${bookmark && styled.bookmark}`}
+              >
+                <div className={styled.actions__icon} onClick={toggleBookmark}>
+                  {bookmark ? <FaBookmark /> : <FaRegBookmark />}
+                </div>
+              </div>
+            </nav>
           </div>
-        </div>
-        <div className={styled.nweet__text}>
-          <h4>{nweetObj.text}</h4>
-        </div>
-        {nweetObj.attachmentUrl ? (
-          <div className={styled.nweet__image}>
-            <img src={nweetObj.attachmentUrl} alt="uploaded file" />
-          </div>
-        ) : null}
-        <nav className={styled.nweet__actions}>
-          <div className={`${styled.actionBox} ${styled.comment}`}>
-            <div className={styled.actions__icon}>
-              <FaRegComment />
-            </div>
-            <div className={styled.actions__text}>
-              <p>5</p>
-            </div>
-          </div>
-          <div className={`${styled.actionBox} ${styled.retweet}`}>
-            <div className={styled.actions__icon}>
-              <FaRetweet />
-            </div>
-            <div className={styled.actions__text}>
-              <p>4</p>
-            </div>
-          </div>
-          <div className={`${styled.actionBox} ${liked && styled.like}`}>
-            <div className={styled.actions__icon} onClick={toggleLike}>
-              {liked ? <FaHeart /> : <FaRegHeart />}
-            </div>
-            <div className={styled.actions__text}>
-              <p>{nweetObj.like.length === 0 ? "" : nweetObj.like.length}</p>
-            </div>
-          </div>
-          <div className={`${styled.actionBox} ${bookmark && styled.bookmark}`}>
-            <div className={styled.actions__icon} onClick={toggleBookmark}>
-              {bookmark ? <FaBookmark /> : <FaRegBookmark />}
-            </div>
-          </div>
-        </nav>
-      </div>
-      {isEditing && (
-        <UpdateNweetModal
-          creatorInfo={creatorInfo}
-          setNewNweet={setNewNweet}
-          onChange={onChange}
-          onSubmit={onSubmit}
-          newNweet={newNweet}
-          newNweetAttachment={newNweetAttachment}
-          setNewNweetAttachment={setNewNweetAttachment}
-          isEditing={isEditing}
-          toggleEdit={toggleEdit}
-          isAreaHeight={isAreaHeight}
-          setIsAreaHeight={setIsAreaHeight}
-        />
+          {isEditing && (
+            <UpdateNweetModal
+              creatorInfo={creatorInfo}
+              setNewNweet={setNewNweet}
+              onChange={onChange}
+              onSubmit={onSubmit}
+              newNweet={newNweet}
+              newNweetAttachment={newNweetAttachment}
+              setNewNweetAttachment={setNewNweetAttachment}
+              isEditing={isEditing}
+              toggleEdit={toggleEdit}
+              isAreaHeight={isAreaHeight}
+              setIsAreaHeight={setIsAreaHeight}
+            />
+          )}
+        </>
       )}
     </>
   );

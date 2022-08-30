@@ -20,7 +20,7 @@ const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [creatorInfo, setCreatorInfo] = useState({});
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [myNweets, setMyNweets] = useState([]);
   const [myLikeNweets, setMyLikeNweets] = useState([]);
 
@@ -45,27 +45,37 @@ const Profile = ({ refreshUser, userObj }) => {
       where("creatorId", "==", userObj.uid),
       orderBy("createdAt", "desc")
     );
+
     onSnapshot(q, (querySnapshot) => {
-      const array = [];
-      querySnapshot.forEach((doc) => {
-        array.push({ id: doc.id, ...doc.data() });
-      });
+      const array = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setMyNweets(array);
     });
+
+    // forEach
+    // onSnapshot(q, (querySnapshot) => {
+    //   const array = [];
+    //   querySnapshot.forEach((doc) => {
+    //     array.push({ id: doc.id, ...doc.data() });
+    //   });
+    //   setMyNweets(array);
+    // });
   }, [userObj.uid]);
 
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
-    setLoading(true);
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
+      setLoading(true);
       getMyNweets();
     });
 
-    setLoading(false);
     return () => setLoading(false); // cleanup function을 이용
   }, [getMyNweets, userObj]);
 
+  // 좋아요 필터링
   useEffect(() => {
     // query는 데이터를 요청할 때 사용됨
     const q = query(
@@ -74,15 +84,22 @@ const Profile = ({ refreshUser, userObj }) => {
     );
 
     onSnapshot(q, (querySnapshot) => {
-      const array = [];
-      querySnapshot.forEach((doc) => {
-        array.push({ id: doc.id, ...doc.data() });
-      });
+      const array = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setMyLikeNweets(array);
     });
-  }, [userObj.uid]);
 
-  console.log(myLikeNweets);
+    // forEach
+    // onSnapshot(q, (querySnapshot) => {
+    //   const array = [];
+    //   querySnapshot.forEach((doc) => {
+    //     array.push({ id: doc.id, ...doc.data() });
+    //   });
+    //   setMyLikeNweets(array);
+    // });
+  }, [userObj.uid]);
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
@@ -121,7 +138,6 @@ const Profile = ({ refreshUser, userObj }) => {
 
   const onSelect = (num) => {
     setSelected(num);
-    console.log(num);
     // setFocus(selected === num);
   };
 
@@ -131,7 +147,7 @@ const Profile = ({ refreshUser, userObj }) => {
 
   return (
     <>
-      {!loading && (
+      {loading && (
         <section className={styled.container}>
           <div className={styled.main__container}>
             <div className={styled.main__category}>
@@ -147,16 +163,11 @@ const Profile = ({ refreshUser, userObj }) => {
               </div>
               <div className={styled.main__icon} onClick={onLogOutClick}>
                 <IoMdExit />
-                {/* <GrClose /> */}
               </div>
             </div>
             <div className={styled.setUserInfo}>
               <div className={styled.backImage}>
-                <img
-                  // src={creatorInfo.bgURL ? creatorInfo.bgURL : bgImg}
-                  src={creatorInfo.bgURL}
-                  alt="배경사진"
-                />
+                <img src={creatorInfo.bgURL} alt="배경사진" />
               </div>
               <div className={styled.profile}>
                 <div className={styled.profile__edit}>
@@ -210,18 +221,21 @@ const Profile = ({ refreshUser, userObj }) => {
               />
             </nav>
 
-            <Switch>
-              {loading && <Loading />} {/* 로딩 시 스피너 */}
-              <Route path="/profile/mynweets/:id">
-                {!loading && <MyNweets myNweets={myNweets} userObj={userObj} />}
-              </Route>
-              <Route path="/profile/renweets/:id">
-                <ReNweets userObj={userObj} />
-              </Route>
-              <Route path="/profile/likenweets/:id">
-                <LikeNweets myLikeNweets={myLikeNweets} userObj={userObj} />
-              </Route>
-            </Switch>
+            {loading ? (
+              <Switch>
+                <Route path="/profile/mynweets/:id">
+                  <MyNweets myNweets={myNweets} userObj={userObj} />
+                </Route>
+                <Route path="/profile/renweets/:id">
+                  <ReNweets userObj={userObj} />
+                </Route>
+                <Route path="/profile/likenweets/:id">
+                  <LikeNweets myLikeNweets={myLikeNweets} userObj={userObj} />
+                </Route>
+              </Switch>
+            ) : (
+              <Loading />
+            )}
           </div>
         </section>
       )}

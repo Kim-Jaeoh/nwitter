@@ -24,7 +24,7 @@ const UpdateProfileModal = ({
   isEditing,
   toggleEdit,
 }) => {
-  const currentUsers = useSelector((state) => state.user.currentUser);
+  const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -139,17 +139,17 @@ const UpdateProfileModal = ({
     });
     await dispatch(
       setCurrentUser({
-        // uid: currentUsers.uid,
-        // ...currentUsers,
+        // uid: currentUser.uid,
+        // ...currentUser,
         displayName: newDisplayName, // 바뀐 이름 디스패치
         photoURL: editAttachment,
         bgURL: editAttachmentBg,
         description: desc,
-        email: currentUsers.email,
-        bookmark: currentUsers.bookmark,
-        follower: currentUsers.follower,
-        following: currentUsers.following,
-        rejweet: currentUsers.rejweet,
+        email: currentUser.email,
+        bookmark: currentUser.bookmark,
+        follower: currentUser.follower,
+        following: currentUser.following,
+        rejweet: currentUser.rejweet,
       })
     );
 
@@ -160,6 +160,13 @@ const UpdateProfileModal = ({
       await dispatch(
         setCurrentUser({
           photoURL: noneProfile,
+          displayName: newDisplayName,
+          description: desc,
+          email: currentUser.email,
+          bookmark: currentUser.bookmark,
+          follower: currentUser.follower,
+          following: currentUser.following,
+          rejweet: currentUser.rejweet,
         })
       );
     }
@@ -171,6 +178,13 @@ const UpdateProfileModal = ({
       await dispatch(
         setCurrentUser({
           bgURL: bgImg,
+          displayName: newDisplayName,
+          description: desc,
+          email: currentUser.email,
+          bookmark: currentUser.bookmark,
+          follower: currentUser.follower,
+          following: currentUser.following,
+          rejweet: currentUser.rejweet,
         })
       );
     }

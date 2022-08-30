@@ -1,16 +1,114 @@
-const Bookmark = () => {
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
+import { useCallback, useEffect, useState } from "react";
+import { IoArrowBackOutline } from "react-icons/io5";
+import { useHistory } from "react-router-dom";
+import Loading from "../components/Loading";
+import Nweet from "../components/Nweet";
+import { dbService } from "../fbase";
+import styled from "./Bookmark.module.css";
+
+const Bookmark = ({ userObj }) => {
+  const history = useHistory();
+  const [creatorInfo, setCreatorInfo] = useState([]);
+  const [filterBookmark, setFilterBookmark] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // 내 정보 가져오기
+  const getMyInfo = useCallback(async () => {
+    // 실시간
+    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+      setCreatorInfo(doc.data());
+    });
+
+    // 데이터 한 번 가져오기
+    // const docRef = doc(dbService, "users", userObj.email);
+    // const docSnap = await getDoc(docRef);
+    // if (docSnap.exists()) {
+    //   setCreatorInfo(docSnap.data());
+    // } else {
+    //   console.log("정보가 없습니다");
+    // }
+  }, [userObj.email]);
+
+  // 트윗 정보 가져오기
+  useEffect(() => {
+    // 실시간
+    const q = query(collection(dbService, "nweets"));
+    onSnapshot(q, (querySnapShot) => {
+      const userArray = querySnapShot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const filter = userArray.filter((id) =>
+        creatorInfo.bookmark?.includes(id.id)
+      );
+      setFilterBookmark(filter);
+      setLoading(true);
+    });
+    return () => setLoading(false);
+
+    // 데이터 한 번 가져오기
+    // const data = await getDocs(q);
+    // const userArray = data.docs.map((doc) => ({
+    //   id: doc.id,
+    //   ...doc.data(),
+    // }));
+  }, [creatorInfo.bookmark]);
+
+  useEffect(() => {
+    getMyInfo();
+  }, [getMyInfo]);
+
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      Bookmark 준비 중
-    </div>
+    <>
+      {loading && (
+        <div className={styled.container}>
+          <div className={styled.main__container}>
+            <div className={styled.main__category}>
+              <div
+                className={styled.main__icon}
+                onClick={() => history.goBack()}
+              >
+                <IoArrowBackOutline />
+              </div>
+              <div className={styled.userInfo}>
+                <p>북마크</p>
+                <p>@{creatorInfo.email?.split("@")[0]}</p>
+              </div>
+            </div>
+            {filterBookmark.length !== 0 ? (
+              <div>
+                {filterBookmark.map((myBook) => (
+                  <Nweet key={myBook.id} nweetObj={myBook} userObj={userObj} />
+                ))}
+              </div>
+            ) : (
+              <div className={styled.noInfoBox}>
+                <div className={styled.noInfo}>
+                  <img
+                    src="https://abs.twimg.com/sticky/illustrations/empty-states/book-in-bird-cage-400x200.v1.png"
+                    alt=""
+                  ></img>
+                  <h2>나중을 위해 트윗 저장하기</h2>
+                  <p>
+                    좋은 트윗은 그냥 흘려 보내지 마세요. 나중에 다시 쉽게 찾을
+                    수 있도록 북마크에 추가하세요.
+                  </p>
+                </div>
+              </div>
+              // <Loading />
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

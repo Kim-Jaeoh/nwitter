@@ -1,16 +1,20 @@
 .container__box {
-  filter: drop-shadow(rgba(101, 119, 134, 0.5) 0px 0px 4px);
+  filter: drop-shadow(rgba(101, 119, 134, 0.4) 0px 0.5px 5px);
   /* box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
     rgb(101 119 134 / 15%) 0px 0px 3px 1px; */
 }
 
 .container__box .box__triangle {
   position: absolute;
-  top: -11px;
+  top: -18px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 30px;
   color: white;
+  z-index: 30;
+}
+
+.container__box .box__triangle svg {
+  font-size: 40px;
 }
 
 .container {
@@ -22,7 +26,6 @@
   z-index: 3;
   border-radius: 4px;
   background-color: #fff;
-
   /* box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
     rgb(101 119 134 / 15%) 0px 0px 3px 1px; */
 }
@@ -119,4 +122,31 @@
 
 .container .btn .leftBar__userInfo .userInfo__etc svg {
   color: #429170;
+}
+
+@media screen and (max-width: 1264px) {
+  .container__box {
+    filter: drop-shadow(rgba(101, 119, 134, 0.4) 0px 0.5px 4px);
+  }
+
+  .container {
+    top: -53px;
+  }
+
+  .container .updateBtn {
+    display: none;
+  }
+
+  .container .btn .leftBar__userInfo {
+    display: none;
+  }
+
+  .container .btn .leftBar__userInfo .userInfo__etc {
+    /* overflow: hidden; */
+    display: none;
+  }
+
+  .container .deleteBtn svg {
+    margin: 0;
+  }
 }
