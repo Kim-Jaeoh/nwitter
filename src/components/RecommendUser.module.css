@@ -4,6 +4,7 @@
   border-radius: 16px;
   overflow: hidden;
   user-select: none;
+  margin-top: 12px;
 }
 
 .followBox .followBox__name {
@@ -111,14 +112,14 @@
   justify-content: center;
   align-items: center;
   border-radius: 9999px;
-  background: #0f1419;
+  background: #213025;
   font-size: 14px;
   color: #fff;
   padding-bottom: 2px;
 }
 
 .followBox .follows .follow__user .follow__btn:hover {
-  background: #272c30;
+  background: #414d45;
 }
 
 /* 더 보기 */

@@ -137,7 +137,10 @@ const LeftBar = ({ userObj }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/explore" onClick={() => onSelect(2)}>
+                <Link
+                  to={"/explore/nweets/" + userObj.email?.split("@")[0]}
+                  onClick={() => onSelect(2)}
+                >
                   <div className={styled.leftBar__list}>
                     {selected === 2 ? (
                       <>
@@ -195,7 +198,8 @@ const LeftBar = ({ userObj }) => {
               </li>
               <li>
                 <Link
-                  to={"/profile/mynweets/" + userObj.email?.split("@")[0]}
+                  // to={"/profile/mynweets/" + userObj.email?.split("@")[0]}
+                  to={"/profile/mynweets/" + userObj.email}
                   onClick={() => onSelect(5)}
                 >
                   <div className={styled.leftBar__list}>

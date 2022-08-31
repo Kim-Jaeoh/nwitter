@@ -11,6 +11,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import { useHistory } from "react-router-dom";
 import Loading from "../components/Loading";
 import Nweet from "../components/Nweet";
+import { TopCategory } from "../components/TopCategory";
 import { dbService } from "../fbase";
 import styled from "./Bookmark.module.css";
 
@@ -70,42 +71,33 @@ const Bookmark = ({ userObj }) => {
     <>
       {loading && (
         <div className={styled.container}>
-          <div className={styled.main__container}>
-            <div className={styled.main__category}>
-              <div
-                className={styled.main__icon}
-                onClick={() => history.goBack()}
-              >
-                <IoArrowBackOutline />
-              </div>
-              <div className={styled.userInfo}>
-                <p>북마크</p>
-                <p>@{creatorInfo.email?.split("@")[0]}</p>
+          <TopCategory
+            text={"북마크"}
+            iconName={<IoArrowBackOutline />}
+            creatorInfo={creatorInfo}
+          />
+          {filterBookmark.length !== 0 ? (
+            <div>
+              {filterBookmark.map((myBook) => (
+                <Nweet key={myBook.id} nweetObj={myBook} userObj={userObj} />
+              ))}
+            </div>
+          ) : (
+            <div className={styled.noInfoBox}>
+              <div className={styled.noInfo}>
+                <img
+                  src="https://abs.twimg.com/sticky/illustrations/empty-states/book-in-bird-cage-400x200.v1.png"
+                  alt=""
+                ></img>
+                <h2>나중을 위해 트윗 저장하기</h2>
+                <p>
+                  좋은 트윗은 그냥 흘려 보내지 마세요. 나중에 다시 쉽게 찾을 수
+                  있도록 북마크에 추가하세요.
+                </p>
               </div>
             </div>
-            {filterBookmark.length !== 0 ? (
-              <div>
-                {filterBookmark.map((myBook) => (
-                  <Nweet key={myBook.id} nweetObj={myBook} userObj={userObj} />
-                ))}
-              </div>
-            ) : (
-              <div className={styled.noInfoBox}>
-                <div className={styled.noInfo}>
-                  <img
-                    src="https://abs.twimg.com/sticky/illustrations/empty-states/book-in-bird-cage-400x200.v1.png"
-                    alt=""
-                  ></img>
-                  <h2>나중을 위해 트윗 저장하기</h2>
-                  <p>
-                    좋은 트윗은 그냥 흘려 보내지 마세요. 나중에 다시 쉽게 찾을
-                    수 있도록 북마크에 추가하세요.
-                  </p>
-                </div>
-              </div>
-              // <Loading />
-            )}
-          </div>
+            // <Loading />
+          )}
         </div>
       )}
     </>

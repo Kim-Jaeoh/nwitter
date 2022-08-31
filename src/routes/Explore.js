@@ -1,16 +1,63 @@
-const Explore = () => {
+import { useEffect, useState } from "react";
+import styled from "./Explore.module.css";
+import { Route, Switch, useLocation } from "react-router-dom";
+import { SearchBar } from "../components/SearchBar";
+import SelectMenuBtn from "../components/SelectMenuBtn";
+import ExploreNweets from "../components/ExploreNweets";
+import { ExploreUsers } from "../components/ExploreUsers";
+
+const Explore = ({ userObj }) => {
+  const location = useLocation();
+  const [selected, setSelected] = useState(1);
+  const [loading, setLoading] = useState(null);
+
+  useEffect(() => {
+    if (location.pathname.includes("/nweets")) {
+      setSelected(1);
+    } else if (location.pathname.includes("/users")) {
+      setSelected(2);
+    }
+  }, [location.pathname]);
+
+  const onSelect = (num) => {
+    setSelected(num);
+  };
+
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      Explore 준비 중
-    </div>
+    <>
+      <div className={styled.container}>
+        <div className={styled.main__container}>
+          <div className={styled.main__category}>
+            <SearchBar userObj={userObj} />
+          </div>
+          <nav className={styled.categoryList}>
+            <SelectMenuBtn
+              num={1}
+              selected={selected}
+              onClick={() => onSelect(1)}
+              url={"/explore/nweets/"}
+              text={"트윗"}
+            />
+            <SelectMenuBtn
+              num={2}
+              selected={selected}
+              onClick={() => onSelect(2)}
+              url={"/explore/users"}
+              text={"사용자"}
+            />
+          </nav>
+        </div>
+
+        <Switch>
+          <Route path="/explore/nweets">
+            <ExploreNweets userObj={userObj} />
+          </Route>
+          <Route path="/explore/users">
+            <ExploreUsers userObj={userObj} />
+          </Route>
+        </Switch>
+      </div>
+    </>
   );
 };
 

@@ -61,7 +61,7 @@ const UpdateProfileModal = ({
     try {
       const options = {
         maxSizeMb: 1,
-        maxWidthOrHeight: 200,
+        maxWidthOrHeight: 800,
       };
       return await imageCompression(image, options);
     } catch (e) {
@@ -274,11 +274,7 @@ const UpdateProfileModal = ({
                 />
               </div>
               <div className={styled.bgImageBox}>
-                <img
-                  // src={editAttachmentBg ? editAttachmentBg : bgImg}
-                  src={editAttachmentBg}
-                  alt="배경화면 이미지"
-                />
+                <img src={editAttachmentBg} alt="배경화면 이미지" />
               </div>
             </div>
             <div className={styled.editBox}>

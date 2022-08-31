@@ -29,7 +29,9 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
                   <Route exact path="/">
                     <Home userObj={userObj} />
                   </Route>
-                  <Route path="/explore" component={Explore} />
+                  <Route path="/explore">
+                    <Explore userObj={userObj} />
+                  </Route>
                   <Route path="/notice" component={Notice} />
                   <Route path="/bookmark">
                     <Bookmark userObj={userObj} />

@@ -77,7 +77,7 @@
 .container .main__container .main__category .userInfo p:last-child {
   font-size: 13px;
   font-weight: 400;
-  color: #536471;
+  color: #53716a;
 }
 
 /* 프로필 수정 칸 */
@@ -120,6 +120,7 @@
 
 .container .main__container .profile .profile__edit {
   width: 100%;
+  height: 36px;
   display: flex;
   align-items: center;
   margin-bottom: 22px;
@@ -197,7 +198,7 @@
 
 .container .main__container .profile .profile__info .userInfo p:last-child {
   font-size: 15px;
-  color: #536471;
+  color: #53716a;
 }
 
 /* 자기소개 */
@@ -212,7 +213,7 @@
 }
 
 .container .main__container .profile .profile__info .profile__desc .notDesc {
-  color: #536471;
+  color: #53716a;
   opacity: 0.7;
 }
 
@@ -220,7 +221,7 @@
 .container .main__container .profile .profile__info .profile__createdAt {
   display: flex;
   align-items: center;
-  color: #536471;
+  color: #53716a;
 }
 
 .container .main__container .profile .profile__info .profile__createdAt svg {
@@ -244,15 +245,14 @@
   /* 프로필 수정 칸 */
   .container .main__container .setUserInfo {
     height: auto;
-    /* height: 350px; */
   }
 
   /* 프로필 이미지 */
   .container .main__container .profile .profile__edit .profile__image {
-    top: 25%;
-    /* transform: translateY(-50%); */
-    width: 130px;
-    height: 130px;
+    top: 30%;
+    /* transform: translateY(-38%); */
+    width: 100px;
+    height: 100px;
   }
 
   /* 배경 */

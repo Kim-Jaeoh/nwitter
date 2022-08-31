@@ -57,6 +57,7 @@ form {
 .center__container {
   flex: 1 1 auto;
   max-width: 600px;
+  /* width: 100%; */
   border-right: 1px solid #ebebeb;
   padding-bottom: 57px;
 }
@@ -77,6 +78,8 @@ form {
 
 @media screen and (max-width: 705px) {
   .center__container {
-    height: 100%;
+    /* width: 100%; */
+    border: 0;
+    /* height: 100%; */
   }
 }

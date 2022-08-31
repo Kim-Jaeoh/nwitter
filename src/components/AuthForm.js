@@ -31,48 +31,13 @@ const AuthForm = ({ newAccount }) => {
     }
   };
 
+  console.log(newAccount);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
       let user;
       if (newAccount) {
-        await createUserWithEmailAndPassword(authService, email, password).then(
-          async (result) => {
-            user = result.user;
-            console.log(user);
-            const usersRef = collection(dbService, "users");
-            await setDoc(doc(usersRef, user.email), {
-              uid: user.uid,
-              displayName: user.email.split("@")[0],
-              email: user.email,
-              photoURL: noneProfile,
-              createdAtId: Date.now(),
-              description: "",
-              bgURL: bgimg,
-              bookmark: [],
-              follower: [],
-              following: [],
-              reNweet: [],
-            });
-            dispatch(setLoginToken("login"));
-            dispatch(
-              setCurrentUser({
-                uid: user.uid,
-                displayName: user.email.split("@")[0],
-                email: user.email,
-                photoURL: noneProfile,
-                bgURL: bgimg,
-                description: "",
-                createdAtId: Date.now(),
-                bookmark: [],
-                follower: [],
-                following: [],
-                reNweet: [],
-              })
-            );
-          }
-        );
-      } else {
         // log in
         await signInWithEmailAndPassword(authService, email, password).then(
           async (result) => {
@@ -108,6 +73,43 @@ const AuthForm = ({ newAccount }) => {
             } else {
               console.log("에러");
             }
+          }
+        );
+      } else {
+        await createUserWithEmailAndPassword(authService, email, password).then(
+          async (result) => {
+            user = result.user;
+            console.log(user);
+            const usersRef = collection(dbService, "users");
+            await setDoc(doc(usersRef, user.email), {
+              uid: user.uid,
+              displayName: user.email.split("@")[0],
+              email: user.email,
+              photoURL: noneProfile,
+              createdAtId: Date.now(),
+              description: "",
+              bgURL: bgimg,
+              bookmark: [],
+              follower: [],
+              following: [],
+              reNweet: [],
+            });
+            dispatch(setLoginToken("login"));
+            dispatch(
+              setCurrentUser({
+                uid: user.uid,
+                displayName: user.email.split("@")[0],
+                email: user.email,
+                photoURL: noneProfile,
+                bgURL: bgimg,
+                description: "",
+                createdAtId: Date.now(),
+                bookmark: [],
+                follower: [],
+                following: [],
+                reNweet: [],
+              })
+            );
           }
         );
       }
@@ -179,7 +181,7 @@ const AuthForm = ({ newAccount }) => {
         <input
           type="submit"
           className={`${styled.authInput} ${styled.authSubmit}`}
-          value={newAccount ? "가입하기" : "로그인 하기"}
+          value={newAccount ? "로그인 하기" : "가입하기"}
         />
         {error && <span className={styled.authError}>{error}</span>}
       </form>

@@ -11,8 +11,10 @@ import { dbService } from "../fbase";
 import styled from "./RecommendUser.module.css";
 import noneProfile from "../image/noneProfile.jpg";
 import { GrRefresh } from "react-icons/gr";
+import { useHistory } from "react-router-dom";
 
 const RecommendUser = ({ userObj }) => {
+  const history = useHistory();
   const [users, setUsers] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
@@ -62,6 +64,18 @@ const RecommendUser = ({ userObj }) => {
     userInfo();
   }, [refresh, userObj.uid]);
 
+  const goPage = (user) => {
+    if (userObj.email !== user.email) {
+      history.push("/profile/mynweets/" + user.email);
+    } else {
+      console.log("error");
+    }
+  };
+
+  const showMore = () => {
+    history.push("/explore/users/");
+  };
+
   return (
     <section className={styled.followBox}>
       <div className={styled.followBox__name}>
@@ -75,7 +89,10 @@ const RecommendUser = ({ userObj }) => {
           if (index < 5) {
             return (
               <li key={user.id} className={styled.follow__user}>
-                <div className={styled.follow__userInfo}>
+                <div
+                  className={styled.follow__userInfo}
+                  onClick={() => goPage(user)}
+                >
                   <img
                     src={user.photoURL ? user.photoURL : noneProfile}
                     alt="profileImg"
@@ -92,7 +109,9 @@ const RecommendUser = ({ userObj }) => {
           } else return null;
         })}
       </ul>
-      <div className={styled.more}>더 보기</div>
+      <div className={styled.more} onClick={showMore}>
+        더 보기
+      </div>
     </section>
   );
 };

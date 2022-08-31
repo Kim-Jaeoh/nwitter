@@ -267,9 +267,6 @@
     border-radius: 0;
   }
 
-  .topBox {
-  }
-
   .container .editForm {
     /* min-width: 100%; */
     max-width: 100%;
@@ -281,14 +278,35 @@
 
   /* 프로필 이미지 */
   .container .editBox .edit .profile__image {
-    top: 19.2%;
+    top: 23%;
     /* transform: translateY(-50%); */
-    width: 130px;
-    height: 130px;
+    width: 100px;
+    height: 100px;
   }
 
   /* 배경 이미지*/
   .container .backImage {
     height: 150px;
+  }
+
+  /* 아이콘 */
+  .container .image__iconBox {
+    gap: 15px;
+  }
+  .container .image__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f1419bf;
+    cursor: pointer;
+    color: white;
+  }
+
+  .container .image__icon svg {
+    width: 18px;
+    height: 18px;
   }
 }

@@ -26,6 +26,7 @@
   height: 100%;
 }
 
+/* 프로필 이미지 */
 .profile__image {
   width: 48px;
   height: 48px;
@@ -33,6 +34,12 @@
   object-fit: contain;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile__image:hover {
+  filter: brightness(90%);
 }
 
 .userInfo {
@@ -59,6 +66,7 @@
 .userInfo .userInfo__name .userInfo__two {
   font-size: 15px;
   display: flex;
+  color: #53716a;
   align-items: baseline;
 }
 
@@ -164,6 +172,15 @@
   background-color: #5cb69134;
 }
 
+.nweet .nweet__actions .actionBox .actions__icon svg {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #53716a;
+}
+
 /* 좋아요 */
 .nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon::after {
   background-color: #f918801a;
@@ -171,25 +188,19 @@
 
 .nweet .nweet__actions .actionBox:nth-child(3):hover,
 .nweet .nweet__actions .actionBox:nth-child(3).like,
-.nweet .nweet__actions .actionBox:nth-child(3).like:hover {
+.nweet .nweet__actions .actionBox:nth-child(3).like:hover,
+.nweet .nweet__actions .actionBox:nth-child(3).like .actions__icon svg {
   color: red;
 }
 
 /* 북마크 */
-.nweet .nweet__actions .actionBox.bookmark {
+.nweet .nweet__actions .actionBox:nth-child(4).bookmark,
+.nweet .nweet__actions .actionBox:nth-child(4).bookmark .actions__icon svg {
   color: #429170;
 }
 
 .nweet .nweet__actions .actionBox:hover {
   color: #429170;
-}
-
-.nweet .nweet__actions .actionBox .actions__icon svg {
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* 트윗 액션 숫자 */
@@ -199,10 +210,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .nweet .nweet__actions .actionBox p {
   padding: 0 12px;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #53716a;
+}
+
+.nweet .nweet__actions .actionBox:nth-child(3) p {
+  color: red;
 }

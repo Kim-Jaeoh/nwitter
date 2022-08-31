@@ -15,19 +15,20 @@ import LikeNweets from "../components/LikeNweets";
 import SelectMenuBtn from "../components/SelectMenuBtn";
 import Loading from "../components/Loading";
 import { IoMdExit } from "react-icons/io";
+import { TopCategory } from "../components/TopCategory";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const uid = location.pathname.split("/")[3];
   const history = useHistory();
   const [creatorInfo, setCreatorInfo] = useState({});
   const [loading, setLoading] = useState(false);
   const [myNweets, setMyNweets] = useState([]);
   const [myLikeNweets, setMyLikeNweets] = useState([]);
-
   const [selected, setSelected] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
 
-  const location = useLocation();
   useEffect(() => {
     if (location.pathname.includes("/mynweets")) {
       setSelected(1);
@@ -42,7 +43,7 @@ const Profile = ({ refreshUser, userObj }) => {
   const getMyNweets = useCallback(() => {
     const q = query(
       collection(dbService, "nweets"),
-      where("creatorId", "==", userObj.uid),
+      where("email", "==", uid),
       orderBy("createdAt", "desc")
     );
 
@@ -53,34 +54,25 @@ const Profile = ({ refreshUser, userObj }) => {
       }));
       setMyNweets(array);
     });
-
-    // forEach
-    // onSnapshot(q, (querySnapshot) => {
-    //   const array = [];
-    //   querySnapshot.forEach((doc) => {
-    //     array.push({ id: doc.id, ...doc.data() });
-    //   });
-    //   setMyNweets(array);
-    // });
-  }, [userObj.uid]);
+  }, [uid]);
 
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+    onSnapshot(doc(dbService, "users", uid), (doc) => {
       setCreatorInfo(doc.data());
       setLoading(true);
       getMyNweets();
     });
 
     return () => setLoading(false); // cleanup function을 이용
-  }, [getMyNweets, userObj]);
+  }, [getMyNweets, uid]);
 
   // 좋아요 필터링
   useEffect(() => {
     // query는 데이터를 요청할 때 사용됨
     const q = query(
       collection(dbService, "nweets"),
-      where("like", "array-contains", userObj.uid)
+      where("like", "array-contains", uid)
     );
 
     onSnapshot(q, (querySnapshot) => {
@@ -99,7 +91,7 @@ const Profile = ({ refreshUser, userObj }) => {
     //   });
     //   setMyLikeNweets(array);
     // });
-  }, [userObj.uid]);
+  }, [uid]);
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
@@ -138,7 +130,6 @@ const Profile = ({ refreshUser, userObj }) => {
 
   const onSelect = (num) => {
     setSelected(num);
-    // setFocus(selected === num);
   };
 
   const toggleEdit = () => {
@@ -150,21 +141,13 @@ const Profile = ({ refreshUser, userObj }) => {
       {loading && (
         <section className={styled.container}>
           <div className={styled.main__container}>
-            <div className={styled.main__category}>
-              <div
-                className={styled.main__icon}
-                onClick={() => history.goBack()}
-              >
-                <IoArrowBackOutline />
-              </div>
-              <div className={styled.userInfo}>
-                <p>{creatorInfo.displayName}</p>
-                <p>{myNweets.length} 트윗</p>
-              </div>
-              <div className={styled.main__icon} onClick={onLogOutClick}>
-                <IoMdExit />
-              </div>
-            </div>
+            <TopCategory
+              text={creatorInfo.displayName}
+              iconName={<IoArrowBackOutline />}
+              iconName2={<IoMdExit />}
+              myNweets={myNweets}
+              onLogOutClick={onLogOutClick}
+            />
             <div className={styled.setUserInfo}>
               <div className={styled.backImage}>
                 <img src={creatorInfo.bgURL} alt="배경사진" />
@@ -174,9 +157,14 @@ const Profile = ({ refreshUser, userObj }) => {
                   <div className={styled.profile__image}>
                     <img src={creatorInfo.photoURL} alt="프로필 이미지" />
                   </div>
-                  <div className={styled.profile__editBtn} onClick={toggleEdit}>
-                    프로필 수정
-                  </div>
+                  {userObj.email === uid ? (
+                    <div
+                      className={styled.profile__editBtn}
+                      onClick={toggleEdit}
+                    >
+                      프로필 수정
+                    </div>
+                  ) : null}
                 </div>
                 <div className={styled.profile__info}>
                   <div className={styled.userInfo}>
@@ -202,21 +190,21 @@ const Profile = ({ refreshUser, userObj }) => {
                 num={1}
                 selected={selected}
                 onClick={() => onSelect(1)}
-                url={"/profile/mynweets/" + userObj.email?.split("@")[0]}
+                url={"/profile/mynweets/" + uid}
                 text={"트윗"}
               />
               <SelectMenuBtn
                 num={2}
                 selected={selected}
                 onClick={() => onSelect(2)}
-                url={"/profile/renweets/" + userObj.email?.split("@")[0]}
+                url={"/profile/renweets/" + uid}
                 text={"트윗 및 답글"}
               />
               <SelectMenuBtn
                 num={3}
                 selected={selected}
                 onClick={() => onSelect(3)}
-                url={"/profile/likenweets/" + userObj.email?.split("@")[0]}
+                url={"/profile/likenweets/" + uid}
                 text={"마음에 들어요"}
               />
             </nav>
@@ -224,13 +212,16 @@ const Profile = ({ refreshUser, userObj }) => {
             {loading ? (
               <Switch>
                 <Route path="/profile/mynweets/:id">
-                  <MyNweets myNweets={myNweets} userObj={userObj} />
+                  <MyNweets myNweets={myNweets} userObj={creatorInfo} />
                 </Route>
                 <Route path="/profile/renweets/:id">
-                  <ReNweets userObj={userObj} />
+                  <ReNweets userObj={creatorInfo} />
                 </Route>
                 <Route path="/profile/likenweets/:id">
-                  <LikeNweets myLikeNweets={myLikeNweets} userObj={userObj} />
+                  <LikeNweets
+                    myLikeNweets={myLikeNweets}
+                    userObj={creatorInfo}
+                  />
                 </Route>
               </Switch>
             ) : (

@@ -173,11 +173,13 @@ const NweetFactory = ({ userObj }) => {
       <div className={styled.factoryForm}>
         <div className={styled.factoryInput__container}>
           <div className={styled.nweet__profile}>
-            <img
-              src={creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile}
-              alt="profileImg"
-              className={styled.profile__image}
-            />
+            {!isLoading && (
+              <img
+                src={creatorInfo.photoURL}
+                alt="profileImg"
+                className={styled.profile__image}
+              />
+            )}
           </div>
           <form onSubmit={onSubmit} className={styled.factoryInput}>
             <div

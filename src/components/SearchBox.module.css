@@ -1,8 +1,6 @@
 .container {
   position: absolute;
   width: 100%;
-  /* left: -2%; */
-  /* height: 400px; */
   top: 20px;
   border-radius: 16px;
   overflow: hidden;
@@ -25,6 +23,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+.container .notice span {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.6;
 }
 
 /* 검색 내역창 */
@@ -112,12 +117,12 @@
 
 .followBox .follows .follow__user .follow__name p:nth-child(2) {
   font-size: 14px;
-  color: #536471;
+  color: #53716a;
 }
 
 .followBox .follows .follow__user .follow__name p:nth-child(3) {
   font-size: 14px;
-  color: #536471;
+  color: #53716a;
 }
 
 .followBox .follows .follow__user .follow__btn {

@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import styled from "./Home.module.css";
 import Nweet from "../components/Nweet";
 import NweetFactory from "../components/NweetFactory";
 import Loading from "../components/Loading";
-import { TbRepeat } from "react-icons/tb";
 import { HiOutlineSparkles } from "react-icons/hi";
+import { TopCategory } from "../components/TopCategory";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
-  const [creatorInfo, setCreatorInfo] = useState({});
-  const [isLoading, setIsLoading] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // // getNweets 아래 로직은 오래된 방식
   // const getNweets = async () => {
@@ -37,15 +30,11 @@ const Home = ({ userObj }) => {
   // };
 
   useEffect(() => {
-    setIsLoading(true); // 렌더링 후 로딩 스피너 on
-
-    // query는 데이터를 요청할 때 사용됨
     const q = query(
       collection(dbService, "nweets"),
       orderBy("createdAt", "desc") // asc(오름차순), desc(내림차순)
     );
 
-    // onSnapshot은 실시간으로 정보를 가져올 수 있음
     onSnapshot(q, (snapshot) => {
       // map 사용 시 - 더 적게 리렌더링 하기 때문에 map 사용이 나음
       const nweetArray = snapshot.docs.map((doc) => ({
@@ -53,7 +42,7 @@ const Home = ({ userObj }) => {
         ...doc.data(),
       }));
       setNweets(nweetArray);
-      setIsLoading(false); // obj 부른 후 로딩 종료 시 스피너 off
+      setLoading(true);
 
       // // forEach 사용 시 (리턴값 반환 X)
       // const nweetArrays = snapshot.docs.forEach((doc) => {
@@ -64,23 +53,15 @@ const Home = ({ userObj }) => {
       //   setNweets((prev) => [nweetObject, ...prev]);
       // });
     });
+    return () => setLoading(false);
   }, []);
 
   return (
     <>
-      {!isLoading && (
+      {loading && (
         <div className={styled.container}>
           <div className={styled.main__container}>
-            {isLoading && <Loading />} {/* 로딩 시 스피너 */}
-            <div className={styled.main__category}>
-              <div className={styled.main_text}>
-                <h2>홈</h2>
-              </div>
-              <div className={styled.change__emoji}>
-                <HiOutlineSparkles />
-                {/* <TbRepeat /> */}
-              </div>
-            </div>
+            <TopCategory text={"홈"} iconName={<HiOutlineSparkles />} />
             <NweetFactory userObj={userObj} />
             <div>
               {nweets.map((nweet) => (

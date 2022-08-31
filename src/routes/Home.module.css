@@ -1,5 +1,5 @@
 /* 카테고리 */
-.container .main__container .main__category {
+.main__category {
   position: sticky;
   top: 0px;
   z-index: 3;
@@ -16,13 +16,13 @@
   padding: 0 16px;
 }
 
-.container .main__container .main__category h2 {
+.main__category h2 {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.container .main__container .main__category .change__emoji {
+.main__category .change__emoji {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,7 +30,7 @@
   position: relative;
 }
 
-.container .main__container .main__category .change__emoji::after {
+.main__category .change__emoji::after {
   display: block;
   content: "";
   position: absolute;
@@ -41,7 +41,7 @@
   transition: all 0.2s;
 }
 
-.container .main__container .main__category .change__emoji svg {
+.main__category .change__emoji svg {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,6 +49,6 @@
   height: 20px;
 }
 
-.container .main__container .main__category .change__emoji:hover::after {
+.main__category .change__emoji:hover::after {
   background: #ececec;
 }

@@ -48,11 +48,11 @@ const Auth = () => {
         </div>
         {newAccount ? (
           <div className={styled.nwitter__info}>
-            <span>오늘 Nwitter에 가입하세요.</span>
+            <span>Nwitter 로그인하기</span>
           </div>
         ) : (
           <div className={styled.nwitter__info}>
-            <span>Nwitter 로그인하기</span>
+            <span>오늘 Nwitter에 가입하세요.</span>
           </div>
         )}
         <AuthForm newAccount={newAccount} />
@@ -63,7 +63,7 @@ const Auth = () => {
             className={styled.authBtn}
           >
             <FontAwesomeIcon icon={faGoogle} />
-            {newAccount ? "Google로 가입하기" : "Google로 로그인 하기"}
+            {newAccount ? "Google로 로그인 하기" : "Google로 가입하기"}
           </button>
           <button
             onClick={onSocialClick}
@@ -71,25 +71,25 @@ const Auth = () => {
             className={styled.authBtn}
           >
             <FontAwesomeIcon icon={faGithub} />
-            {newAccount ? "Github로 가입하기" : "Github로 로그인 하기"}
+            {newAccount ? "Github로 로그인 하기" : "Github로 가입하기"}
           </button>
         </div>
         {newAccount ? (
           <div className={styled.auth__notice}>
-            <span>이미 Nwitter에 가입하셨나요?</span>
+            <span>계정이 없으신가요?</span>
             <div>
               <span onClick={toggleAccount} className={styled.authSwitch}>
-                로그인
+                가입
               </span>
               <span>하기</span>
             </div>
           </div>
         ) : (
           <div className={styled.auth__notice}>
-            <span>계정이 없으신가요?</span>
+            <span>이미 Nwitter에 가입하셨나요?</span>
             <div>
               <span onClick={toggleAccount} className={styled.authSwitch}>
-                가입
+                로그인
               </span>
               <span>하기</span>
             </div>

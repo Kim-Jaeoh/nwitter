@@ -1,0 +1,178 @@
+/* 홈 카테고리 */
+.main__category {
+  position: sticky;
+  top: 0px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #ebebeb;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 0 16px;
+}
+
+.main__category h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main__category .change__emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.main__category .change__emoji::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.2s;
+}
+
+.main__category .change__emoji svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.main__category .change__emoji:hover::after {
+  background: #ececec;
+}
+
+/* 나머지 카테고리 (상단 닉네임) */
+.minor__category {
+  position: sticky;
+  top: 0px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #ebebeb;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 0 16px;
+}
+
+.minor__category h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 이모지 */
+.minor__category .minor__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  margin-right: 30px;
+}
+
+.minor__category .minor__icon:last-child {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.minor__category .minor__icon::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.2s;
+}
+
+.minor__category .minor__icon svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.minor__category .minor__icon:hover::after {
+  background: #ececec;
+}
+
+.minor__category .userInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.minor__category .userInfo p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.minor__category .userInfo p:first-child {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.minor__category .userInfo p:last-child {
+  font-size: 13px;
+  font-weight: 400;
+  color: #53716a;
+}
+
+/* 프로필 카테고리 아이콘 */
+.minor__category .minor__iconExit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  margin-right: 30px;
+}
+
+.minor__category .minor__iconExit:last-child {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.minor__category .minor__iconExit::after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.2s;
+}
+
+.minor__category .minor__iconExit svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.minor__category .minor__iconExit:hover::after {
+  background: #ececec;
+}
