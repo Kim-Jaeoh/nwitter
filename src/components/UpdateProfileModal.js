@@ -61,7 +61,7 @@ const UpdateProfileModal = ({
     try {
       const options = {
         maxSizeMb: 1,
-        maxWidthOrHeight: 800,
+        maxWidthOrHeight: 600,
       };
       return await imageCompression(image, options);
     } catch (e) {
@@ -192,26 +192,6 @@ const UpdateProfileModal = ({
     alert(`프로필이 수정되었습니다.`);
     toggleEdit(false);
     // history.push("/");
-  };
-
-  const onLogOutClick = () => {
-    authService.signOut();
-    dispatch(setLoginToken("logout"));
-    dispatch(
-      setCurrentUser({
-        photoURL: "",
-        uid: "",
-        displayName: "",
-        email: "",
-        description: "",
-        bgURL: "",
-        // bookmark: [],
-        // follower: [],
-        // following: [],
-        // rejweet: [],
-      })
-    );
-    history.push("/");
   };
 
   return (

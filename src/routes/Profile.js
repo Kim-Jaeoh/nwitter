@@ -56,6 +56,10 @@ const Profile = ({ refreshUser, userObj }) => {
     });
   }, [uid]);
 
+  useEffect(() => {
+    return () => setLoading(false); // cleanup function을 이용
+  }, []);
+
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
     onSnapshot(doc(dbService, "users", uid), (doc) => {
@@ -63,8 +67,6 @@ const Profile = ({ refreshUser, userObj }) => {
       setLoading(true);
       getMyNweets();
     });
-
-    return () => setLoading(false); // cleanup function을 이용
   }, [getMyNweets, uid]);
 
   // 좋아요 필터링

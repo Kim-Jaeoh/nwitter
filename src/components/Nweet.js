@@ -23,6 +23,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer/user";
 import { Link, useHistory } from "react-router-dom";
+import Loading from "./Loading";
 
 const Nweet = ({ nweetObj, isOwner, userObj }) => {
   const dispatch = useDispatch();
@@ -42,13 +43,16 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    return () => setLoading(false);
+  }, []);
+
   //  map 처리 된 유저 정보들
   useEffect(() => {
     onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
       setCreatorInfo(doc.data());
       setLoading(true);
     });
-    return () => setLoading(false);
   }, [nweetObj]);
 
   useEffect(() => {
@@ -69,8 +73,8 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
 
   // 좋아요 목록 중 본인 아이디 있으면 true
   useEffect(() => {
-    setLiked(nweetObj.like?.includes(userObj.email));
-  }, [nweetObj.like, userObj.email]);
+    setLiked(nweetObj.like?.includes(currentUser.email));
+  }, [nweetObj.like, currentUser.email]);
 
   // 북마크된 본인 아이디 있으면 true
   useEffect(() => {
@@ -115,17 +119,18 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   const toggleLike = async () => {
-    if (nweetObj.like?.includes(userObj.email)) {
+    if (nweetObj.like?.includes(currentUser.email)) {
       setLiked(false);
       const copy = [...nweetObj.like];
-      copy.splice(userObj.email, 1);
+      // copy.splice(nweetObj.like.indexOf(currentUser.email), 1);
+      const filter = copy.filter((email) => email !== currentUser.email);
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
-        like: copy,
+        like: filter,
       });
-    } else if (!nweetObj.like?.includes(userObj.email)) {
+    } else {
       setLiked(true);
       const copy = [...nweetObj.like];
-      copy.push(userObj.email);
+      copy.push(currentUser.email);
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         like: copy,
       });
@@ -146,7 +151,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
           bookmark: filter,
         })
       );
-    } else if (!currentUser.bookmark?.includes(nweetObj.id)) {
+    } else {
       setBookmark(true);
       const copy = [...currentUser.bookmark];
       copy.push(nweetObj.id);
@@ -178,7 +183,8 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
             <div className={styled.nweet__container}>
               <div className={styled.nweet__profile} onClick={goPage}>
                 <img
-                  src={creatorInfo.photoURL}
+                  // src={creatorInfo.photoURL}
+                  src={loading ? creatorInfo.photoURL : <Loading />}
                   alt="profileImg"
                   className={styled.profile__image}
                 />

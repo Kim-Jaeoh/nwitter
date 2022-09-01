@@ -186,7 +186,7 @@
   background-color: #f918801a;
 }
 
-.nweet .nweet__actions .actionBox:nth-child(3):hover,
+/* .nweet .nweet__actions .actionBox:nth-child(3):hover, */
 .nweet .nweet__actions .actionBox:nth-child(3).like,
 .nweet .nweet__actions .actionBox:nth-child(3).like:hover,
 .nweet .nweet__actions .actionBox:nth-child(3).like .actions__icon svg {
@@ -220,6 +220,6 @@
   color: #53716a;
 }
 
-.nweet .nweet__actions .actionBox:nth-child(3) p {
+.nweet .nweet__actions .actionBox:nth-child(3).like p {
   color: red;
 }
