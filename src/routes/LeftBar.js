@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { AiOutlineHome, AiFillHome } from "react-icons/ai";
+import { AiOutlineHome, AiFillHome, AiTwotoneHome } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { BsPerson, BsBell, BsBellFill, BsPersonFill } from "react-icons/bs";
 import { FaFeatherAlt, FaHashtag, FaTwitter } from "react-icons/fa";
@@ -53,6 +53,7 @@ const LeftBar = ({ userObj }) => {
     return () => window.addEventListener("click", handleClick);
   }, [userEtc]);
 
+  // 리사이징
   useEffect(() => {
     // 렌더 시
     if (size < 500) {

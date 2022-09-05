@@ -62,7 +62,10 @@ const Home = ({ userObj }) => {
         <div className={styled.container}>
           <div className={styled.main__container}>
             <TopCategory text={"홈"} iconName={<HiOutlineSparkles />} />
-            <NweetFactory userObj={userObj} />
+            <NweetFactory
+              userObj={userObj}
+              placeholderText={"무슨 일이 일어나고 있나요?"}
+            />
             <div>
               {nweets.map((nweet) => (
                 <Nweet

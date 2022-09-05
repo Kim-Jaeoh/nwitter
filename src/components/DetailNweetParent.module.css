@@ -221,15 +221,15 @@
 }
 
 /* 좋아요 */
-.nweet .nweet__actions .actionBox:nth-child(3):hover,
-.nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon svg,
-.nweet .nweet__actions .actionBox:nth-child(3).like .actions__icon svg,
-.nweet .nweet__actions .actionBox:nth-child(3).like:hover {
-  color: red;
+.nweet .nweet__actions .actionBoxhover .actions__icon::after {
+  background-color: #f918801a;
 }
 
-.nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon::after {
-  background-color: #f918801a;
+/* .nweet .nweet__actions .actionBoxhover, */
+.nweet .nweet__actions .actionBox.like,
+.nweet .nweet__actions .actionBox.like:hover,
+.nweet .nweet__actions .actionBox.like .actions__icon svg {
+  color: red;
 }
 
 /* 북마크 */
@@ -238,20 +238,22 @@
   color: #429170;
 }
 
+.nweet .nweet__actions .actionBox:hover {
+  color: #429170;
+}
+
 /* 리트윗 */
 .nweet .nweet__actions .actionBox:nth-child(2) .actions__icon svg {
   transform: rotate(90deg);
 }
 
-.nweet .nweet__actions .actionBox:nth-child(2):hover,
-.nweet .nweet__actions .actionBox:nth-child(2):hover .actions__icon svg,
-.nweet .nweet__actions .actionBox.reNweet .actions__icon svg,
-.nweet .nweet__actions .actionBox.reNweet:hover {
+.nweet .nweet__actions .actionBox.reNweet,
+.nweet .nweet__actions .actionBox.reNweet .actions__icon svg {
   color: #00ba7c;
 }
 
-.nweet .nweet__actions .actionBox:nth-child(2):hover .actions__icon::after {
-  background-color: #00ba7c1a;
+.nweet .nweet__actions .actionBox:hover {
+  color: #00ba7c;
 }
 
 /* 트윗 액션 숫자 */

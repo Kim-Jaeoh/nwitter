@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
+import styled from "./Profile.module.css";
 import { doc, onSnapshot } from "firebase/firestore";
 import { collection, orderBy, query, where } from "firebase/firestore";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { authService, dbService } from "../fbase";
 import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
-import styled from "./Profile.module.css";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { BsCalendar3 } from "react-icons/bs";
+import Bookmark from "./Bookmark";
 import UpdateProfileModal from "../components/UpdateProfileModal";
 import MyNweets from "../components/MyNweets";
 import ReNweets from "../components/ReNweets";
@@ -16,6 +17,7 @@ import SelectMenuBtn from "../components/SelectMenuBtn";
 import Loading from "../components/Loading";
 import { IoMdExit } from "react-icons/io";
 import { TopCategory } from "../components/TopCategory";
+import ProfileBookmark from "../components/ProfileBookmark";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
@@ -28,6 +30,8 @@ const Profile = ({ refreshUser, userObj }) => {
   const [myLikeNweets, setMyLikeNweets] = useState([]);
   const [selected, setSelected] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
+  const [size, setSize] = useState(window.innerWidth);
+  const [resize, setResize] = useState(false);
 
   useEffect(() => {
     if (location.pathname.includes("/mynweets")) {
@@ -36,6 +40,8 @@ const Profile = ({ refreshUser, userObj }) => {
       setSelected(2);
     } else if (location.pathname.includes("/likenweets")) {
       setSelected(3);
+    } else if (location.pathname.includes("/bookmark")) {
+      setSelected(4);
     }
   }, [location.pathname]);
 
@@ -94,6 +100,22 @@ const Profile = ({ refreshUser, userObj }) => {
     //   setMyLikeNweets(array);
     // });
   }, [uid]);
+
+  // 리사이징
+  useEffect(() => {
+    // 렌더 시
+    if (size < 500) {
+      setResize(true);
+    } else if (size > 500) {
+      setResize(false);
+    }
+    const Resize = () => {
+      let innerSize = window.innerWidth;
+      setSize(innerSize);
+    };
+    window.addEventListener("resize", Resize);
+    return () => window.addEventListener("resize", Resize);
+  }, [size]);
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
@@ -209,6 +231,15 @@ const Profile = ({ refreshUser, userObj }) => {
                 url={"/profile/likenweets/" + uid}
                 text={"마음에 들어요"}
               />
+              {resize && (
+                <SelectMenuBtn
+                  num={4}
+                  selected={selected}
+                  onClick={() => onSelect(4)}
+                  url={"/profile/bookmark/" + uid}
+                  text={"북마크"}
+                />
+              )}
             </nav>
 
             {loading ? (
@@ -224,6 +255,9 @@ const Profile = ({ refreshUser, userObj }) => {
                     myLikeNweets={myLikeNweets}
                     userObj={creatorInfo}
                   />
+                </Route>
+                <Route path="/profile/bookmark/:id">
+                  <ProfileBookmark userObj={creatorInfo} />
                 </Route>
               </Switch>
             ) : (

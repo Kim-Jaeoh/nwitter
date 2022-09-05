@@ -14,15 +14,15 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer/user";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-const Nweet = ({ nweetObj, isOwner, userObj }) => {
+const DetailNweetReply = ({ nweetObj, userObj }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
   const imgRef = useRef();
-  const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
+  const dbRef = doc(dbService, "replies", `${nweetObj.id}`);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
     nweetObj.attachmentUrl
@@ -65,7 +65,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
 
   // 좋아요 목록 중 본인 아이디 있으면 true
   useEffect(() => {
-    setLiked(nweetObj?.like?.includes(currentUser.email));
+    setLiked(nweetObj.like?.includes(currentUser.email));
   }, [nweetObj.like, currentUser.email]);
 
   // 북마크된 본인 아이디 있으면 true
@@ -75,7 +75,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
 
   // 리트윗된 본인 아이디 있으면 true
   useEffect(() => {
-    setReNweet(nweetObj?.reNweet?.includes(currentUser.email));
+    setReNweet(nweetObj.reNweet?.includes(currentUser.email));
   }, [currentUser.email, nweetObj.reNweet]);
 
   const onChange = (e) => {
@@ -97,7 +97,15 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
 
   const timeToString = (timestamp) => {
     let date = new Date(timestamp);
+    let hours = ("0" + date.getHours()).slice(-2);
+    let minutes = ("0" + date.getMinutes()).slice(-2);
+
+    let timeString = hours + ":" + minutes;
+
     let str =
+      (date.getHours() < 12 ? "오전 " : "오후 ") +
+      timeString +
+      " · " +
       date.getFullYear() +
       "년 " +
       Number(date.getMonth() + 1) +
@@ -120,14 +128,14 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
       setLiked(false);
       const copy = [...nweetObj.like];
       const filter = copy.filter((email) => email !== currentUser.email);
-      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
         like: filter,
       });
     } else {
       setLiked(true);
       const copy = [...nweetObj.like];
       copy.push(currentUser.email);
-      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
         like: copy,
       });
     }
@@ -168,14 +176,14 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
       setReNweet(false);
       const copy = [...nweetObj.reNweet];
       const filter = copy.filter((email) => email !== currentUser.email);
-      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
         reNweet: filter,
       });
     } else {
       setReNweet(true);
       const copy = [...nweetObj.reNweet];
       copy.push(currentUser.email);
-      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
         reNweet: copy,
       });
     }
@@ -210,12 +218,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   const goPage = (e, type) => {
-    if (imgRef.current.contains(e.target)) {
-      history.push("/profile/mynweets/" + nweetObj.email);
-    } else {
-      history.push("/nweet/" + nweetObj.id);
-      // console.log("b");
-    }
+    history.push("/profile/mynweets/" + nweetObj.email);
   };
 
   return (
@@ -265,7 +268,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
                       </p>
                     </div>
                   </div>
-                  {isOwner && (
+                  {userObj.email === nweetObj.email && (
                     <div className={styled.nweet__edit} ref={etcRef}>
                       <div
                         className={styled.nweet__editIcon}
@@ -341,7 +344,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
               </div>
             </nav>
           </div>
-          {isOwner && isEditing && (
+          {userObj.email === nweetObj.email && isEditing && (
             <UpdateNweetModal
               creatorInfo={creatorInfo}
               setNewNweet={setNewNweet}
@@ -362,4 +365,4 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   );
 };
 
-export default Nweet;
+export default DetailNweetReply;

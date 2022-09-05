@@ -3,7 +3,14 @@ import styled from "./SearchBox.module.css";
 import SearchNweetsBox from "./SearchNweetsBox";
 import SearchUsersBox from "./SearchUsersBox";
 
-const SearchBox = ({ userResult, nweetResult, users, search, focus }) => {
+const SearchBox = ({
+  userResult,
+  nweetResult,
+  users,
+  search,
+  focus,
+  userObj,
+}) => {
   return (
     <>
       {focus && (
@@ -50,6 +57,7 @@ const SearchBox = ({ userResult, nweetResult, users, search, focus }) => {
                         key={nweet.id}
                         users={users}
                         nweet={nweet}
+                        userObj={userObj}
                       />
                     ))}
                   </ul>

@@ -10,16 +10,7 @@ import { useEffect, useState } from "react";
 import Nweet from "./Nweet";
 
 const ExploreNweets = ({ userObj }) => {
-  const [creatorInfo, setCreatorInfo] = useState({});
   const [nweets, setNweets] = useState([]);
-
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      // setLoading(true);
-    });
-    // return () => setLoading(false);
-  }, [userObj]);
 
   useEffect(() => {
     // setLoading(true); // 렌더링 후 로딩 스피너 on

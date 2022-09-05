@@ -1,109 +1,9 @@
-/* 카테고리 */
-.container {
-  position: relative;
-}
-
-.container .main__category {
-  position: sticky;
-  top: 0px;
-  z-index: 3;
-  display: flex;
-  /* justify-content: space-between; */
-  align-items: center;
-  width: 100%;
-  height: 60px;
-  font-size: 20px;
-  font-weight: bold;
-  border-bottom: 1px solid #ebebeb;
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  padding: 0 16px;
-}
-
-.container .main__category h2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.container .main__category .change__emoji {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-}
-
-/* 이모지 */
-.container .main__category .main__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  margin-right: 30px;
-}
-
-.container .main__category .main__icon:last-child {
-  margin-left: auto;
-  margin-right: 0;
-}
-
-.container .main__category .main__icon::after {
-  display: block;
-  content: "";
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  z-index: -1;
-  transition: all 0.2s;
-}
-
-.container .main__category .main__icon svg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-.container .main__category .main__icon:hover::after {
-  background: #ececec;
-}
-
-/* 상단 닉네임 */
-.container .main__category .userInfo {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 8px 0;
-}
-
-.container .main__category .userInfo p {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.container .main__category .userInfo p:first-child {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.container .main__category .userInfo p:last-child {
-  font-size: 13px;
-  font-weight: 400;
-  color: #536471;
-}
-
 /* 정보 없을 때 */
-.container .noInfoBox {
+.noInfoBox {
   word-break: keep-all;
 }
 
-.container .noInfoBox .noInfo {
+.noInfoBox .noInfo {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,27 +15,35 @@
   letter-spacing: -0.5px;
 }
 
-.container .noInfoBox .noInfo img {
+.noInfoBox .noInfo img {
   margin: 16px 0 20px;
   width: 300px;
 }
 
-.container .noInfoBox .noInfo h2 {
-  font-size: 31px !important;
+.noInfoBox .noInfo h2 {
+  font-size: 31px;
   font-weight: 700;
-  line-height: 36px;
+  line-height: 40px;
   margin-bottom: 12px;
 }
 
-.container .noInfoBox .noInfo p {
+.noInfoBox .noInfo p {
   font-size: 15px;
-  line-height: 18px;
+  line-height: 20px;
   color: #536471;
 }
 
 @media screen and (max-width: 687px) {
-  /* 상단 닉네임 */
-  .container .main__category .userInfo p:first-child {
-    font-size: 17px;
+  .noInfoBox .noInfo img {
+    margin: 10px 0 15px;
+  }
+
+  .noInfoBox .noInfo {
+    width: 380px;
+  }
+
+  .noInfoBox .noInfo h2 {
+    font-size: 26px;
+    line-height: 35px;
   }
 }

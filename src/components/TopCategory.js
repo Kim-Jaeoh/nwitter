@@ -27,6 +27,8 @@ export const TopCategory = ({
       setSelected("notHome");
     } else if (location.pathname.includes("/profile")) {
       setSelected("notHome");
+    } else if (location.pathname.includes("/nweet")) {
+      setSelected("notHome");
     }
   }, [location.pathname]);
 
@@ -45,9 +47,15 @@ export const TopCategory = ({
             {iconName}
           </div>
           <div className={styled.userInfo}>
-            <p>{text}</p>
-            {myNweets && <p>{myNweets.length} 트윗</p>}
-            {creatorInfo && <p>@{creatorInfo.email?.split("@")[0]}</p>}
+            <p className={styled.category__name}>{text}</p>
+            {myNweets && (
+              <p className={styled.category__sub}>{myNweets.length} 트윗</p>
+            )}
+            {creatorInfo && (
+              <p className={styled.category__sub}>
+                @{creatorInfo.email?.split("@")[0]}
+              </p>
+            )}
           </div>
           {onLogOutClick && (
             <div className={styled.minor__iconExit} onClick={onLogOutClick}>

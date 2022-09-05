@@ -127,13 +127,13 @@
   text-overflow: ellipsis;
 }
 
-.minor__category .userInfo p:first-child {
+.minor__category .userInfo .category__name {
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 4px;
 }
 
-.minor__category .userInfo p:last-child {
+.minor__category .userInfo .category__sub {
+  margin-top: 4px;
   font-size: 13px;
   font-weight: 400;
   color: #53716a;

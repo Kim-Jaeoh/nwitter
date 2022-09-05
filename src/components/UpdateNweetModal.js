@@ -90,12 +90,11 @@ const UpdateNweetModal = ({
           <div className={styled.topBox}>
             <div className={styled.close} onClick={toggleEdit}>
               <GrClose />
-              {/* <IoClose /> */}
             </div>
             <div className={styled.submit}>
               <input
                 type="submit"
-                value="트윗하기"
+                value="수정하기"
                 className={styled.editInput__arrow}
                 disabled={newNweet === "" && newNweetAttachment === ""}
               />
@@ -159,28 +158,6 @@ const UpdateNweetModal = ({
               )}
             </div>
           </div>
-          {/* <div className={styled.editInput__add}>
-            <div ref={emojiRef} onClick={toggleEmoji}>
-              <div className={styled.editInput__emoji}>
-                <GrEmoji />
-              </div>
-              {clickEmoji && (
-                <div
-                  className={`${styled.emoji} 
-                    ${clickEmoji ? styled.emoji__block : styled.emoji__hidden}
-                  `}
-                >
-                  <Picker onEmojiClick={onEmojiClick} disableAutoFocus={true} />
-                </div>
-              )}
-            </div>
-            <input
-              type="submit"
-              value="트윗하기"
-              className={styled.editInput__arrow}
-              disabled={newNweet === "" && newNweetAttachment === ""}
-            />
-          </div> */}
         </form>
       </div>
     </Modal>

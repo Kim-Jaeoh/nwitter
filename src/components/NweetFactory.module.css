@@ -66,15 +66,8 @@
   margin-bottom: -6px;
 }
 
-/* 배경 아이콘 */
-.factoryInput__image input[type="file"] {
-  display: hidden;
-  width: 0px;
-  height: 0px;
-  opacity: 0;
-}
-
-.factoryInput__image {
+/* 아이콘 공통 */
+.factoryInput__iconBox {
   width: 34px;
   height: 34px;
   display: flex;
@@ -86,25 +79,7 @@
   transition: all 0.2s;
 }
 
-.factoryInput__image label {
-  cursor: pointer;
-}
-
-.factoryInput__image .factoryInput__label svg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  color: #429170;
-}
-
-.factoryInput__image:hover {
-  background-color: rgba(51, 114, 88, 0.1);
-}
-
-/* 이모지 아이콘 */
-.factoryInput__emoji {
+.factoryInput__icon {
   width: 34px;
   height: 34px;
   display: flex;
@@ -115,7 +90,7 @@
   transition: all 0.2s;
 }
 
-.factoryInput__emoji svg {
+.factoryInput__icon svg {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -124,10 +99,23 @@
   color: #429170;
 }
 
-.factoryInput__emoji:hover {
+.factoryInput__icon:hover {
   background-color: #5cb69134;
 }
 
+/* 배경 아이콘 */
+.factoryInput__image input[type="file"] {
+  display: hidden;
+  width: 0px;
+  height: 0px;
+  opacity: 0;
+}
+
+.factoryInput__iconBox label {
+  cursor: pointer;
+}
+
+/* 이모지 아이콘 */
 .emoji {
   position: absolute;
   top: 90px;
@@ -214,7 +202,7 @@
     display: none;
   }
 
-  .factoryInput__emoji {
+  .factoryInput__iconBox .factoryInput__icon.emoji__icon {
     display: none;
   }
 }

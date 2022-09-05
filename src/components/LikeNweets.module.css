@@ -1,3 +1,41 @@
-.container {
+/* 정보 없을 때 */
+.noInfoBox {
   text-align: center;
+  word-break: keep-all;
+}
+
+.noInfoBox .noInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 400px;
+  margin: 32px auto;
+  padding: 0 32px;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+.noInfoBox .noInfo h2 {
+  font-size: 31px;
+  font-weight: 700;
+  line-height: 40px;
+  margin-bottom: 12px;
+}
+
+.noInfoBox .noInfo p {
+  font-size: 15px;
+  line-height: 20px;
+  color: #536471;
+}
+
+@media screen and (max-width: 687px) {
+  .noInfoBox .noInfo {
+    width: 380px;
+  }
+
+  .noInfoBox .noInfo h2 {
+    font-size: 26px;
+    line-height: 35px;
+  }
 }

@@ -1,21 +1,13 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { useHistory } from "react-router-dom";
 import Loading from "../components/Loading";
 import Nweet from "../components/Nweet";
 import { TopCategory } from "../components/TopCategory";
 import { dbService } from "../fbase";
-import styled from "./Bookmark.module.css";
+import styled from "../routes/Bookmark.module.css";
 
-const Bookmark = ({ userObj }) => {
+const ProfileBookmark = ({ userObj }) => {
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [filterBookmark, setFilterBookmark] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,12 +45,7 @@ const Bookmark = ({ userObj }) => {
   return (
     <>
       {loading && (
-        <div className={styled.container}>
-          <TopCategory
-            text={"북마크"}
-            iconName={<IoArrowBackOutline />}
-            creatorInfo={creatorInfo}
-          />
+        <>
           {filterBookmark.length !== 0 ? (
             <div>
               {filterBookmark.map((myBook) => (
@@ -79,12 +66,11 @@ const Bookmark = ({ userObj }) => {
                 </p>
               </div>
             </div>
-            // <Loading />
           )}
-        </div>
+        </>
       )}
     </>
   );
 };
 
-export default Bookmark;
+export default ProfileBookmark;

@@ -15,6 +15,7 @@ import NotFound from "../routes/NotFound";
 import Explore from "../routes/Explore";
 import Bookmark from "../routes/Bookmark";
 import Notice from "../routes/Notice";
+import { DetailNweet } from "./DetailNweet";
 
 const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
   return (
@@ -35,6 +36,9 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
                   <Route path="/notice" component={Notice} />
                   <Route path="/bookmark">
                     <Bookmark userObj={userObj} />
+                  </Route>
+                  <Route exact path="/nweet/:id">
+                    <DetailNweet userObj={userObj} />
                   </Route>
                   <Route path="/profile/:type/:id">
                     <Profile userObj={userObj} refreshUser={refreshUser} />

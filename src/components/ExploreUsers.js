@@ -5,11 +5,6 @@ import { dbService } from "../fbase";
 
 export const ExploreUsers = ({ userObj }) => {
   const [users, setUsers] = useState([]);
-  // const [refresh, setRefresh] = useState(false);
-
-  const randomArray = (array) => {
-    array.sort(() => Math.floor(Math.random() - 0.5));
-  };
 
   useEffect(() => {
     const userInfo = async () => {
@@ -24,6 +19,11 @@ export const ExploreUsers = ({ userObj }) => {
       // 본인 제외 노출
       const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
 
+      // 유저 랜덤
+      const randomArray = (array) => {
+        array.sort(() => Math.floor(Math.random() - 0.5));
+      };
+
       randomArray(exceptArray);
       setUsers(exceptArray);
     };
@@ -34,27 +34,23 @@ export const ExploreUsers = ({ userObj }) => {
   return (
     <div className={styled.followBox}>
       <ul className={styled.follows}>
-        {users.map((user, index) => {
-          if (index < 5) {
-            return (
-              <li key={user.id} className={styled.follow__user}>
-                <div className={styled.follow__userInfo}>
-                  <img
-                    src={user.photoURL}
-                    alt="profileImg"
-                    className={styled.follow__image}
-                  />
-                  <div className={styled.follow__name}>
-                    <p>{user.displayName}</p>
-                    <p>@{user.email.split("@")[0]}</p>
-                    {user.description && <p>: {user.description}</p>}
-                  </div>
-                </div>
-                <div className={styled.follow__btn}>팔로우</div>
-              </li>
-            );
-          } else return null;
-        })}
+        {users.map((user, index) => (
+          <li key={user.id} className={styled.follow__user}>
+            <div className={styled.follow__userInfo}>
+              <img
+                src={user.photoURL}
+                alt="profileImg"
+                className={styled.follow__image}
+              />
+              <div className={styled.follow__name}>
+                <p>{user.displayName}</p>
+                <p>@{user.email.split("@")[0]}</p>
+                {user.description && <p>: {user.description}</p>}
+              </div>
+            </div>
+            <div className={styled.follow__btn}>팔로우</div>
+          </li>
+        ))}
       </ul>
     </div>
   );

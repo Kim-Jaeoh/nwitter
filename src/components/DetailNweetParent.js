@@ -1,7 +1,7 @@
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { dbService } from "../fbase";
-import styled from "./Nweet.module.css";
+import styled from "./DetailNweetParent.module.css";
 import { FiMoreHorizontal, FiRepeat } from "react-icons/fi";
 import NweetEtcBtn from "./NweetEtcBtn";
 import UpdateNweetModal from "./UpdateNweetModal";
@@ -14,9 +14,9 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer/user";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-const Nweet = ({ nweetObj, isOwner, userObj }) => {
+const DetailNweetParent = ({ nweetObj, userObj }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -40,7 +40,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     return () => setLoading(false);
   }, []);
 
-  //  map 처리 된 유저 정보들
+  //  map 처리 된 각 유저 정보들
   useEffect(() => {
     onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
       setCreatorInfo(doc.data());
@@ -97,7 +97,15 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
 
   const timeToString = (timestamp) => {
     let date = new Date(timestamp);
+    let hours = ("0" + date.getHours()).slice(-2);
+    let minutes = ("0" + date.getMinutes()).slice(-2);
+
+    let timeString = hours + ":" + minutes;
+
     let str =
+      (date.getHours() < 12 ? "오전 " : "오후 ") +
+      timeString +
+      " · " +
       date.getFullYear() +
       "년 " +
       Number(date.getMonth() + 1) +
@@ -210,12 +218,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   };
 
   const goPage = (e, type) => {
-    if (imgRef.current.contains(e.target)) {
-      history.push("/profile/mynweets/" + nweetObj.email);
-    } else {
-      history.push("/nweet/" + nweetObj.id);
-      // console.log("b");
-    }
+    history.push("/profile/mynweets/" + nweetObj.email);
   };
 
   return (
@@ -265,7 +268,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
                       </p>
                     </div>
                   </div>
-                  {isOwner && (
+                  {userObj.email === nweetObj.email && (
                     <div className={styled.nweet__edit} ref={etcRef}>
                       <div
                         className={styled.nweet__editIcon}
@@ -341,7 +344,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
               </div>
             </nav>
           </div>
-          {isOwner && isEditing && (
+          {userObj.email === nweetObj.email && isEditing && (
             <UpdateNweetModal
               creatorInfo={creatorInfo}
               setNewNweet={setNewNweet}
@@ -362,4 +365,4 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   );
 };
 
-export default Nweet;
+export default DetailNweetParent;

@@ -149,7 +149,7 @@ const UpdateProfileModal = ({
         bookmark: currentUser.bookmark,
         follower: currentUser.follower,
         following: currentUser.following,
-        rejweet: currentUser.rejweet,
+        reNweet: currentUser.reNweet,
       })
     );
 
@@ -166,7 +166,7 @@ const UpdateProfileModal = ({
           bookmark: currentUser.bookmark,
           follower: currentUser.follower,
           following: currentUser.following,
-          rejweet: currentUser.rejweet,
+          reNweet: currentUser.reNweet,
         })
       );
     }

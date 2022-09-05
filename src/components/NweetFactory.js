@@ -11,20 +11,26 @@ import noneProfile from "../image/noneProfile.jpg";
 import Picker from "emoji-picker-react";
 import imageCompression from "browser-image-compression";
 
-const NweetFactory = ({ userObj }) => {
+const NweetFactory = ({ userObj, placeholderText }) => {
   const fileInput = useRef();
   const textRef = useRef();
   const emojiRef = useRef();
   const [nweet, setNweet] = useState("");
   const [attachment, setAttachment] = useState("");
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [creatorInfo, setCreatorInfo] = useState({});
   const [clickEmoji, setClickEmoji] = useState(false);
   const [focus, setFocus] = useState(false);
 
   useEffect(() => {
+    return () => setLoading(false);
+  }, []);
+
+  useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
+      setLoading(true);
     });
   }, [userObj]);
 
@@ -76,6 +82,8 @@ const NweetFactory = ({ userObj }) => {
         attachmentUrl,
         email: userObj.email,
         like: [],
+        reNweet: [],
+        reply: [],
       };
 
       await addDoc(collection(dbService, "nweets"), attachmentNweet);
@@ -173,7 +181,7 @@ const NweetFactory = ({ userObj }) => {
       <div className={styled.factoryForm}>
         <div className={styled.factoryInput__container}>
           <div className={styled.nweet__profile}>
-            {!isLoading && (
+            {loading && (
               <img
                 src={creatorInfo.photoURL}
                 alt="profileImg"
@@ -197,7 +205,8 @@ const NweetFactory = ({ userObj }) => {
                 onClick={onClick}
                 onInput={handleResizeHeight}
                 maxLength={280}
-                placeholder="무슨 일이 일어나고 있나요?"
+                // placeholder="무슨 일이 일어나고 있나요?"
+                placeholder={placeholderText}
               />
               {attachment && (
                 <div className={styled.factoryForm__attachment}>
@@ -220,12 +229,12 @@ const NweetFactory = ({ userObj }) => {
               )}
             </div>
             <div className={styled.factoryInput__add}>
-              <div className={styled.factoryInput__image}>
+              <div className={styled.factoryInput__iconBox}>
                 <label
                   htmlFor="attach-file"
                   className={styled.factoryInput__label}
                 >
-                  <div>
+                  <div className={styled.factoryInput__icon}>
                     <IoImageOutline />
                   </div>
                 </label>
@@ -237,8 +246,14 @@ const NweetFactory = ({ userObj }) => {
                   onChange={onFileChange}
                 />
               </div>
-              <div ref={emojiRef} onClick={toggleEmoji}>
-                <div className={styled.factoryInput__emoji}>
+              <div
+                ref={emojiRef}
+                onClick={toggleEmoji}
+                className={styled.factoryInput__iconBox}
+              >
+                <div
+                  className={`${styled.factoryInput__icon} ${styled.emoji__icon}`}
+                >
                   <GrEmoji />
                 </div>
                 {/* 해결: clickEmoji이 true일 때만 실행해서textarea 버벅이지 않음 */}
