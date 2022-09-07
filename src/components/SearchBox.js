@@ -18,6 +18,7 @@ const SearchBox = ({
           {search === "" && (
             <div className={styled.notice}>
               <p>사용자, 키워드를 검색해보세요.</p>
+              <span>(본인 정보는 노출되지 않습니다.)</span>
             </div>
           )}
           {search !== "" &&

@@ -33,9 +33,15 @@ const ExploreNweets = ({ userObj }) => {
   return (
     <>
       {nweets.length !== 0 && (
-        <div>
+        <div style={{ marginTop: "53px" }}>
           {nweets.map((nweet, index) => (
-            <Nweet key={nweet.id} nweetObj={nweet} userObj={userObj} />
+            <Nweet
+              key={nweet.id}
+              nweetObj={nweet}
+              userObj={userObj}
+              type={"nweets"}
+              isOwner={nweet.email === userObj.email}
+            />
           ))}
         </div>
       )}

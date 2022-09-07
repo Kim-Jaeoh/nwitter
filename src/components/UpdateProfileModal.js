@@ -137,6 +137,7 @@ const UpdateProfileModal = ({
       bgURL: editAttachmentBg,
       description: desc,
     });
+
     await dispatch(
       setCurrentUser({
         // uid: currentUser.uid,
@@ -184,7 +185,7 @@ const UpdateProfileModal = ({
           bookmark: currentUser.bookmark,
           follower: currentUser.follower,
           following: currentUser.following,
-          rejweet: currentUser.rejweet,
+          reNweet: currentUser.reNweet,
         })
       );
     }

@@ -1,24 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  addDoc,
-  collection,
-  doc,
-  onSnapshot,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { GrEmoji } from "react-icons/gr";
 import Picker from "emoji-picker-react";
-import { useHistory, useLocation } from "react-router-dom";
 import { v4 } from "uuid";
 import { dbService, storageService } from "../fbase";
 import imageCompression from "browser-image-compression";
-import styled from "../components/NweetFactory.module.css";
+import styled from "../components/DetailReplyForm.module.css";
+import { BsReplyFill } from "react-icons/bs";
+import { FiRepeat } from "react-icons/fi";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const history = useHistory();
   const fileInput = useRef();
   const textRef = useRef();
   const emojiRef = useRef();
@@ -26,7 +23,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
   const [attachment, setAttachment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [clickEmoji, setClickEmoji] = useState(false);
-  const [focus, setFocus] = useState(false);
+  const [select, setSelect] = useState("");
 
   // 이모지 모달 밖 클릭 시 창 끔
   useEffect(() => {
@@ -36,9 +33,6 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
       // emojiRef 내의 클릭한 영역의 타겟이 없으면 true
       if (!emojiRef.current.contains(e.target)) {
         setClickEmoji(false);
-      }
-      if (!textRef.current.contains(e.target)) {
-        setFocus(false);
       }
     };
     window.addEventListener("click", handleClick);
@@ -78,6 +72,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         like: [],
         reNweet: [],
         parent: nweets.id,
+        parentEmail: nweets.email,
       };
 
       const replies = await addDoc(
@@ -90,6 +85,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
       setIsLoading(false);
       setReply("");
       setAttachment("");
+      setSelect("");
       // textRef.current.value = "";
     } else {
       alert("글자를 입력하세요");
@@ -102,12 +98,6 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
   const onChange = useCallback((e) => {
     setReply(e.target.value);
     // console.log(reply);
-  }, []);
-
-  const onClick = useCallback((e) => {
-    // setFocus(!focus);
-    setFocus(true);
-    textRef.current.focus();
   }, []);
 
   // 이미지 압축
@@ -175,105 +165,125 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
     setReply(textEmoji);
   };
 
+  const goPage = () => {
+    history.push("/profile/mynweets/" + nweets.email);
+  };
+
   return (
-    <div className={styled.factoryForm}>
-      <div className={styled.factoryInput__container}>
-        <div className={styled.nweet__profile}>
-          {loading && (
-            <img
-              src={creatorInfo.photoURL}
-              alt="profileImg"
-              className={styled.profile__image}
-            />
-          )}
+    <>
+      <div
+        className={`${styled.nweet__reply} ${
+          select === "text" && styled.select
+        }`}
+      >
+        <div className={styled.nweet__replyIcon}>{/* <BsReplyFill /> */}</div>
+        <div className={styled.nweet__replyText}>
+          <p onClick={goPage}>@{nweets.email?.split("@")[0]}</p>
+          <p>&nbsp;님에게 보내는 답글</p>
         </div>
-        <form onSubmit={onSubmit} className={styled.factoryInput}>
-          <div
-            className={`${styled.factoryForm__content} ${
-              focus && styled.focus
-            }`}
-          >
-            <textarea
-              spellCheck="false"
-              className={styled.factoryInput__input}
-              type="text"
-              value={reply}
-              ref={textRef}
-              onChange={onChange}
-              onClick={onClick}
-              onInput={handleResizeHeight}
-              maxLength={280}
-              placeholder="내 답글을 트윗합니다."
-              // placeholder={placeholderText}
-            />
-            {attachment && (
-              <div className={styled.factoryForm__attachment}>
-                <div className={styled.factoryForm__Image}>
-                  <img
-                    src={attachment}
-                    alt="upload file"
-                    style={{
-                      backgroundImage: attachment,
-                    }}
-                  />
-                </div>
-                <div
-                  className={styled.factoryForm__clear}
-                  onClick={onClearAttachment}
-                >
-                  <IoCloseSharp />
-                </div>
-              </div>
+      </div>
+      <div className={styled.factoryForm}>
+        <div className={styled.factoryInput__container}>
+          <div className={styled.nweet__profile}>
+            {loading && (
+              <img
+                src={creatorInfo.photoURL}
+                alt="profileImg"
+                className={styled.profile__image}
+              />
             )}
           </div>
-          <div className={styled.factoryInput__add}>
-            <div className={styled.factoryInput__iconBox}>
-              <label
-                htmlFor="attach-file"
-                className={styled.factoryInput__label}
-              >
-                <div className={styled.factoryInput__icon}>
-                  <IoImageOutline />
-                </div>
-              </label>
-              <input
-                ref={fileInput}
-                id="attach-file"
-                type="file"
-                accept="image/*"
-                onChange={onFileChange}
-              />
-            </div>
+          <form onSubmit={onSubmit} className={styled.factoryInput}>
             <div
-              ref={emojiRef}
-              onClick={toggleEmoji}
-              className={styled.factoryInput__iconBox}
+              className={`${styled.factoryForm__content} ${
+                select === "text" && styled.focus
+              }`}
             >
-              <div
-                className={`${styled.factoryInput__icon} ${styled.emoji__icon}`}
-              >
-                <GrEmoji />
-              </div>
-              {/* 해결: clickEmoji이 true일 때만 실행해서textarea 버벅이지 않음 */}
-              {clickEmoji && (
-                <div
-                  className={`${styled.emoji} 
-          ${clickEmoji ? styled.emoji__block : styled.emoji__hidden}
-        `}
-                >
-                  <Picker onEmojiClick={onEmojiClick} disableAutoFocus={true} />
+              <textarea
+                spellCheck="false"
+                className={styled.factoryInput__input}
+                type="text"
+                value={reply}
+                ref={textRef}
+                onChange={onChange}
+                onFocus={() => setSelect("text")}
+                // onBlur={() => setSelect("")}
+                onInput={handleResizeHeight}
+                maxLength={280}
+                placeholder="내 답글을 트윗합니다."
+              />
+              {attachment && (
+                <div className={styled.factoryForm__attachment}>
+                  <div className={styled.factoryForm__Image}>
+                    <img
+                      src={attachment}
+                      alt="upload file"
+                      style={{
+                        backgroundImage: attachment,
+                      }}
+                    />
+                  </div>
+                  <div
+                    className={styled.factoryForm__clear}
+                    onClick={onClearAttachment}
+                  >
+                    <IoCloseSharp />
+                  </div>
                 </div>
               )}
             </div>
-            <input
-              type="submit"
-              value="트윗하기"
-              className={styled.factoryInput__arrow}
-              disabled={reply === "" && attachment === ""}
-            />
-          </div>
-        </form>
+            <div className={styled.factoryInput__add}>
+              <div className={styled.factoryInput__iconBox}>
+                <label
+                  htmlFor="attach-file"
+                  className={styled.factoryInput__label}
+                >
+                  <div className={styled.factoryInput__icon}>
+                    <IoImageOutline />
+                  </div>
+                </label>
+                <input
+                  ref={fileInput}
+                  id="attach-file"
+                  type="file"
+                  accept="image/*"
+                  onChange={onFileChange}
+                />
+              </div>
+              <div
+                ref={emojiRef}
+                onClick={toggleEmoji}
+                className={styled.factoryInput__iconBox}
+              >
+                <div
+                  className={`${styled.factoryInput__icon} ${styled.emoji__icon}`}
+                >
+                  <GrEmoji />
+                </div>
+                {/* 해결: clickEmoji이 true일 때만 실행해서textarea 버벅이지 않음 */}
+                {clickEmoji && (
+                  <div
+                    className={`${styled.emoji} ${
+                      clickEmoji ? styled.emoji__block : styled.emoji__hidden
+                    }`}
+                  >
+                    <Picker
+                      onEmojiClick={onEmojiClick}
+                      disableAutoFocus={true}
+                    />
+                  </div>
+                )}
+              </div>
+              <input
+                type="submit"
+                value="답글"
+                className={styled.factoryInput__arrow}
+                disabled={reply === "" && attachment === ""}
+              />
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

@@ -65,7 +65,7 @@ const DetailNweetParent = ({ nweetObj, userObj }) => {
 
   // 좋아요 목록 중 본인 아이디 있으면 true
   useEffect(() => {
-    setLiked(nweetObj?.like?.includes(currentUser.email));
+    setLiked(nweetObj.like?.includes(currentUser.email));
   }, [nweetObj.like, currentUser.email]);
 
   // 북마크된 본인 아이디 있으면 true
@@ -75,7 +75,7 @@ const DetailNweetParent = ({ nweetObj, userObj }) => {
 
   // 리트윗된 본인 아이디 있으면 true
   useEffect(() => {
-    setReNweet(nweetObj?.reNweet?.includes(currentUser.email));
+    setReNweet(nweetObj.reNweet?.includes(currentUser.email));
   }, [currentUser.email, nweetObj.reNweet]);
 
   const onChange = (e) => {
@@ -97,13 +97,19 @@ const DetailNweetParent = ({ nweetObj, userObj }) => {
 
   const timeToString = (timestamp) => {
     let date = new Date(timestamp);
-    let hours = ("0" + date.getHours()).slice(-2);
+    let hours = date.getHours();
     let minutes = ("0" + date.getMinutes()).slice(-2);
+    let amPm = "오전";
 
-    let timeString = hours + ":" + minutes;
+    if (hours >= 12) {
+      amPm = "오후";
+      hours = hours - 12;
+    }
+
+    let timeString = amPm + " " + hours + ":" + minutes;
 
     let str =
-      (date.getHours() < 12 ? "오전 " : "오후 ") +
+      // (date.getHours() >= 12 ? "오후 " : "오전 ") +
       timeString +
       " · " +
       date.getFullYear() +
@@ -262,10 +268,6 @@ const DetailNweetParent = ({ nweetObj, userObj }) => {
                           ? creatorInfo.email.split("@")[0]
                           : ""}
                       </p>
-                      <p style={{ margin: "0 4px" }}>·</p>
-                      <p className={styled.nweet__createdAt}>
-                        {timeToString(nweetObj.createdAt)}
-                      </p>
                     </div>
                   </div>
                   {userObj.email === nweetObj.email && (
@@ -294,6 +296,11 @@ const DetailNweetParent = ({ nweetObj, userObj }) => {
               >
                 <h4>{nweetObj.text}</h4>
               </div>
+              <div className={styled.nweet__created}>
+                <p className={styled.nweet__createdAt}>
+                  {timeToString(nweetObj.createdAt)}
+                </p>
+              </div>
             </div>
             {nweetObj.attachmentUrl ? (
               <div className={styled.nweet__image}>
@@ -301,45 +308,69 @@ const DetailNweetParent = ({ nweetObj, userObj }) => {
               </div>
             ) : null}
             <nav className={styled.nweet__actions}>
-              <div className={`${styled.actionBox} ${styled.comment}`}>
-                <div className={styled.actions__icon}>
-                  <FaRegComment />
+              <div className={styled.actions__text}>
+                <div className={styled.comment__text}>
+                  {nweetObj.reply?.length === 0 ? (
+                    ""
+                  ) : (
+                    <>
+                      <span>{nweetObj.reply?.length}</span>
+                      <span> 답글</span>
+                    </>
+                  )}
                 </div>
-                <div className={styled.actions__text}>
-                  <p>
-                    {nweetObj.reply?.length === 0 ? "" : nweetObj.reply?.length}
-                  </p>
+                <div className={styled.reNweet__text}>
+                  {nweetObj.reNweet?.length === 0 ? (
+                    ""
+                  ) : (
+                    <>
+                      <span>{nweetObj.reNweet?.length}</span>
+                      <span> 리트윗</span>
+                    </>
+                  )}
                 </div>
-              </div>
-              <div
-                className={`${styled.actionBox} ${reNweet && styled.reNweet}`}
-              >
-                <div className={styled.actions__icon} onClick={toggleReNweet}>
-                  <FiRepeat />
-                </div>
-                <div className={styled.actions__text}>
-                  <p>
-                    {nweetObj.reNweet.length === 0
-                      ? ""
-                      : nweetObj.reNweet.length}
-                  </p>
-                </div>
-              </div>
-              <div className={`${styled.actionBox} ${liked && styled.like}`}>
-                <div className={styled.actions__icon} onClick={toggleLike}>
-                  {liked ? <FaHeart /> : <FaRegHeart />}
-                </div>
-                <div className={styled.actions__text}>
-                  <p>
-                    {nweetObj.like.length === 0 ? "" : nweetObj.like.length}
-                  </p>
+                <div className={styled.like__text}>
+                  {nweetObj.like?.length === 0 ? (
+                    ""
+                  ) : (
+                    <>
+                      <span>{nweetObj.like?.length}</span>
+                      <span> 마음에 들어요</span>
+                    </>
+                  )}
                 </div>
               </div>
-              <div
-                className={`${styled.actionBox} ${bookmark && styled.bookmark}`}
-              >
-                <div className={styled.actions__icon} onClick={toggleBookmark}>
-                  {bookmark ? <FaBookmark /> : <FaRegBookmark />}
+              <div className={styled.actionBox}>
+                <div className={styled.comment}>
+                  <div className={styled.actions__icon}>
+                    <FaRegComment />
+                  </div>
+                </div>
+                <div
+                  className={`${styled.reNweetBox} ${
+                    reNweet && styled.reNweet
+                  }`}
+                >
+                  <div className={styled.actions__icon} onClick={toggleReNweet}>
+                    <FiRepeat />
+                  </div>
+                </div>
+                <div className={`${styled.likeBox} ${liked && styled.like}`}>
+                  <div className={styled.actions__icon} onClick={toggleLike}>
+                    {liked ? <FaHeart /> : <FaRegHeart />}
+                  </div>
+                </div>
+                <div
+                  className={`${styled.bookmarkBox} ${
+                    bookmark && styled.bookmark
+                  }`}
+                >
+                  <div
+                    className={styled.actions__icon}
+                    onClick={toggleBookmark}
+                  >
+                    {bookmark ? <FaBookmark /> : <FaRegBookmark />}
+                  </div>
                 </div>
               </div>
             </nav>

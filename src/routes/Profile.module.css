@@ -239,7 +239,7 @@
   /* width: 100%; */
   height: 53px;
   user-select: none;
-  border-bottom: 2px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb;
 }
 
 @media screen and (max-width: 687px) {

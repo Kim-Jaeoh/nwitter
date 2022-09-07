@@ -160,7 +160,7 @@ const LeftBar = ({ userObj }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/notice" onClick={() => onSelect(3)}>
+                <Link to="/notice/renweet" onClick={() => onSelect(3)}>
                   <div className={styled.leftBar__list}>
                     {selected === 3 ? (
                       <>

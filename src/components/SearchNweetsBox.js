@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "./SearchNweetsBox.module.css";
 
 const SearchNweetsBox = ({ users, nweet }) => {
+  const history = useHistory();
   const [filter, setFilter] = useState([]);
 
   useEffect(() => {
@@ -10,10 +12,14 @@ const SearchNweetsBox = ({ users, nweet }) => {
     setFilter(filtered);
   }, [nweet, users]);
 
+  const goPage = () => {
+    history.push("/nweet/" + nweet.id);
+  };
+
   return (
     <>
       {filter[0] && (
-        <div className={styled.follow__user}>
+        <div className={styled.follow__user} onClick={goPage}>
           <div className={styled.follow__userInfo}>
             <img
               src={filter[0].photoURL}

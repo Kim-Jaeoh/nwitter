@@ -16,7 +16,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer/user";
 import { useHistory } from "react-router-dom";
 
-const DetailNweetReply = ({ nweetObj, userObj }) => {
+const DetailNweetReply = ({ nweetObj, userObj, nweets }) => {
+  // nweets = 원글 계정 정보
+  // nweetObj = 답글 계정 정보
+
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -97,13 +100,19 @@ const DetailNweetReply = ({ nweetObj, userObj }) => {
 
   const timeToString = (timestamp) => {
     let date = new Date(timestamp);
-    let hours = ("0" + date.getHours()).slice(-2);
+    let hours = date.getHours();
     let minutes = ("0" + date.getMinutes()).slice(-2);
+    let amPm = "오전";
 
-    let timeString = hours + ":" + minutes;
+    if (hours >= 12) {
+      amPm = "오후";
+      hours = hours - 12;
+    }
+
+    let timeString = amPm + " " + hours + ":" + minutes;
 
     let str =
-      (date.getHours() < 12 ? "오전 " : "오후 ") +
+      // (date.getHours() >= 12 ? "오후 " : "오전 ") +
       timeString +
       " · " +
       date.getFullYear() +
@@ -226,14 +235,23 @@ const DetailNweetReply = ({ nweetObj, userObj }) => {
       {loading && (
         <>
           <div className={styled.nweet}>
-            {reNweet && (
+            {/* {reNweet && (
               <div className={styled.nweet__reNweet}>
                 <div className={styled.nweet__reNweetIcon}>
                   <FiRepeat />
                 </div>
                 <p>{currentUser.displayName} 님이 리트윗 했습니다</p>
               </div>
-            )}
+            )} */}
+            <div className={`${styled.nweet__reply} ${styled.select}`}>
+              <div className={styled.nweet__replyIcon}>
+                {/* <BsReplyFill /> */}
+              </div>
+              <div className={styled.nweet__replyText}>
+                <p onClick={goPage}>@{nweets.email?.split("@")[0]}</p>
+                <p>&nbsp;님에게 보내는 답글</p>
+              </div>
+            </div>
             <div className={styled.nweet__wrapper}>
               <div className={styled.nweet__container}>
                 <div
@@ -319,9 +337,9 @@ const DetailNweetReply = ({ nweetObj, userObj }) => {
                 </div>
                 <div className={styled.actions__text}>
                   <p>
-                    {nweetObj.reNweet.length === 0
+                    {nweetObj.reNweet?.length === 0
                       ? ""
-                      : nweetObj.reNweet.length}
+                      : nweetObj.reNweet?.length}
                   </p>
                 </div>
               </div>
@@ -331,7 +349,7 @@ const DetailNweetReply = ({ nweetObj, userObj }) => {
                 </div>
                 <div className={styled.actions__text}>
                   <p>
-                    {nweetObj.like.length === 0 ? "" : nweetObj.like.length}
+                    {nweetObj.like?.length === 0 ? "" : nweetObj.like?.length}
                   </p>
                 </div>
               </div>

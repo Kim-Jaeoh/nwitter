@@ -1,4 +1,8 @@
 /* 프로필 리스트 */
+.followBox {
+  margin-top: 53px;
+}
+
 .followBox .follow__user {
   width: 100%;
   display: flex;

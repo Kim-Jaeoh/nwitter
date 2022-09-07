@@ -31,8 +31,6 @@ const AuthForm = ({ newAccount }) => {
     }
   };
 
-  console.log(newAccount);
-
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -64,10 +62,6 @@ const AuthForm = ({ newAccount }) => {
                     ? docSnap.data().folloing
                     : [],
                   reNweet: docSnap.data().reNweet ? docSnap.data().reNweet : [],
-                  // bookmark: [],
-                  // follower: [],
-                  // following: [],
-                  // rejweet: [],
                 })
               );
             } else {

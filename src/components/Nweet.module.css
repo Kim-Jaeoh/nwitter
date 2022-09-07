@@ -48,6 +48,55 @@
   font-size: 12px;
 }
 
+/* 리플 */
+.nweet__reply {
+  /* display: flex; */
+  display: none;
+  margin: 8px 0 -8px 0;
+  align-items: center;
+  height: 16px;
+  color: #53716a;
+}
+
+.select {
+  display: flex;
+  transition: all 0.2s;
+}
+
+.nweet__reply .nweet__replyIcon {
+  width: 64px;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 12px;
+}
+
+.nweet__reply svg {
+  width: 16px;
+  height: 16px;
+  transform: scaleX(-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nweet__reply .nweet__replyText {
+  display: flex;
+}
+
+.nweet__reply .nweet__replyText p {
+  font-size: 12px;
+}
+
+.nweet__reply .nweet__replyText p:first-child {
+  font-weight: 700;
+  color: #429170;
+  cursor: pointer;
+}
+
+.nweet__reply .nweet__replyText p:first-child:hover {
+  text-decoration: underline;
+}
+
 /* 트윗 내용 */
 .nweet__container {
   width: 100%;
@@ -208,7 +257,7 @@
 }
 
 .nweet .nweet__actions .actionBox:hover .actions__icon::after {
-  background-color: #5cb69134;
+  background-color: #7ad3ae34;
 }
 
 .nweet .nweet__actions .actionBox .actions__icon svg {
@@ -220,12 +269,17 @@
   color: #6f7c79c7;
 }
 
+/* 댓글 */
+.nweet .nweet__actions .actionBox.comment:hover .actions__icon svg {
+  color: #429170;
+}
+
 /* 좋아요 */
 .nweet .nweet__actions .actionBox:nth-child(3):hover,
 .nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon svg,
 .nweet .nweet__actions .actionBox:nth-child(3).like .actions__icon svg,
 .nweet .nweet__actions .actionBox:nth-child(3).like:hover {
-  color: red;
+  color: #f9183d;
 }
 
 .nweet .nweet__actions .actionBox:nth-child(3):hover .actions__icon::after {
@@ -234,7 +288,8 @@
 
 /* 북마크 */
 .nweet .nweet__actions .actionBox.bookmark,
-.nweet .nweet__actions .actionBox.bookmark .actions__icon svg {
+.nweet .nweet__actions .actionBox.bookmark .actions__icon svg,
+.nweet .nweet__actions .actionBox:nth-child(4):hover .actions__icon svg {
   color: #429170;
 }
 
@@ -247,11 +302,11 @@
 .nweet .nweet__actions .actionBox:nth-child(2):hover .actions__icon svg,
 .nweet .nweet__actions .actionBox.reNweet .actions__icon svg,
 .nweet .nweet__actions .actionBox.reNweet:hover {
-  color: #00ba7c;
+  color: #1d9bf0;
 }
 
 .nweet .nweet__actions .actionBox:nth-child(2):hover .actions__icon::after {
-  background-color: #00ba7c1a;
+  background-color: #1d9bf01a;
 }
 
 /* 트윗 액션 숫자 */
@@ -276,10 +331,10 @@
 
 /* 리트윗 숫자 */
 .nweet .nweet__actions .actionBox.reNweet p {
-  color: #00ba7c;
+  color: #1d9bf0;
 }
 
 /* 좋아요 숫자 */
 .nweet .nweet__actions .actionBox.like p {
-  color: red;
+  color: #f9183d;
 }

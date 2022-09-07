@@ -25,13 +25,16 @@ export const DetailNweet = ({ userObj }) => {
   const [showReply, setShowReply] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    return () => setLoading(false);
+  }, []);
+
   // 계정 정보 가져오기
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
       setLoading(true);
     });
-    return () => setLoading(false);
   }, [userObj]);
 
   // 원글 정보 가져오기
@@ -48,9 +51,9 @@ export const DetailNweet = ({ userObj }) => {
 
       setNweets(parentNweet[0]);
     });
-    return () => {
-      setLoading(false);
-    };
+    // return () => {
+    //   setLoading(false);
+    // };
   }, [uid]);
 
   // 답글 정보 가져오기
@@ -70,9 +73,9 @@ export const DetailNweet = ({ userObj }) => {
 
       setShowReply(parentNweet);
     });
-    return () => {
-      setLoading(false);
-    };
+    // return () => {
+    //   setLoading(false);
+    // };
   }, [uid]);
 
   return (
@@ -89,13 +92,15 @@ export const DetailNweet = ({ userObj }) => {
             creatorInfo={creatorInfo}
             userObj={userObj}
           />
-          {showReply.map((reply) => (
-            <DetailNweetReply
-              key={reply.id}
-              nweetObj={reply}
-              userObj={userObj}
-            />
-          ))}
+          {showReply &&
+            showReply.map((reply) => (
+              <DetailNweetReply
+                key={reply.id}
+                nweets={nweets}
+                nweetObj={reply}
+                userObj={userObj}
+              />
+            ))}
         </>
       )}
     </>

@@ -21,7 +21,7 @@ const NweetFactory = ({ userObj, placeholderText }) => {
   const [loading, setLoading] = useState(false);
   const [creatorInfo, setCreatorInfo] = useState({});
   const [clickEmoji, setClickEmoji] = useState(false);
-  const [focus, setFocus] = useState(false);
+  const [select, setSelect] = useState("");
 
   useEffect(() => {
     return () => setLoading(false);
@@ -42,9 +42,6 @@ const NweetFactory = ({ userObj, placeholderText }) => {
       // emojiRef 내의 클릭한 영역의 타겟이 없으면 true
       if (!emojiRef.current.contains(e.target)) {
         setClickEmoji(false);
-      }
-      if (!textRef.current.contains(e.target)) {
-        setFocus(false);
       }
     };
     window.addEventListener("click", handleClick);
@@ -102,12 +99,6 @@ const NweetFactory = ({ userObj, placeholderText }) => {
   const onChange = useCallback((e) => {
     setNweet(e.target.value);
     // console.log(nweet);
-  }, []);
-
-  const onClick = useCallback((e) => {
-    // setFocus(!focus);
-    setFocus(true);
-    textRef.current.focus();
   }, []);
 
   // 이미지 압축
@@ -192,7 +183,7 @@ const NweetFactory = ({ userObj, placeholderText }) => {
           <form onSubmit={onSubmit} className={styled.factoryInput}>
             <div
               className={`${styled.factoryForm__content} ${
-                focus && styled.focus
+                select === "text" && styled.focus
               }`}
             >
               <textarea
@@ -202,7 +193,8 @@ const NweetFactory = ({ userObj, placeholderText }) => {
                 value={nweet}
                 ref={textRef}
                 onChange={onChange}
-                onClick={onClick}
+                onFocus={() => setSelect("text")}
+                onBlur={() => setSelect("")}
                 onInput={handleResizeHeight}
                 maxLength={280}
                 // placeholder="무슨 일이 일어나고 있나요?"
