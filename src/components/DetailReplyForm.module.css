@@ -170,6 +170,11 @@
   cursor: pointer;
 }
 
+.factoryInput__iconBox input {
+  opacity: 0;
+  display: none;
+}
+
 /* 이모지 아이콘 */
 .emoji {
   position: absolute;

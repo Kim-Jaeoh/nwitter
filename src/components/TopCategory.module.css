@@ -176,3 +176,13 @@
 .minor__category .minor__iconExit:hover::after {
   background: #ececec;
 }
+
+@media screen and (max-width: 500px) {
+  .main__category h2 {
+    font-size: 17px;
+  }
+
+  .minor__category .userInfo .category__name {
+    font-size: 17px;
+  }
+}

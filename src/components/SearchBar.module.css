@@ -53,3 +53,9 @@
   caret-color: #429170;
   margin-left: 6px;
 }
+
+@media screen and (max-width: 500px) {
+  .container .searchbox .search {
+    height: 32px;
+  }
+}

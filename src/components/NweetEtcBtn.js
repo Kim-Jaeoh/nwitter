@@ -51,7 +51,6 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
     const ok = window.confirm("트윗을 삭제할까요?");
     if (ok === true) {
       await deleteDoc(dbRef); // 원글 삭제
-
       if (newNweetAttachment) {
         await deleteObject(dbAttachmentRef); // 이미지 삭제
       }

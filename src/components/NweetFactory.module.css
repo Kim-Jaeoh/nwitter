@@ -50,7 +50,7 @@
 }
 
 .factoryInput__input::placeholder {
-  font-weight: bold;
+  /* font-weight: bold; */
   color: #9e9e9e;
 }
 
@@ -101,6 +101,11 @@
 
 .factoryInput__icon:hover {
   background-color: #5cb69134;
+}
+
+.factoryInput__iconBox input {
+  opacity: 0;
+  display: none;
 }
 
 /* 배경 아이콘 */

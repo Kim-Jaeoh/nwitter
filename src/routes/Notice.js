@@ -88,7 +88,13 @@ const Notice = ({ userObj }) => {
 
         <Switch>
           <Route path="/notice/renweet">
-            <NoticeReNweet userObj={userObj} />
+            {nweets.map((nweet) => (
+              <NoticeReNweet
+                key={nweet.id}
+                nweetObj={nweet}
+                userObj={userObj}
+              />
+            ))}
           </Route>
           <Route path="/notice/reply">
             <NoticeReply userObj={userObj} />

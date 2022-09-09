@@ -80,6 +80,7 @@ const NweetFactory = ({ userObj, placeholderText }) => {
         email: userObj.email,
         like: [],
         reNweet: [],
+        reNweetAt: [],
         reply: [],
       };
 

@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   updateDoc,
@@ -29,6 +30,7 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
   const etcRef = useRef();
   const nameRef = useRef();
   const imgRef = useRef();
+  const repliesRef = doc(dbService, "reNweet", `${nweetObj.id}`);
   const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
@@ -171,28 +173,61 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     }
   };
 
+  // const toggl = async () => {
+  //   // firebase
+  //   if (reNweet === true) {
+  //     const _nweetReply = {
+  //       text: nweetObj.text,
+  //       createdAt: Date.now(),
+  //       creatorId: userObj.uid,
+  //       email: userObj.email,
+  //       like: [],
+  //       reNweet: [],
+  //       parent: nweetObj.id,
+  //       parentEmail: nweetObj.email,
+  //     };
+
+  //     await addDoc(collection(dbService, "reNweets"), _nweetReply);
+
+  //     await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+  //       reNweet: [...nweetObj.reNweet, nweetObj.email],
+  //     });
+  //   } else {
+  //     const copy = [...nweetObj.reNweet];
+  //     const filter = copy.filter((asd) => asd !== nweetObj.email);
+  //     await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+  //       reNweet: filter,
+  //     });
+  //     await deleteDoc(repliesRef); // 원글의 reply 삭제
+
+  //     dispatch(
+  //       setCurrentUser({
+  //         ...currentUser,
+  //         reNweet: filter,
+  //       })
+  //     );
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   toggl();
+  // }, []);
+  // const toggleReNweet = useCallback(() => {
+  //   setReNweet((prev) => !prev);
+  // }, []);
+
+  console.log(reNweet);
   const toggleReNweet = async () => {
-    const attachmentNweet = {
-      text: nweetObj.text,
-      createdAt: Date.now(),
-      creatorId: userObj.uid,
-      email: userObj.email,
-      reNweet: [],
-      parent: nweetObj.id,
-      parentEmail: nweetObj.email,
-    };
-
-    await addDoc(collection(dbService, "nweets"), attachmentNweet);
-
     // firebase
     if (nweetObj.reNweet?.includes(currentUser.email)) {
       setReNweet(false);
-      const copy = [...nweetObj?.reNweet];
-      const reNweetAt = [...nweetObj?.reNweetAt];
+      const copy = [...nweetObj.reNweet];
+      const reNweetAt = [...nweetObj.reNweetAt];
       const filter = copy.filter((email) => email !== currentUser.email);
       const filter2 = reNweetAt.filter(
         (at) => !currentUser.reNweetAt.includes(at)
       );
+
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: filter,
         reNweetAt: filter2,
@@ -200,8 +235,8 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     } else {
       setReNweet(true);
       setTime(Date.now());
-      const copy = [...nweetObj?.reNweet];
-      const reNweetAt = [...nweetObj?.reNweetAt];
+      const copy = [...nweetObj.reNweet];
+      const reNweetAt = [...nweetObj.reNweetAt];
       copy.push(currentUser.email);
       reNweetAt.push(time);
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
@@ -213,8 +248,8 @@ const Nweet = ({ nweetObj, isOwner, userObj }) => {
     // dispatch
     if (currentUser.reNweet?.includes(nweetObj.id)) {
       setReNweet(false);
-      const copy = [...currentUser?.reNweet];
-      const reNweetAt = [...currentUser?.reNweetAt];
+      const copy = [...currentUser.reNweet];
+      const reNweetAt = [...currentUser.reNweetAt];
       const filter = copy.filter((id) => id !== nweetObj.id);
       const filter2 = reNweetAt.filter(
         (at) => !nweetObj.reNweetAt.includes(at)

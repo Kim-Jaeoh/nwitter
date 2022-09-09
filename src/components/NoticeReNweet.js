@@ -11,8 +11,13 @@ import { dbService } from "../fbase";
 import { useState } from "react";
 import { useCallback } from "react";
 import { useEffect } from "react";
+import styled from "./NoticeReNweet.module.css";
+import { useRef } from "react";
 
 export const NoticeReNweet = ({ userObj, nweetObj }) => {
+  const etcRef = useRef();
+  const nameRef = useRef();
+  const imgRef = useRef();
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [nweets, setNweets] = useState([]);
   const [filterReplies, setFilterReplies] = useState([]);
@@ -110,22 +115,40 @@ export const NoticeReNweet = ({ userObj, nweetObj }) => {
     return str;
   };
 
-  console.log(nweets.map((asd) => asd));
+  const goPage = () => {
+    console.log("");
+  };
+
+  const sum = [...nweetObj.reNweet.map((a) => a)];
+  const dum = [...nweetObj.reNweetAt.map((b) => b)];
+
+  console.log(sum);
+  console.log(dum);
+
+  // console.log(nweetObj);
 
   return (
-    // <>
-    //   <div>{nweetObj.reNweet}님이 리트윗을 했습니다</div>
-    //   <div>{nweetObj.like}님이 좋아요를 했습니다</div>
-    // </>
     <>
-      {nweets.map((nweet) => (
-        <div>
-          <div>{nweet.reNweet}님이 리트윗을 했습니다</div>
-          {/* <div>{nweet.like}님이 좋아요를 했습니다</div> */}
-          {/* <div>{nweet.reNweetAt}</div> */}
-          {/* <div>{timeToString(nweet.reNweetAt)}</div> */}
+      {nweetObj.reNweet.map((reNweetEmail) => (
+        <div className={styled.nweet}>
+          <div className={styled.nweet__container} onClick={goPage}>
+            <div className={styled.nweet__profile} ref={imgRef}>
+              <img
+                src={loading && creatorInfo.photoURL}
+                alt="profileImg"
+                className={styled.profile__image}
+              />
+            </div>
+            <div className={styled.reNweetBox}>
+              <p>@{reNweetEmail.split("@")[0]}</p>
+              <p>님이 리트윗을 했습니다.</p>
+            </div>
+          </div>
         </div>
       ))}
+      {/* {nweetObj.reNweetAt.map((time) => (
+        <div>{timeToString(time)}</div>
+      ))} */}
     </>
   );
 };
