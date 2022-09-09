@@ -1,10 +1,12 @@
 /* 정보 없을 때 */
 .noInfoBox {
+  width: 100%;
   text-align: center;
   word-break: keep-all;
 }
 
 .noInfoBox .noInfo {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,7 +33,7 @@
 
 @media screen and (max-width: 687px) {
   .noInfoBox .noInfo {
-    width: 380px;
+    width: 100%;
   }
 
   .noInfoBox .noInfo h2 {
