@@ -65,10 +65,42 @@
 
 .nweet .nweet__container .reNweetBox {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 25px;
+  overflow: hidden;
+  flex: 2 1 auto;
   font-size: 15px;
+}
+
+.nweet .nweet__container .reNweetBox p {
+  word-break: keep-all;
 }
 
 .nweet .nweet__container .reNweetBox p:first-child {
   color: #429170;
   font-weight: 700;
+}
+
+.nweet .nweet__container .reNweet__name:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.nweet .nweet__container .reNweet__name {
+  font-weight: 700;
+  flex-wrap: wrap;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nweet .nweet__container .reNweet__time {
+  margin-left: auto;
+  flex: 1 1 auto;
+  display: flex;
+  font-size: 12px;
+  color: #53716a;
+  justify-content: end;
 }

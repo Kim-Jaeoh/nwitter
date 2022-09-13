@@ -96,10 +96,11 @@ const LeftBar = ({ userObj }) => {
           email: "",
           description: "",
           bgURL: "",
-          // bookmark: [],
-          // follower: [],
-          // following: [],
-          // rejweet: [],
+          bookmark: [],
+          follower: [],
+          following: [],
+          reNweet: [],
+          reNweetAt: [],
         })
       );
       history.push("/auth");

@@ -133,7 +133,8 @@ const Profile = ({ refreshUser, userObj }) => {
           bookmark: [],
           follower: [],
           following: [],
-          rejweet: [],
+          reNweet: [],
+          reNweetAt: [],
         })
       );
       history.push("/auth");

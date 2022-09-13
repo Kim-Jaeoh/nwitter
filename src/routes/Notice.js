@@ -15,31 +15,59 @@ import { NoticeReNweet } from "../components/NoticeReNweet";
 import { NoticeReply } from "../components/NoticeReply";
 import SelectMenuBtn from "../components/SelectMenuBtn";
 import { TopCategory } from "../components/TopCategory";
-
 import styled from "./Notice.module.css";
 import { useCallback } from "react";
 
 const Notice = ({ userObj }) => {
   const location = useLocation();
   const [selected, setSelected] = useState(1);
-  const [nweets, setNweets] = useState([]);
+  // const [nweets, setNweets] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
+  const [other, setOther] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // 필터링 방법 (본인이 작성한 것 확인)
-  const getMyNweets = useCallback(() => {
+  // // 필터링 방법 (본인이 작성한 것 확인)
+  // const getMyNweets = useCallback(() => {
+  //   const q = query(
+  //     collection(dbService, "nweets"),
+  //     where("email", "==", userObj.email),
+  //     orderBy("createdAt", "desc")
+  //   );
+
+  //   onSnapshot(q, (querySnapshot) => {
+  //     const array = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     setNweets(array);
+  //   });
+  // }, [userObj.email]);
+
+  useEffect(() => {
+    // getMyNweets();
+    return () => setLoading(false);
+  }, []);
+
+  // 리트윗 가져오기
+  useEffect(() => {
     const q = query(
-      collection(dbService, "nweets"),
-      where("email", "==", userObj.email),
-      orderBy("createdAt", "desc")
+      collection(dbService, "reNweets"),
+      orderBy("reNweetAt", "desc")
     );
 
-    onSnapshot(q, (querySnapshot) => {
-      const array = querySnapshot.docs.map((doc) => ({
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      // const sum = array.map((nweet) => nweet.reNweet);
-      // setNweets(sum);
-      setNweets(array);
+
+      const filter = reNweetArray.filter(
+        (asd) => asd.parentEmail === userObj.email
+      );
+
+      setReNweets(filter);
+      setOther((prev) => [...prev, filter]);
+      setLoading(true);
     });
   }, [userObj.email]);
 
@@ -56,17 +84,28 @@ const Notice = ({ userObj }) => {
   };
 
   useEffect(() => {
-    getMyNweets();
-  }, [getMyNweets]);
+    const q = query(collection(dbService, "reNweets"));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          console.log("New city: ", change.doc.data());
+        }
+        if (change.type === "modified") {
+          console.log("Modified city: ", change.doc.data());
+        }
+        if (change.type === "removed") {
+          console.log("Removed city: ", change.doc.data());
+        }
+      });
+    });
+    unsubscribe();
+  }, []);
 
   return (
     <>
       <div className={styled.container}>
-        <TopCategory
-          text={"알림"}
-          iconName={<IoArrowBackOutline />}
-          // creatorInfo={creatorInfo}
-        />
+        <TopCategory text={"알림"} iconName={<IoArrowBackOutline />} />
         <div className={styled.main__container}>
           <nav className={styled.categoryList}>
             <SelectMenuBtn
@@ -88,11 +127,11 @@ const Notice = ({ userObj }) => {
 
         <Switch>
           <Route path="/notice/renweet">
-            {nweets.map((nweet) => (
+            {reNweets?.map((reNweet) => (
               <NoticeReNweet
-                key={nweet.id}
-                nweetObj={nweet}
-                userObj={userObj}
+                key={reNweet.id}
+                reNweetsObj={reNweet}
+                loading={loading}
               />
             ))}
           </Route>

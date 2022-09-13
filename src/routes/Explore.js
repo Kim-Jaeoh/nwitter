@@ -4,12 +4,12 @@ import { Route, Switch, useLocation } from "react-router-dom";
 import { SearchBar } from "../components/SearchBar";
 import SelectMenuBtn from "../components/SelectMenuBtn";
 import ExploreNweets from "../components/ExploreNweets";
-import { ExploreUsers } from "../components/ExploreUsers";
+import ExploreUsers from "../components/ExploreUsers";
 
 const Explore = ({ userObj }) => {
   const location = useLocation();
   const [selected, setSelected] = useState(1);
-  const [loading, setLoading] = useState(null);
+  // const [loading, setLoading] = useState(null);
 
   useEffect(() => {
     if (location.pathname.includes("/nweets")) {

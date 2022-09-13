@@ -10,6 +10,7 @@ import { TopCategory } from "../components/TopCategory";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // // getNweets 아래 로직은 오래된 방식
@@ -28,6 +29,10 @@ const Home = ({ userObj }) => {
   //     setNweets((prev) => [nweetObject, ...prev]); // 새로운 것 <- 예전 것 순서
   //   });
   // };
+
+  useEffect(() => {
+    return () => setLoading(false);
+  }, []);
 
   useEffect(() => {
     const q = query(
@@ -53,7 +58,20 @@ const Home = ({ userObj }) => {
       //   setNweets((prev) => [nweetObject, ...prev]);
       // });
     });
-    return () => setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const q = query(collection(dbService, "reNweets"));
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setReNweets(reNweetArray);
+      setLoading(true);
+    });
   }, []);
 
   return (
@@ -71,6 +89,7 @@ const Home = ({ userObj }) => {
                 <Nweet
                   key={nweet.id}
                   nweetObj={nweet}
+                  reNweetsObj={reNweets}
                   userObj={userObj}
                   isOwner={nweet.creatorId === userObj.uid}
                 />

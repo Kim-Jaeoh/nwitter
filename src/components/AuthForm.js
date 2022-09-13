@@ -62,6 +62,9 @@ const AuthForm = ({ newAccount }) => {
                     ? docSnap.data().folloing
                     : [],
                   reNweet: docSnap.data().reNweet ? docSnap.data().reNweet : [],
+                  reNweetAt: docSnap.data().reNweetAt
+                    ? docSnap.data().reNweetAt
+                    : [],
                 })
               );
             } else {

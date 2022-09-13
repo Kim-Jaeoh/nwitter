@@ -1,154 +1,85 @@
 import React from "react";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../fbase";
 import { useState } from "react";
-import { useCallback } from "react";
 import { useEffect } from "react";
 import styled from "./NoticeReNweet.module.css";
 import { useRef } from "react";
 
-export const NoticeReNweet = ({ userObj, nweetObj }) => {
-  const etcRef = useRef();
-  const nameRef = useRef();
+export const NoticeReNweet = ({ reNweetsObj, loading }) => {
   const imgRef = useRef();
   const [creatorInfo, setCreatorInfo] = useState([]);
-  const [nweets, setNweets] = useState([]);
-  const [filterReplies, setFilterReplies] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  // 내 정보 가져오기
-  const getMyInfo = useCallback(async () => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+  // 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", reNweetsObj.email), (doc) => {
       setCreatorInfo(doc.data());
     });
-  }, [userObj.email]);
+  }, [reNweetsObj]);
 
-  // 트윗 정보 가져오기
-  // useEffect(() => {
-  //   const q = query(collection(dbService, "nweets"));
-  //   onSnapshot(q, (querySnapShot) => {
-  //     const userArray = querySnapShot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     const filter = userArray.filter((id) =>
-  //       creatorInfo.bookmark?.includes(id.id)
-  //     );
-  //     // setNweets(filter);
-  //     setNweets(userArray);
-  //     setLoading(true);
-  //   });
-  //   return () => setLoading(false);
-  // }, [creatorInfo.bookmark]);
-
-  // 답글 가져오기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "replies"),
-      orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (querySnapShot) => {
-      const userArray = querySnapShot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      const filter = userArray.filter((id) => id.email === userObj.email);
-      setFilterReplies(filter);
-      setLoading(true);
-    });
-  }, [userObj.email]);
-
-  // 필터링 방법 (본인이 작성한 것 확인)
-  const getMyNweets = useCallback(() => {
-    const q = query(
-      collection(dbService, "nweets"),
-      where("email", "==", userObj.email),
-      orderBy("createdAt", "desc")
-    );
-
-    onSnapshot(q, (querySnapshot) => {
-      const array = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      // const sum = array.map((nweet) => nweet.reNweet);
-      // setNweets(sum);
-      setNweets(array);
-    });
-  }, [userObj.email]);
-
-  useEffect(() => {
-    getMyInfo();
-    getMyNweets();
-  }, [getMyInfo, getMyNweets]);
-
+  // 시간 표기
   const timeToString = (timestamp) => {
-    let date = new Date(timestamp);
-    let hours = date.getHours();
-    let minutes = ("0" + date.getMinutes()).slice(-2);
-    let amPm = "오전";
+    const today = new Date();
+    const timeValue = new Date(timestamp);
 
-    if (hours >= 12) {
-      amPm = "오후";
-      hours = hours - 12;
+    const betweenTime = Math.floor(
+      (today.getTime() - timeValue.getTime()) / 1000 / 60
+    );
+    if (betweenTime < 1) return "방금 전";
+    if (betweenTime < 60) {
+      return `${betweenTime}분 전`;
     }
 
-    let timeString = amPm + " " + hours + ":" + minutes;
+    const betweenTimeHour = Math.floor(betweenTime / 60);
+    if (betweenTimeHour < 24) {
+      return `${betweenTimeHour}시간 전`;
+    }
 
-    let str =
-      // (date.getHours() >= 12 ? "오후 " : "오전 ") +
-      timeString +
-      " · " +
-      date.getFullYear() +
-      "년 " +
-      Number(date.getMonth() + 1) +
-      "월 " +
-      date.getDate() +
-      "일 ";
-    return str;
+    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+    if (betweenTimeDay < 365) {
+      return `${betweenTimeDay}일 전`;
+    }
+
+    return `${Math.floor(betweenTimeDay / 365)}년 전`;
   };
 
   const goPage = () => {
     console.log("");
   };
 
-  const sum = [...nweetObj.reNweet.map((a) => a)];
-  const dum = [...nweetObj.reNweetAt.map((b) => b)];
-
-  console.log(sum);
-  console.log(dum);
-
-  // console.log(nweetObj);
-
   return (
     <>
-      {nweetObj.reNweet.map((reNweetEmail) => (
-        <div className={styled.nweet}>
-          <div className={styled.nweet__container} onClick={goPage}>
-            <div className={styled.nweet__profile} ref={imgRef}>
-              <img
-                src={loading && creatorInfo.photoURL}
-                alt="profileImg"
-                className={styled.profile__image}
-              />
+      {loading && (
+        <>
+          {reNweetsObj ? (
+            <div className={styled.nweet}>
+              <div className={styled.nweet__container} onClick={goPage}>
+                <div className={styled.nweet__profile} ref={imgRef}>
+                  <img
+                    src={loading && creatorInfo?.photoURL}
+                    alt="profileImg"
+                    className={styled.profile__image}
+                  />
+                </div>
+                <div className={styled.reNweetBox}>
+                  <p>@{reNweetsObj?.email?.split("@")[0]}</p>
+                  <p>님이</p>
+                  &nbsp;
+                  <p className={styled.reNweet__name}>"{reNweetsObj.text}"</p>
+                  &nbsp;
+                  <p> 글에 리트윗을 했습니다.</p>
+                </div>
+                <div
+                  style={{ marginLeft: "auto" }}
+                  className={styled.reNweet__time}
+                >
+                  <p>{timeToString(reNweetsObj.reNweetAt)}</p>
+                </div>
+              </div>
             </div>
-            <div className={styled.reNweetBox}>
-              <p>@{reNweetEmail.split("@")[0]}</p>
-              <p>님이 리트윗을 했습니다.</p>
-            </div>
-          </div>
-        </div>
-      ))}
-      {/* {nweetObj.reNweetAt.map((time) => (
-        <div>{timeToString(time)}</div>
-      ))} */}
+          ) : null}
+        </>
+      )}
     </>
   );
 };
