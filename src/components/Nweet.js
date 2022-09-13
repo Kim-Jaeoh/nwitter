@@ -39,7 +39,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
   const [nweetEtc, setNweetEtc] = useState(false);
   const [liked, setLiked] = useState(false);
   const [bookmark, setBookmark] = useState(false);
-  const [reNweetsId, setReNweetsId] = useState({});
+  const [reNweetsId, setReNweetsId] = useState([]);
   const [reNweet, setReNweet] = useState(false);
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
@@ -128,15 +128,6 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
     }
 
     return `${Math.floor(betweenTimeDay / 365)}년 전`;
-    // let date = new Date(timestamp);
-    // let str =
-    //   date.getFullYear() +
-    //   "년 " +
-    //   Number(date.getMonth() + 1) +
-    //   "월 " +
-    //   date.getDate() +
-    //   "일 ";
-    // return str;
   };
 
   const toggleNweetEct = useCallback(() => {
@@ -221,6 +212,11 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         reNweetAt: filter2,
       });
 
+      // await updateDoc(doc(dbService, "users", userObj.email), {
+      //   reNweet: filter,
+      //   reNweetAt: filter2,
+      // });
+
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
       await deleteDoc(reNweetsRef); // 원글의 reply 삭제
       dispatch(
@@ -250,6 +246,12 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         reNweet: copy,
         reNweetAt: copy2,
       });
+
+      // await updateDoc(doc(dbService, "users", userObj.email), {
+      //   reNweet: copy,
+      //   reNweetAt: copy2,
+      // });
+
       dispatch(
         setCurrentUser({
           ...currentUser,

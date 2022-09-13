@@ -1,5 +1,7 @@
 import {
+  addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   query,
@@ -22,7 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer/user";
 import { useHistory } from "react-router-dom";
 
-const ReNweetsSum = ({ nweetObj, userObj }) => {
+const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
   // nweetObj = 원글 계정 정보
   // nweetObj = 답글 계정 정보
 
@@ -32,6 +34,7 @@ const ReNweetsSum = ({ nweetObj, userObj }) => {
   const etcRef = useRef();
   const imgRef = useRef();
   const nameRef = useRef();
+  const actionRef = useRef();
   const dbRef = doc(dbService, "replies", `${nweetObj.id}`);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
@@ -42,6 +45,7 @@ const ReNweetsSum = ({ nweetObj, userObj }) => {
   const [liked, setLiked] = useState(false);
   const [bookmark, setBookmark] = useState(false);
   const [reNweet, setReNweet] = useState(false);
+  const [reNweetsId, setReNweetsId] = useState({});
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -187,67 +191,145 @@ const ReNweetsSum = ({ nweetObj, userObj }) => {
     }
   };
 
-  const toggleReNweet = async () => {
-    if (nweetObj.reNweet?.includes(currentUser.email)) {
-      setReNweet(false);
-      const copy = [...nweetObj.reNweet];
-      const filter = copy.filter((email) => email !== currentUser.email);
-      await updateDoc(doc(dbService, "replies", nweetObj.id), {
-        reNweet: filter,
+  useEffect(() => {
+    if (reNweetsObj) {
+      const copy = [...reNweetsObj];
+      const index = copy?.findIndex((obj) => {
+        return obj?.parent === nweetObj.id;
       });
+      setReNweetsId(copy[index]);
     } else {
-      setReNweet(true);
-      const copy = [...nweetObj.reNweet];
-      copy.push(currentUser.email);
-      await updateDoc(doc(dbService, "replies", nweetObj.id), {
-        reNweet: copy,
-      });
+      return;
     }
+  }, [nweetObj.id, reNweetsObj]);
 
-    if (currentUser.reNweet?.includes(nweetObj.id)) {
+  const toggleReNweet = async () => {
+    if (nweetObj.reNweet?.includes(userObj.email)) {
       setReNweet(false);
-      const copy = [...currentUser.reNweet];
-      const filter = copy.filter((id) => id !== nweetObj.id);
-      await updateDoc(doc(dbService, "users", currentUser.email), {
+      const copy = [...nweetObj.reNweet];
+      const copy2 = [...nweetObj.reNweetAt];
+      const filter = copy.filter((email) => email !== userObj.email);
+      const filter2 = copy2.filter(
+        (time) => !nweetObj.reNweetAt.includes(time)
+      );
+      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: filter,
+        reNweetAt: filter2,
       });
+
+      await updateDoc(doc(dbService, "users", userObj.email), {
+        reNweet: filter,
+        reNweetAt: filter2,
+      });
+
+      const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
+      await deleteDoc(reNweetsRef); // 원글의 reply 삭제
       dispatch(
         setCurrentUser({
           ...currentUser,
           reNweet: filter,
+          reNweetAt: filter2,
         })
       );
     } else {
       setReNweet(true);
-      const copy = [...currentUser.reNweet];
-      copy.push(nweetObj.id);
-      await updateDoc(doc(dbService, "users", currentUser.email), {
+      const _nweetReply = {
+        text: nweetObj.text,
+        creatorId: userObj.uid,
+        email: userObj.email,
+        like: [],
+        // reNweet: [],
+        reNweetAt: Date.now(),
+        parent: nweetObj.id,
+        parentEmail: nweetObj.email,
+      };
+      await addDoc(collection(dbService, "reNweets"), _nweetReply);
+
+      const copy = [...nweetObj.reNweet, userObj.email];
+      const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
+      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: copy,
+        reNweetAt: copy2,
       });
+
+      await updateDoc(doc(dbService, "users", userObj.email), {
+        reNweet: copy,
+        reNweetAt: copy2,
+      });
+
       dispatch(
         setCurrentUser({
           ...currentUser,
           reNweet: copy,
+          reNweetAt: copy2,
         })
       );
     }
   };
 
+  // const toggleReNweet = async () => {
+  //   if (nweetObj.reNweet?.includes(currentUser.email)) {
+  //     setReNweet(false);
+  //     const copy = [...nweetObj.reNweet];
+  //     const filter = copy.filter((email) => email !== currentUser.email);
+  //     await updateDoc(doc(dbService, "replies", nweetObj.id), {
+  //       reNweet: filter,
+  //     });
+  //   } else {
+  //     setReNweet(true);
+  //     const copy = [...nweetObj.reNweet];
+  //     copy.push(currentUser.email);
+  //     await updateDoc(doc(dbService, "replies", nweetObj.id), {
+  //       reNweet: copy,
+  //     });
+  //   }
+
+  //   if (currentUser.reNweet?.includes(nweetObj.id)) {
+  //     setReNweet(false);
+  //     const copy = [...currentUser.reNweet];
+  //     const filter = copy.filter((id) => id !== nweetObj.id);
+  //     await updateDoc(doc(dbService, "users", currentUser.email), {
+  //       reNweet: filter,
+  //     });
+  //     dispatch(
+  //       setCurrentUser({
+  //         ...currentUser,
+  //         reNweet: filter,
+  //       })
+  //     );
+  //   } else {
+  //     setReNweet(true);
+  //     const copy = [...currentUser.reNweet];
+  //     copy.push(nweetObj.id);
+  //     await updateDoc(doc(dbService, "users", currentUser.email), {
+  //       reNweet: copy,
+  //     });
+  //     dispatch(
+  //       setCurrentUser({
+  //         ...currentUser,
+  //         reNweet: copy,
+  //       })
+  //     );
+  //   }
+  // };
+
   const goPage = (e) => {
+    // if (nweetObj.parent && !etcRef?.current?.contains(e.target)) {
+    //   history.push("/nweet/" + nweetObj.parent);
+    // } else if (!etcRef?.current?.contains(e.target)) {
+    //   history.push("/nweet/" + nweetObj.id);
+    // }
+
     if (nweetObj.parent && !etcRef?.current?.contains(e.target)) {
       history.push("/nweet/" + nweetObj.parent);
-    } else if (!etcRef?.current?.contains(e.target)) {
+    } else if (
+      !imgRef.current.contains(e.target) &&
+      !nameRef.current.contains(e.target) &&
+      !etcRef?.current?.contains(e.target) &&
+      !actionRef?.current.contains(e.target)
+    ) {
       history.push("/nweet/" + nweetObj.id);
     }
-    // 프로필 가기
-    //  else if (nameRef.current.contains(e.target)) {
-    //   history.push(
-    //     "/profile/mynweets/" +
-    //       (nweetObj?.email !== userObj.email
-    //         ? nweetObj?.email
-    //         : nweetObj.parentEmail)
-    //   );
-    // }
   };
 
   return (
@@ -345,7 +427,7 @@ const ReNweetsSum = ({ nweetObj, userObj }) => {
                 <img src={nweetObj.attachmentUrl} alt="uploaded file" />
               </div>
             ) : null}
-            <nav className={styled.nweet__actions}>
+            <nav className={styled.nweet__actions} ref={actionRef}>
               <div className={`${styled.actionBox} ${styled.comment}`}>
                 <div className={styled.actions__icon}>
                   <FaRegComment />

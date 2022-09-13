@@ -1,18 +1,38 @@
-import { useLocation } from "react-router-dom";
 import Nweet from "./Nweet";
 import styled from "./LikeNweets.module.css";
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { dbService } from "../fbase";
-import { orderBy } from "lodash";
 
 const LikeNweets = ({ myLikeNweets, userObj }) => {
+  const [reNweets, setReNweets] = useState([]);
+
+  // 리트윗 정보
+  useEffect(() => {
+    const q = query(collection(dbService, "reNweets"));
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setReNweets(reNweetArray);
+      // setLoading(true);
+    });
+  }, []);
+
   return (
     <>
       {myLikeNweets.length !== 0 ? (
         <div>
           {myLikeNweets.map((myNweet) => (
-            <Nweet key={myNweet.id} nweetObj={myNweet} userObj={userObj} />
+            <Nweet
+              key={myNweet.id}
+              nweetObj={myNweet}
+              userObj={userObj}
+              reNweetsObj={reNweets}
+            />
           ))}
         </div>
       ) : (

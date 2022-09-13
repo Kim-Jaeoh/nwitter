@@ -5,6 +5,23 @@ import { dbService } from "../fbase";
 import Nweet from "./Nweet";
 
 const MyNweets = ({ myNweets, userObj }) => {
+  const [reNweets, setReNweets] = useState([]);
+
+  // 리트윗 정보
+  useEffect(() => {
+    const q = query(collection(dbService, "reNweets"));
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setReNweets(reNweetArray);
+      // setLoading(true);
+    });
+  }, []);
+
   return (
     <>
       {myNweets.length !== 0 && (
@@ -13,6 +30,7 @@ const MyNweets = ({ myNweets, userObj }) => {
             <Nweet
               key={index}
               nweetObj={myNweet}
+              reNweetsObj={reNweets}
               userObj={userObj}
               isOwner={myNweet.creatorId === userObj.uid}
             />

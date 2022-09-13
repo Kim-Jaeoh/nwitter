@@ -223,7 +223,7 @@ const Profile = ({ refreshUser, userObj }) => {
                 selected={selected}
                 onClick={() => onSelect(2)}
                 url={"/profile/renweets/" + uid}
-                text={"트윗 및 답글"}
+                text={"리트윗 및 답글"}
               />
               <SelectMenuBtn
                 num={3}

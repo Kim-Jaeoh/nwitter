@@ -66,7 +66,6 @@ const Notice = ({ userObj }) => {
       );
 
       setReNweets(filter);
-      setOther((prev) => [...prev, filter]);
       setLoading(true);
     });
   }, [userObj.email]);
@@ -84,22 +83,7 @@ const Notice = ({ userObj }) => {
   };
 
   useEffect(() => {
-    const q = query(collection(dbService, "reNweets"));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          console.log("New city: ", change.doc.data());
-        }
-        if (change.type === "modified") {
-          console.log("Modified city: ", change.doc.data());
-        }
-        if (change.type === "removed") {
-          console.log("Removed city: ", change.doc.data());
-        }
-      });
-    });
-    unsubscribe();
+    console.log(reNweets);
   }, []);
 
   return (

@@ -60,6 +60,7 @@ const Home = ({ userObj }) => {
     });
   }, []);
 
+  // 리트윗 정보
   useEffect(() => {
     const q = query(collection(dbService, "reNweets"));
 

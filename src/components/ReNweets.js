@@ -1,5 +1,12 @@
 import { useLocation } from "react-router-dom";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { dbService } from "../fbase";
 import Nweet from "./Nweet";
@@ -13,11 +20,34 @@ const ReNweets = ({ myNweets, userObj }) => {
   const [ogNweets, setOgNweets] = useState([]);
   const [filterReplies, setFilterReplies] = useState([]);
   const [sum, setSum] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     return () => setLoading(false);
   }, []);
+
+  // 리트윗 가져오기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "reNweets"),
+      orderBy("reNweetAt", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const filter = reNweetArray.filter(
+        (asd) => asd.parentEmail === userObj.email
+      );
+
+      setReNweets(filter);
+      setLoading(true);
+    });
+  }, [userObj.email]);
 
   // 답글 가져오기
   useEffect(() => {
@@ -71,6 +101,7 @@ const ReNweets = ({ myNweets, userObj }) => {
               {sum.map((filter) => (
                 <ReNweetsSum
                   key={filter.id}
+                  reNweetsObj={reNweets}
                   nweetObj={filter}
                   userObj={userObj}
                 />
