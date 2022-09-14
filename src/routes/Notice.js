@@ -21,30 +21,11 @@ import { useCallback } from "react";
 const Notice = ({ userObj }) => {
   const location = useLocation();
   const [selected, setSelected] = useState(1);
-  // const [nweets, setNweets] = useState([]);
   const [reNweets, setReNweets] = useState([]);
-  const [other, setOther] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // // 필터링 방법 (본인이 작성한 것 확인)
-  // const getMyNweets = useCallback(() => {
-  //   const q = query(
-  //     collection(dbService, "nweets"),
-  //     where("email", "==", userObj.email),
-  //     orderBy("createdAt", "desc")
-  //   );
-
-  //   onSnapshot(q, (querySnapshot) => {
-  //     const array = querySnapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setNweets(array);
-  //   });
-  // }, [userObj.email]);
+  const [filterReplies, setFilterReplies] = useState([]);
 
   useEffect(() => {
-    // getMyNweets();
     return () => setLoading(false);
   }, []);
 
@@ -65,7 +46,28 @@ const Notice = ({ userObj }) => {
         (asd) => asd.parentEmail === userObj.email
       );
 
-      setReNweets(filter);
+      const notMe = filter.filter((asd) => asd.email !== userObj.email);
+
+      setReNweets(notMe);
+      setLoading(true);
+    });
+  }, [userObj.email]);
+
+  // 답글 가져오기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "replies")
+      // orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (querySnapShot) => {
+      const userArray = querySnapShot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const filter = userArray.filter((id) => id.parentEmail === userObj.email);
+      const notMe = filter.filter((asd) => asd.email !== userObj.email);
+
+      setFilterReplies(notMe);
       setLoading(true);
     });
   }, [userObj.email]);
@@ -81,10 +83,6 @@ const Notice = ({ userObj }) => {
   const onSelect = (num) => {
     setSelected(num);
   };
-
-  useEffect(() => {
-    console.log(reNweets);
-  }, []);
 
   return (
     <>
@@ -111,16 +109,47 @@ const Notice = ({ userObj }) => {
 
         <Switch>
           <Route path="/notice/renweet">
-            {reNweets?.map((reNweet) => (
-              <NoticeReNweet
-                key={reNweet.id}
-                reNweetsObj={reNweet}
-                loading={loading}
-              />
-            ))}
+            <>
+              {reNweets.length !== 0 ? (
+                reNweets?.map((reNweet) => (
+                  <NoticeReNweet
+                    key={reNweet.id}
+                    reNweetsObj={reNweet}
+                    loading={loading}
+                    userObj={userObj}
+                    // filterReplies={filterReplies}
+                  />
+                ))
+              ) : (
+                <div className={styled.noInfoBox}>
+                  <div className={styled.noInfo}>
+                    <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                    <p>누군가가 나의 트윗을 리트윗 하면 여기에 표시됩니다.</p>
+                  </div>
+                </div>
+              )}
+            </>
           </Route>
           <Route path="/notice/reply">
-            <NoticeReply userObj={userObj} />
+            <>
+              {filterReplies.length !== 0 ? (
+                filterReplies.map((reply) => (
+                  <NoticeReply
+                    key={reply.id}
+                    userObj={userObj}
+                    replyObj={reply}
+                    loading={loading}
+                  />
+                ))
+              ) : (
+                <div className={styled.noInfoBox}>
+                  <div className={styled.noInfo}>
+                    <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                    <p>누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.</p>
+                  </div>
+                </div>
+              )}
+            </>
           </Route>
         </Switch>
       </div>

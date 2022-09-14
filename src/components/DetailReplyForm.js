@@ -71,8 +71,11 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         attachmentUrl,
         like: [],
         reNweet: [],
+        reNweetAt: [],
         parent: nweets.id,
         parentEmail: nweets.email,
+        // replyId: [],
+        // replyEmail: [],
       };
 
       const replies = await addDoc(

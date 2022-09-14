@@ -24,8 +24,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer/user";
 import { useHistory } from "react-router-dom";
 
-const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
-  // nweetObj = 원글 계정 정보
+const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, filterReplies }) => {
+  // nweets = 원글 계정 정보
   // nweetObj = 답글 계정 정보
 
   const dispatch = useDispatch();
@@ -46,6 +46,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
   const [bookmark, setBookmark] = useState(false);
   const [reNweet, setReNweet] = useState(false);
   const [reNweetsId, setReNweetsId] = useState({});
+  const [replyReNweetsId, setReplyReNweetsId] = useState({});
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -110,29 +111,28 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
   };
 
   const timeToString = (timestamp) => {
-    let date = new Date(timestamp);
-    let hours = date.getHours();
-    let minutes = ("0" + date.getMinutes()).slice(-2);
-    let amPm = "오전";
+    const today = new Date();
+    const timeValue = new Date(timestamp);
 
-    if (hours >= 12) {
-      amPm = "오후";
-      hours = hours - 12;
+    const betweenTime = Math.floor(
+      (today.getTime() - timeValue.getTime()) / 1000 / 60
+    );
+    if (betweenTime < 1) return "방금 전";
+    if (betweenTime < 60) {
+      return `${betweenTime}분 전`;
     }
 
-    let timeString = amPm + " " + hours + ":" + minutes;
+    const betweenTimeHour = Math.floor(betweenTime / 60);
+    if (betweenTimeHour < 24) {
+      return `${betweenTimeHour}시간 전`;
+    }
 
-    let str =
-      // (date.getHours() >= 12 ? "오후 " : "오전 ") +
-      timeString +
-      " · " +
-      date.getFullYear() +
-      "년 " +
-      Number(date.getMonth() + 1) +
-      "월 " +
-      date.getDate() +
-      "일 ";
-    return str;
+    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+    if (betweenTimeDay < 365) {
+      return `${betweenTimeDay}일 전`;
+    }
+
+    return `${Math.floor(betweenTimeDay / 365)}년 전`;
   };
 
   const toggleNweetEct = useCallback(() => {
@@ -191,39 +191,38 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
     }
   };
 
+  // map 처리 된 리트윗 정보들 중 본인 ID와 같은 index 정보들만 필터링
   useEffect(() => {
-    if (reNweetsObj) {
-      const copy = [...reNweetsObj];
-      const index = copy?.findIndex((obj) => {
-        return obj?.parent === nweetObj.id;
-      });
-      setReNweetsId(copy[index]);
-    } else {
-      return;
-    }
+    const copy = [...reNweetsObj];
+
+    const index = copy?.findIndex((obj) => {
+      return obj?.replyId === nweetObj.id;
+    });
+    setReplyReNweetsId(copy[index]);
+
+    const index2 = copy?.findIndex((obj) => {
+      return obj?.parent === nweetObj.id;
+    });
+    setReNweetsId(copy[index2]);
   }, [nweetObj.id, reNweetsObj]);
 
   const toggleReNweet = async () => {
-    if (nweetObj.reNweet?.includes(userObj.email)) {
+    const copy = [...nweetObj.reNweet];
+    const copy2 = [...nweetObj.reNweetAt];
+    const filter = copy.filter((email) => email !== userObj.email);
+    const filter2 = copy2.filter((time) => !nweetObj.reNweetAt.includes(time));
+
+    if (reNweetsId) {
       setReNweet(false);
-      const copy = [...nweetObj.reNweet];
-      const copy2 = [...nweetObj.reNweetAt];
-      const filter = copy.filter((email) => email !== userObj.email);
-      const filter2 = copy2.filter(
-        (time) => !nweetObj.reNweetAt.includes(time)
-      );
+
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: filter,
         reNweetAt: filter2,
       });
 
-      await updateDoc(doc(dbService, "users", userObj.email), {
-        reNweet: filter,
-        reNweetAt: filter2,
-      });
-
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
-      await deleteDoc(reNweetsRef); // 원글의 reply 삭제
+      await deleteDoc(reNweetsRef); // 원글의 리트윗 삭제
+
       dispatch(
         setCurrentUser({
           ...currentUser,
@@ -231,6 +230,15 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
           reNweetAt: filter2,
         })
       );
+    } else if (replyReNweetsId) {
+      setReNweet(false);
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
+        reNweet: filter,
+        reNweetAt: filter2,
+      });
+
+      const replyReNweetsRef = doc(dbService, "reNweets", replyReNweetsId.id);
+      await deleteDoc(replyReNweetsRef); // 답글의 리트윗 삭제
     } else {
       setReNweet(true);
       const _nweetReply = {
@@ -240,22 +248,27 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
         like: [],
         // reNweet: [],
         reNweetAt: Date.now(),
-        parent: nweetObj.id,
-        parentEmail: nweetObj.email,
+        parent: nweetObj.parent,
+        parentEmail: nweetObj.parentEmail,
+        replyId: nweetObj.id,
+        replyEmail: nweetObj.email,
       };
       await addDoc(collection(dbService, "reNweets"), _nweetReply);
 
       const copy = [...nweetObj.reNweet, userObj.email];
       const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
-      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
-        reNweet: copy,
-        reNweetAt: copy2,
-      });
 
-      await updateDoc(doc(dbService, "users", userObj.email), {
-        reNweet: copy,
-        reNweetAt: copy2,
-      });
+      if (Object.keys(nweetObj).includes("parent") === false) {
+        await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+          reNweet: copy,
+          reNweetAt: copy2,
+        });
+      } else {
+        await updateDoc(doc(dbService, "replies", nweetObj.id), {
+          reNweet: copy,
+          reNweetAt: copy2,
+        });
+      }
 
       dispatch(
         setCurrentUser({
@@ -267,60 +280,12 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
     }
   };
 
-  // const toggleReNweet = async () => {
-  //   if (nweetObj.reNweet?.includes(currentUser.email)) {
-  //     setReNweet(false);
-  //     const copy = [...nweetObj.reNweet];
-  //     const filter = copy.filter((email) => email !== currentUser.email);
-  //     await updateDoc(doc(dbService, "replies", nweetObj.id), {
-  //       reNweet: filter,
-  //     });
-  //   } else {
-  //     setReNweet(true);
-  //     const copy = [...nweetObj.reNweet];
-  //     copy.push(currentUser.email);
-  //     await updateDoc(doc(dbService, "replies", nweetObj.id), {
-  //       reNweet: copy,
-  //     });
-  //   }
-
-  //   if (currentUser.reNweet?.includes(nweetObj.id)) {
-  //     setReNweet(false);
-  //     const copy = [...currentUser.reNweet];
-  //     const filter = copy.filter((id) => id !== nweetObj.id);
-  //     await updateDoc(doc(dbService, "users", currentUser.email), {
-  //       reNweet: filter,
-  //     });
-  //     dispatch(
-  //       setCurrentUser({
-  //         ...currentUser,
-  //         reNweet: filter,
-  //       })
-  //     );
-  //   } else {
-  //     setReNweet(true);
-  //     const copy = [...currentUser.reNweet];
-  //     copy.push(nweetObj.id);
-  //     await updateDoc(doc(dbService, "users", currentUser.email), {
-  //       reNweet: copy,
-  //     });
-  //     dispatch(
-  //       setCurrentUser({
-  //         ...currentUser,
-  //         reNweet: copy,
-  //       })
-  //     );
-  //   }
-  // };
-
   const goPage = (e) => {
-    // if (nweetObj.parent && !etcRef?.current?.contains(e.target)) {
-    //   history.push("/nweet/" + nweetObj.parent);
-    // } else if (!etcRef?.current?.contains(e.target)) {
-    //   history.push("/nweet/" + nweetObj.id);
-    // }
-
-    if (nweetObj.parent && !etcRef?.current?.contains(e.target)) {
+    if (
+      nweetObj.parent &&
+      !etcRef?.current?.contains(e.target) &&
+      !actionRef?.current.contains(e.target)
+    ) {
       history.push("/nweet/" + nweetObj.parent);
     } else if (
       !imgRef.current.contains(e.target) &&
@@ -345,22 +310,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
                 <p>{currentUser.displayName} 님이 리트윗 했습니다</p>
               </div>
             )}
-            {nweetObj && (
-              <div className={`${styled.nweet__reply} ${styled.select}`}>
-                <div className={styled.nweet__replyIcon}>
-                  {/* <BsReplyFill /> */}
-                </div>
-                <div className={styled.nweet__replyText} ref={nameRef}>
-                  <p>
-                    @
-                    {nweetObj?.email !== userObj.email
-                      ? nweetObj?.email?.split("@")[0]
-                      : nweetObj.parentEmail?.split("@")[0]}
-                  </p>
-                  <p>&nbsp;님에게 보내는 답글</p>
-                </div>
-              </div>
-            )}
+
             <div className={styled.nweet__wrapper}>
               <div className={styled.nweet__container}>
                 <div
@@ -415,6 +365,19 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj }) => {
                   )}
                 </div>
               </div>
+              {nweetObj && (
+                <div className={`${styled.nweet__reply} ${styled.select}`}>
+                  <div className={styled.nweet__replyText} ref={nameRef}>
+                    <p>
+                      @
+                      {nweetObj?.email !== userObj.email
+                        ? nweetObj?.email?.split("@")[0]
+                        : nweetObj.parentEmail?.split("@")[0]}
+                    </p>
+                    <p>&nbsp;님에게 보내는 답글</p>
+                  </div>
+                </div>
+              )}
               <div
                 className={styled.nweet__text}
                 onClick={(e) => goPage(e, "nweet")}

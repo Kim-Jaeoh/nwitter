@@ -44,14 +44,15 @@
 }
 
 .follow__user .follow__name p {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 14px;
+  width: 300px;
 }
 
 .follow__user .follow__name p:nth-child(1) {
   font-weight: bold;
-  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .follow__user .follow__name p:nth-child(2) {
@@ -60,8 +61,8 @@
 }
 
 .follow__user .follow__name p:nth-child(3) {
+  margin-top: 2px;
   font-size: 12px;
-  /* color: #53716a; */
 }
 
 .followBox .follows .follow__user .follow__btn {

@@ -176,6 +176,7 @@ const LeftBar = ({ userObj }) => {
                         <span>알림</span>
                       </>
                     )}
+                    {/* {alarm } */}
                   </div>
                 </Link>
               </li>

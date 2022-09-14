@@ -24,7 +24,7 @@
   align-items: center;
   margin: 8px 0 -8px 0;
   height: 16px;
-  font-weight: 700;
+  font-weight: 500;
   color: #53716a;
 }
 
@@ -53,6 +53,7 @@
   /* display: flex; */
   display: none;
   margin: 8px 0 -8px 0;
+  padding: 0 16px;
   align-items: center;
   height: 16px;
   color: #53716a;
@@ -61,22 +62,6 @@
 .select {
   display: flex;
   transition: all 0.2s;
-}
-
-.nweet__reply .nweet__replyIcon {
-  width: 64px;
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 12px;
-}
-
-.nweet__reply svg {
-  width: 16px;
-  height: 16px;
-  transform: scaleX(-1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .nweet__reply .nweet__replyText {
@@ -137,12 +122,13 @@
   height: 44px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  /* justify-content: space-between; */
   line-height: 20px;
 }
 
 .userInfo .userInfo__name .userInfo__one p {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -152,7 +138,7 @@
 }
 
 .userInfo .userInfo__name .userInfo__two {
-  font-size: 15px;
+  font-size: 14px;
   display: flex;
   color: #53716a;
   align-items: baseline;
@@ -164,7 +150,7 @@
 
 /* 텍스트 */
 .nweet__text {
-  font-size: 15px;
+  font-size: 14px;
   padding: 0 16px;
   margin: 12px 0;
   width: 100%;
@@ -227,7 +213,7 @@
   align-items: center;
   max-width: 100%;
   overflow: hidden;
-  padding: 16px;
+  padding: 0 16px 16px;
 }
 
 .nweet .nweet__actions .actionBox {
@@ -270,6 +256,10 @@
 }
 
 /* 댓글 */
+.nweet .nweet__actions .actionBox.comment .actions__icon svg {
+  /* transform: scaleX(-1); */
+}
+
 .nweet .nweet__actions .actionBox.comment:hover .actions__icon svg {
   color: #429170;
 }

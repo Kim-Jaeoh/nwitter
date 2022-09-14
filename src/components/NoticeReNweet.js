@@ -6,16 +6,18 @@ import { useEffect } from "react";
 import styled from "./NoticeReNweet.module.css";
 import { useRef } from "react";
 
-export const NoticeReNweet = ({ reNweetsObj, loading }) => {
+export const NoticeReNweet = ({ reNweetsObj, userObj }) => {
   const imgRef = useRef();
   const [creatorInfo, setCreatorInfo] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // 정보 가져오기
   useEffect(() => {
     onSnapshot(doc(dbService, "users", reNweetsObj.email), (doc) => {
       setCreatorInfo(doc.data());
+      setLoading(true);
     });
-  }, [reNweetsObj]);
+  }, [reNweetsObj, userObj.email]);
 
   // 시간 표기
   const timeToString = (timestamp) => {
@@ -50,35 +52,35 @@ export const NoticeReNweet = ({ reNweetsObj, loading }) => {
   return (
     <>
       {loading && (
-        <>
-          {reNweetsObj ? (
-            <div className={styled.nweet}>
-              <div className={styled.nweet__container} onClick={goPage}>
-                <div className={styled.nweet__profile} ref={imgRef}>
-                  <img
-                    src={loading && creatorInfo?.photoURL}
-                    alt="profileImg"
-                    className={styled.profile__image}
-                  />
-                </div>
-                <div className={styled.reNweetBox}>
-                  <p>@{reNweetsObj?.email?.split("@")[0]}</p>
-                  <p>님이</p>
-                  &nbsp;
-                  <p className={styled.reNweet__name}>"{reNweetsObj.text}"</p>
-                  &nbsp;
-                  <p> 글에 리트윗을 했습니다.</p>
-                </div>
-                <div
-                  style={{ marginLeft: "auto" }}
-                  className={styled.reNweet__time}
-                >
-                  <p>{timeToString(reNweetsObj.reNweetAt)}</p>
-                </div>
-              </div>
+        <div className={styled.nweet}>
+          <div className={styled.nweet__container} onClick={goPage}>
+            <div className={styled.nweet__profile} ref={imgRef}>
+              <img
+                src={loading && creatorInfo?.photoURL}
+                alt="profileImg"
+                className={styled.profile__image}
+              />
             </div>
-          ) : null}
-        </>
+            <div className={styled.reNweetBox}>
+              <p>
+                <span>@{reNweetsObj?.email?.split("@")[0]}</span>
+                <span>님이</span>
+                &nbsp;
+                <span className={styled.reNweet__name}>
+                  "{reNweetsObj.text}"
+                </span>
+                &nbsp;
+                <span> 글에 리트윗을 했습니다.</span>
+              </p>
+            </div>
+            <div
+              style={{ marginLeft: "auto" }}
+              className={styled.reNweet__time}
+            >
+              <p>{timeToString(reNweetsObj.reNweetAt)}</p>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

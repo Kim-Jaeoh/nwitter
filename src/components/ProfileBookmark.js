@@ -42,8 +42,6 @@ const ProfileBookmark = ({ userObj }) => {
     getMyInfo();
   }, [getMyInfo]);
 
-  console.log(filterBookmark);
-
   return (
     <>
       {loading && (

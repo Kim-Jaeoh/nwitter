@@ -19,6 +19,7 @@
   display: flex;
   align-items: center;
   height: 60px;
+  /* border: 1px solid red; */
 }
 
 .follow__user .follow__image {
@@ -37,26 +38,24 @@
   flex-direction: column;
   justify-content: center;
   gap: 6px;
+  height: 100%;
+  width: 100%;
 }
 
 .follow__user .follow__name p {
+  font-size: 14px;
+}
+
+.follow__user .follow__name p:nth-child(1) {
+  font-weight: bold;
+  width: 140px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.follow__user .follow__name p:nth-child(1) {
-  font-weight: bold;
-  font-size: 15px;
-}
-
-.follow__user .follow__name p:nth-child(2) {
-  font-size: 14px;
-  color: #536471;
-}
-
+.follow__user .follow__name p:nth-child(2),
 .follow__user .follow__name p:nth-child(3) {
-  font-size: 14px;
   color: #536471;
 }
 
@@ -89,6 +88,6 @@
 
 .searchText p {
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
 }

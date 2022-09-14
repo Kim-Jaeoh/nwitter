@@ -69,6 +69,8 @@
 
 .followBox .follows .follow__user .follow__userInfo {
   display: flex;
+  width: 170px;
+  flex: 1 1 auto;
 }
 
 .followBox .follows .follow__user .follow__image {
@@ -89,19 +91,19 @@
 }
 
 .followBox .follows .follow__user .follow__name p {
+  font-size: 14px;
+}
+
+.followBox .follows .follow__user .follow__name p:first-child {
+  font-weight: 700;
+  margin-bottom: 6px;
+  width: 140px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.followBox .follows .follow__user .follow__name p:first-child {
-  font-weight: bold;
-  margin-bottom: 6px;
-  font-size: 15px;
-}
-
 .followBox .follows .follow__user .follow__name p:last-child {
-  font-size: 14px;
   color: #536471;
 }
 
@@ -115,7 +117,7 @@
   background: #213025;
   font-size: 14px;
   color: #fff;
-  padding-bottom: 2px;
+  flex: 1 1 auto;
 }
 
 .followBox .follows .follow__user .follow__btn:hover {

@@ -25,9 +25,10 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
   const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
   const repliesRef = doc(dbService, "replies", `${nweetObj.id}`);
   const dbAttachmentRef = ref(storageService, newNweetAttachment);
-  // const [loading, setLoading] = useState(false);
+  const [reNweets, setReNweets] = useState([]);
+  const [showReply, setShowReply] = useState("");
 
-  // 원글 정보 가져오기
+  // 원글의 답글 정보 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
@@ -47,21 +48,75 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
     // };
   }, [nweetObj.id]);
 
+  // 답글 정보 가져오기
+  useEffect(() => {
+    const q = query(collection(dbService, "replies"));
+    onSnapshot(q, (querySnapShot) => {
+      const replyArray = querySnapShot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      // setLoading(true);
+
+      const parentNweet = replyArray.findIndex(
+        (reply) => reply.parent === nweetObj.id
+      );
+
+      setShowReply(replyArray[parentNweet]);
+    });
+  }, [currentUser, nweetObj.id]);
+
+  // 리트윗 가져오기
+  useEffect(() => {
+    const q = query(collection(dbService, "reNweets"));
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const filter = reNweetArray.findIndex(
+        (asd) => asd.parentEmail === currentUser.email
+      );
+
+      setReNweets(reNweetArray[filter]);
+    });
+  }, [currentUser.email]);
+
+  console.log(reNweets);
+
   const onDeleteClick = async () => {
     const ok = window.confirm("트윗을 삭제할까요?");
+
     if (ok === true) {
-      await deleteDoc(dbRef); // 원글 삭제
-      if (newNweetAttachment) {
-        await deleteObject(dbAttachmentRef); // 이미지 삭제
+      // 원글 삭제
+      await deleteDoc(dbRef);
+
+      // 원글 삭제 시 원글의 리트윗 삭제
+      if (reNweets?.parent?.includes(nweetObj.id)) {
+        const reNweetsRef = doc(dbService, "reNweets", reNweets?.id);
+        await deleteDoc(reNweetsRef);
+      }
+      // 원글 삭제 시 답글 삭제
+      if (showReply?.parent?.includes(nweetObj.id)) {
+        const dbRepliesRef = doc(dbService, "replies", showReply.id);
+        await deleteDoc(dbRepliesRef); // 리트윗 삭제
       }
 
+      // 이미지 삭제
+      if (newNweetAttachment) {
+        await deleteObject(dbAttachmentRef);
+      }
+
+      // 답글만 삭제
       if (nweets?.reply?.includes(nweetObj.id)) {
         const copy = [...nweets.reply];
         const filter = copy.filter((reply) => reply !== nweetObj.id);
         await updateDoc(doc(dbService, "nweets", nweets.id), {
           reply: filter,
         });
-        await deleteDoc(repliesRef); // 원글의 reply 삭제
+        await deleteDoc(repliesRef); // 답글 삭제
 
         dispatch(
           setCurrentUser({

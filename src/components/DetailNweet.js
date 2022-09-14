@@ -22,12 +22,35 @@ export const DetailNweet = ({ userObj }) => {
   const uid = location.pathname.split("/")[2];
   const [creatorInfo, setCreatorInfo] = useState({});
   const [nweets, setNweets] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
   const [showReply, setShowReply] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     return () => setLoading(false);
   }, []);
+
+  // 리트윗 가져오기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "reNweets"),
+      orderBy("reNweetAt", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const filter = reNweetArray.filter(
+        (asd) => asd.replyEmail === userObj.email
+      );
+
+      setReNweets(filter);
+      setLoading(true);
+    });
+  }, [userObj.email]);
 
   // 계정 정보 가져오기
   useEffect(() => {
@@ -73,9 +96,6 @@ export const DetailNweet = ({ userObj }) => {
 
       setShowReply(parentNweet);
     });
-    // return () => {
-    //   setLoading(false);
-    // };
   }, [uid]);
 
   return (
@@ -85,7 +105,11 @@ export const DetailNweet = ({ userObj }) => {
           <div className={styled.container}>
             <TopCategory text={"트윗"} iconName={<IoArrowBackOutline />} />
           </div>
-          <DetailNweetParent nweetObj={nweets} userObj={userObj} />
+          <DetailNweetParent
+            nweetObj={nweets}
+            userObj={userObj}
+            reNweetsObj={reNweets}
+          />
           <DetailReplyForm
             nweets={nweets}
             loading={loading}
@@ -97,6 +121,7 @@ export const DetailNweet = ({ userObj }) => {
               <DetailNweetReply
                 key={reply.id}
                 nweets={nweets}
+                reNweetsObj={reNweets}
                 nweetObj={reply}
                 userObj={userObj}
               />

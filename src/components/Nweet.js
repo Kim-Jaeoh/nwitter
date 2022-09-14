@@ -212,11 +212,6 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         reNweetAt: filter2,
       });
 
-      // await updateDoc(doc(dbService, "users", userObj.email), {
-      //   reNweet: filter,
-      //   reNweetAt: filter2,
-      // });
-
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
       await deleteDoc(reNweetsRef); // 원글의 reply 삭제
       dispatch(
@@ -246,11 +241,6 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         reNweet: copy,
         reNweetAt: copy2,
       });
-
-      // await updateDoc(doc(dbService, "users", userObj.email), {
-      //   reNweet: copy,
-      //   reNweetAt: copy2,
-      // });
 
       dispatch(
         setCurrentUser({
@@ -287,7 +277,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
                 <div className={styled.nweet__reNweetIcon}>
                   <FiRepeat />
                 </div>
-                <p>{userObj.displayName} 님이 리트윗 했습니다</p>
+                <p>{currentUser.displayName} 님이 리트윗 했습니다</p>
               </div>
             )}
             <div className={styled.nweet__wrapper} onClick={(e) => goPage(e)}>

@@ -1,4 +1,11 @@
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { dbService } from "../fbase";
 import styled from "./Nweet.module.css";
@@ -16,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "../reducer/user";
 import { useHistory } from "react-router-dom";
 
-const DetailNweetReply = ({ nweetObj, userObj, nweets }) => {
+const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
   // nweets = 원글 계정 정보
   // nweetObj = 답글 계정 정보
 
@@ -35,6 +42,8 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets }) => {
   const [liked, setLiked] = useState(false);
   const [bookmark, setBookmark] = useState(false);
   const [reNweet, setReNweet] = useState(false);
+  const [reNweetsId, setReNweetsId] = useState({});
+  const [repleReNweetsId, setReplyReNweetsId] = useState({});
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -180,47 +189,89 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets }) => {
     }
   };
 
-  const toggleReNweet = async () => {
-    if (nweetObj.reNweet?.includes(currentUser.email)) {
-      setReNweet(false);
-      const copy = [...nweetObj.reNweet];
-      const filter = copy.filter((email) => email !== currentUser.email);
-      await updateDoc(doc(dbService, "replies", nweetObj.id), {
-        reNweet: filter,
+  // map 처리 된 리트윗 정보들 중 본인 ID와 같은 index 정보들만 필터링
+  useEffect(() => {
+    if (reNweetsObj) {
+      const copy = [...reNweetsObj];
+      const index = copy?.findIndex((obj) => {
+        return obj?.replyId === nweetObj.id;
       });
+      setReNweetsId(copy[index]);
+      // } else if (reNweetsObj?.replyId.length !== 0) {
+      //   const copy = [...reNweetsObj];
+      //   const index = copy?.findIndex((obj) => {
+      //     return obj?.id === nweetObj.id;
+      //   });
+      //   setReplyReNweetsId(copy[index]);
     } else {
-      setReNweet(true);
-      const copy = [...nweetObj.reNweet];
-      copy.push(currentUser.email);
-      await updateDoc(doc(dbService, "replies", nweetObj.id), {
-        reNweet: copy,
-      });
+      return;
     }
+  }, [nweetObj.id, nweets.id, reNweetsObj]);
 
-    if (currentUser.reNweet?.includes(nweetObj.id)) {
+  const toggleReNweet = async () => {
+    if (nweetObj.reNweet?.includes(userObj.email)) {
       setReNweet(false);
-      const copy = [...currentUser.reNweet];
-      const filter = copy.filter((id) => id !== nweetObj.id);
-      await updateDoc(doc(dbService, "users", currentUser.email), {
+      const copy = [...nweetObj.reNweet];
+      const copy2 = [...nweetObj.reNweetAt];
+      const filter = copy.filter((email) => email !== userObj.email);
+      const filter2 = copy2.filter(
+        (time) => !nweetObj.reNweetAt.includes(time)
+      );
+      // await updateDoc(doc(dbService, "nweets", nweets.id), {
+      //   reNweet: filter,
+      //   reNweetAt: filter2,
+      // });
+
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
         reNweet: filter,
+        reNweetAt: filter2,
       });
+
+      const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
+      await deleteDoc(reNweetsRef); // 원글의 리트윗 삭제
+      // const replyReNweetsRef = doc(dbService, "reNweets", repleReNweetsId.id);
+      // await deleteDoc(replyReNweetsRef); // 답글의 리트윗 삭제
+
       dispatch(
         setCurrentUser({
           ...currentUser,
           reNweet: filter,
+          reNweetAt: filter2,
         })
       );
     } else {
       setReNweet(true);
-      const copy = [...currentUser.reNweet];
-      copy.push(nweetObj.id);
-      await updateDoc(doc(dbService, "users", currentUser.email), {
+      const _nweetReply = {
+        text: nweetObj.text,
+        creatorId: userObj.uid,
+        email: userObj.email,
+        like: [],
+        // reNweet: [],
+        reNweetAt: Date.now(),
+        parent: nweetObj.parent,
+        parentEmail: nweetObj.parentEmail,
+        replyId: nweetObj.id,
+        replyEmail: nweetObj.email,
+      };
+      await addDoc(collection(dbService, "reNweets"), _nweetReply);
+
+      const copy = [...nweetObj.reNweet, userObj.email];
+      const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
+      // await updateDoc(doc(dbService, "nweets", nweets.id), {
+      //   reNweet: copy,
+      //   reNweetAt: copy2,
+      // });
+
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
         reNweet: copy,
+        reNweetAt: copy2,
       });
+
       dispatch(
         setCurrentUser({
           ...currentUser,
           reNweet: copy,
+          reNweetAt: copy2,
         })
       );
     }
@@ -235,23 +286,15 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets }) => {
       {loading && (
         <>
           <div className={styled.nweet}>
-            {/* {reNweet && (
+            {reNweet && (
               <div className={styled.nweet__reNweet}>
                 <div className={styled.nweet__reNweetIcon}>
                   <FiRepeat />
                 </div>
                 <p>{currentUser.displayName} 님이 리트윗 했습니다</p>
               </div>
-            )} */}
-            <div className={`${styled.nweet__reply} ${styled.select}`}>
-              <div className={styled.nweet__replyIcon}>
-                {/* <BsReplyFill /> */}
-              </div>
-              <div className={styled.nweet__replyText}>
-                <p onClick={goPage}>@{nweets.email?.split("@")[0]}</p>
-                <p>&nbsp;님에게 보내는 답글</p>
-              </div>
-            </div>
+            )}
+
             <div className={styled.nweet__wrapper}>
               <div className={styled.nweet__container}>
                 <div
@@ -304,6 +347,12 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets }) => {
                       )}
                     </div>
                   )}
+                </div>
+              </div>
+              <div className={`${styled.nweet__reply} ${styled.select}`}>
+                <div className={styled.nweet__replyText}>
+                  <p onClick={goPage}>@{nweets.email?.split("@")[0]}</p>
+                  <p>&nbsp;님에게 보내는 답글</p>
                 </div>
               </div>
               <div

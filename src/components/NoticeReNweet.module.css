@@ -67,24 +67,27 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  line-height: 25px;
-  overflow: hidden;
+  /* white-space: nowrap; */
+  /* text-overflow: ellipsis; */
+  /* overflow: hidden; */
+  line-height: 22px;
+  width: 80%;
+  /* height: 100%; */
   flex: 2 1 auto;
-  font-size: 15px;
+  font-size: 14px;
 }
 
-.nweet .nweet__container .reNweetBox p {
+.nweet .nweet__container .reNweetBox {
   word-break: keep-all;
 }
 
-.nweet .nweet__container .reNweetBox p:first-child {
+.nweet .nweet__container .reNweetBox p span:first-child {
   color: #429170;
   font-weight: 700;
 }
 
-.nweet .nweet__container .reNweet__name:hover {
+.nweet .nweet__container .reNweet__name:hover,
+.nweet .nweet__container .reNweetBox p span:first-child:hover {
   cursor: pointer;
   text-decoration: underline;
 }
@@ -98,6 +101,7 @@
 
 .nweet .nweet__container .reNweet__time {
   margin-left: auto;
+  width: 20%;
   flex: 1 1 auto;
   display: flex;
   font-size: 12px;

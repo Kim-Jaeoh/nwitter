@@ -27,6 +27,15 @@ const ReNweets = ({ myNweets, userObj }) => {
     return () => setLoading(false);
   }, []);
 
+  // 리트윗, 답글 전개 연산자로
+  useEffect(() => {
+    const filterSum = [...filterReplies, ...ogNweets];
+    const sortSum = filterSum.sort(
+      (prev, cur) => cur.createdAt - prev.createdAt
+    );
+    setSum(sortSum);
+  }, [filterReplies, ogNweets]);
+
   // 리트윗 가져오기
   useEffect(() => {
     const q = query(
@@ -40,14 +49,18 @@ const ReNweets = ({ myNweets, userObj }) => {
         ...doc.data(),
       }));
 
-      const filter = reNweetArray.filter(
-        (asd) => asd.parentEmail === userObj.email
-      );
+      // const filter = reNweetArray.filter(
+      //   (asd) => asd.replyEmail === userObj.email
+      // );
 
-      setReNweets(filter);
+      // console.log(reNweetArray);
+      setReNweets(reNweetArray);
       setLoading(true);
     });
   }, [userObj.email]);
+
+  // console.log(sum);
+  // console.log(filterReplies);
 
   // 답글 가져오기
   useEffect(() => {
@@ -83,15 +96,6 @@ const ReNweets = ({ myNweets, userObj }) => {
     });
   }, [userObj.email]);
 
-  // 리트윗, 답글 전개 연산자로
-  useEffect(() => {
-    const filterSum = [...filterReplies, ...ogNweets];
-    const sortSum = filterSum.sort(
-      (prev, cur) => cur.createdAt - prev.createdAt
-    );
-    setSum(sortSum);
-  }, [filterReplies, ogNweets]);
-
   return (
     <>
       {loading && (
@@ -103,6 +107,7 @@ const ReNweets = ({ myNweets, userObj }) => {
                   key={filter.id}
                   reNweetsObj={reNweets}
                   nweetObj={filter}
+                  filterReplies={filterReplies}
                   userObj={userObj}
                 />
               ))}
