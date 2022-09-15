@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "./Profile.module.css";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { collection, orderBy, query, where } from "firebase/firestore";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { authService, dbService } from "../fbase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { BsCalendar3 } from "react-icons/bs";
@@ -21,10 +21,13 @@ import ProfileBookmark from "../components/ProfileBookmark";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
   const location = useLocation();
-  const uid = location.pathname.split("/")[3];
   const history = useHistory();
+  const uid = location.pathname.split("/")[3];
+  const uid2 = location.pathname.split("/").slice(0, 3).join("/");
   const [creatorInfo, setCreatorInfo] = useState({});
+  const [myInfo, setMyInfo] = useState({});
   const [loading, setLoading] = useState(false);
   const [myNweets, setMyNweets] = useState([]);
   const [myLikeNweets, setMyLikeNweets] = useState([]);
@@ -45,8 +48,15 @@ const Profile = ({ refreshUser, userObj }) => {
     }
   }, [location.pathname]);
 
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+      setMyInfo(doc.data());
+    });
+  }, [userObj.email]);
+
   // 필터링 방법 (본인이 작성한 것 확인)
-  const getMyNweets = useCallback(() => {
+  useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
       where("email", "==", uid),
@@ -62,18 +72,13 @@ const Profile = ({ refreshUser, userObj }) => {
     });
   }, [uid]);
 
-  useEffect(() => {
-    return () => setLoading(false); // cleanup function을 이용
-  }, []);
-
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
     onSnapshot(doc(dbService, "users", uid), (doc) => {
       setCreatorInfo(doc.data());
       setLoading(true);
-      getMyNweets();
     });
-  }, [getMyNweets, uid]);
+  }, [uid]);
 
   // 좋아요 필터링
   useEffect(() => {
@@ -161,6 +166,73 @@ const Profile = ({ refreshUser, userObj }) => {
     setIsEditing((prev) => !prev);
   };
 
+  const toggleFollow = async () => {
+    if (myInfo.following?.includes(creatorInfo.email)) {
+      // setFollow(false);
+      const followCopy = [...myInfo.following];
+      const followCopyFilter = followCopy.filter(
+        (email) => email !== creatorInfo.email
+      );
+
+      const followAtCopy = [...myInfo.followAt];
+      const followAtCopyFilter = followAtCopy.filter(
+        (at) => !creatorInfo.followAt.includes(at)
+      );
+
+      const followerCopy = [...creatorInfo.follower];
+      const followerCopyFilter = followerCopy.filter(
+        (email) => email !== myInfo.email
+      );
+
+      const followerAtCopy = [...creatorInfo.followAt];
+      const followerAtCopyFilter = followerAtCopy.filter(
+        (at) => !myInfo.followAt.includes(at)
+      );
+
+      await updateDoc(doc(dbService, "users", myInfo.email), {
+        following: followCopyFilter,
+        followAt: followAtCopyFilter,
+      });
+      await updateDoc(doc(dbService, "users", creatorInfo.email), {
+        follower: followerCopyFilter,
+        followAt: followerAtCopyFilter,
+      });
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          following: myInfo.following,
+          follower: myInfo.follower,
+          followAt: myInfo.followAt,
+        })
+      );
+    } else {
+      // setFollow(true);
+      const time = Date.now();
+      const followCopy = [...myInfo.following, creatorInfo.email];
+      const followAtCopy = [...myInfo.followAt, time];
+      const followerCopy = [...creatorInfo.follower, myInfo.email];
+      const followerAtCopy = [...creatorInfo.followAt, time];
+
+      await updateDoc(doc(dbService, "users", myInfo.email), {
+        following: followCopy,
+        followAt: followAtCopy,
+      });
+      await updateDoc(doc(dbService, "users", creatorInfo.email), {
+        follower: followerCopy,
+        followAt: followerAtCopy,
+      });
+
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          following: myInfo.following,
+          follower: myInfo.follower,
+          followAt: myInfo.followAt,
+        })
+      );
+    }
+  };
+
   return (
     <>
       {loading && (
@@ -189,7 +261,25 @@ const Profile = ({ refreshUser, userObj }) => {
                     >
                       프로필 수정
                     </div>
-                  ) : null}
+                  ) : (
+                    <>
+                      {myInfo.following.includes(creatorInfo.email) ? (
+                        <div
+                          className={`${styled.profile__editBtn} ${styled.follow} `}
+                          onClick={toggleFollow}
+                        >
+                          <p>팔로잉</p>
+                        </div>
+                      ) : (
+                        <div
+                          className={`${styled.profile__editBtn} ${styled.profile__followBtn} `}
+                          onClick={toggleFollow}
+                        >
+                          <p>팔로우</p>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
                 <div className={styled.profile__info}>
                   <div className={styled.userInfo}>
@@ -207,6 +297,14 @@ const Profile = ({ refreshUser, userObj }) => {
                     <BsCalendar3 />
                     <p>가입일 : {timeToString(creatorInfo.createdAtId)}</p>
                   </div>
+                  <div className={styled.profile__followInfo}>
+                    <p>
+                      <b>{creatorInfo.following?.length}</b> 팔로잉
+                    </p>
+                    <p>
+                      <b>{creatorInfo.follower?.length}</b> 팔로워
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -215,21 +313,33 @@ const Profile = ({ refreshUser, userObj }) => {
                 num={1}
                 selected={selected}
                 onClick={() => onSelect(1)}
-                url={"/profile/mynweets/" + uid}
+                url={
+                  uid2.includes("user")
+                    ? "/user/mynweets/" + uid
+                    : "/profile/mynweets/" + uid
+                }
                 text={"트윗"}
               />
               <SelectMenuBtn
                 num={2}
                 selected={selected}
                 onClick={() => onSelect(2)}
-                url={"/profile/renweets/" + uid}
+                url={
+                  uid2.includes("/user/")
+                    ? "/user/renweets/" + uid
+                    : "/profile/renweets/" + uid
+                }
                 text={"리트윗 및 답글"}
               />
               <SelectMenuBtn
                 num={3}
                 selected={selected}
                 onClick={() => onSelect(3)}
-                url={"/profile/likenweets/" + uid}
+                url={
+                  uid2.includes("/user/")
+                    ? "/user/likenweets/" + uid
+                    : "/profile/likenweets/" + uid
+                }
                 text={"마음에 들어요"}
               />
               {resize && (
@@ -237,7 +347,11 @@ const Profile = ({ refreshUser, userObj }) => {
                   num={4}
                   selected={selected}
                   onClick={() => onSelect(4)}
-                  url={"/profile/bookmark/" + uid}
+                  url={
+                    uid2.includes("/user/")
+                      ? "/user/bookmark/" + uid
+                      : "/profile/bookmark/" + uid
+                  }
                   text={"북마크"}
                 />
               )}
@@ -245,19 +359,46 @@ const Profile = ({ refreshUser, userObj }) => {
 
             {loading ? (
               <Switch>
-                <Route path="/profile/mynweets/:id">
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/mynweets/" + uid
+                      : "/profile/mynweets/" + uid
+                  }
+                >
                   <MyNweets myNweets={myNweets} userObj={creatorInfo} />
                 </Route>
-                <Route path="/profile/renweets/:id">
+                {/* <Route path="/profile/renweets/:id"> */}
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/renweets/" + uid
+                      : "/profile/renweets/" + uid
+                  }
+                >
                   <ReNweets userObj={creatorInfo} />
                 </Route>
-                <Route path="/profile/likenweets/:id">
+                {/* <Route path="/profile/likenweets/:id"> */}
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/likenweets/" + uid
+                      : "/profile/likenweets/" + uid
+                  }
+                >
                   <LikeNweets
                     myLikeNweets={myLikeNweets}
                     userObj={creatorInfo}
                   />
                 </Route>
-                <Route path="/profile/bookmark/:id">
+                {/* <Route path="/profile/bookmark/:id"> */}
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/bookmark/" + uid
+                      : "/profile/bookmark/" + uid
+                  }
+                >
                   <ProfileBookmark userObj={creatorInfo} />
                 </Route>
               </Switch>

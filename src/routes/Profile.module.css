@@ -85,7 +85,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: 400px;
+  /* height: 400px; */
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -93,11 +93,12 @@
 
 /* 배경 */
 .container .main__container .backImage {
+  display: block;
   width: 100%;
-  height: 100%;
-  /* flex: 1 1 auto; */
+  height: 200px;
+  /* flex: 1 0 auto; */
   /* background: #c1dbd1; */
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .container .main__container .backImage img {
@@ -111,7 +112,7 @@
 .container .main__container .profile {
   width: 100%;
   height: 100%;
-  /* flex: 1 0 auto; */
+  /* flex: 1 1 auto; */
   display: flex;
   flex-direction: column;
   padding: 12px 16px;
@@ -123,12 +124,13 @@
   height: 36px;
   display: flex;
   align-items: center;
-  margin-bottom: 22px;
+  margin-bottom: 30px;
 }
 
+/* 프로필 이미지 */
 .container .main__container .profile .profile__edit .profile__image {
-  position: absolute;
-  top: 30%;
+  position: fixed;
+  top: 20%;
   /* transform: translateY(-50%); */
   width: 145px;
   height: 145px;
@@ -166,13 +168,51 @@
   border: 1.5px solid #c1dbd1;
   background: #fff;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
   user-select: none;
+  /* transition: background-color 0.2s; */
 }
 
 .container .main__container .profile .profile__edit .profile__editBtn:hover {
+  background: #ececec;
+}
+
+/* 팔로우 버튼 */
+.container
+  .main__container
+  .profile
+  .profile__edit
+  .profile__editBtn.profile__followBtn {
+  color: #fff;
+  background-color: #213025;
+  border: 1.5px solid #213025;
+}
+
+.container
+  .main__container
+  .profile
+  .profile__edit
+  .profile__editBtn.profile__followBtn:hover {
+  background-color: #414d45;
+}
+
+/* 팔로잉 버튼 */
+.container
+  .main__container
+  .profile
+  .profile__edit
+  .profile__editBtn.profile__followBtn.follow {
+  background-color: white;
+  color: #213025;
+  border: 1.5px solid #c1dbd1;
+}
+
+.container
+  .main__container
+  .profile
+  .profile__edit
+  .profile__editBtn.profile__followBtn.follow:hover {
   background: #ececec;
 }
 
@@ -203,11 +243,11 @@
 
 /* 자기소개 */
 .container .main__container .profile .profile__info .profile__desc {
-  max-height: 50px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: pre-wrap;
+  /* max-height: 50px; */
+  /* white-space: nowrap; */
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+  line-height: 20px;
   margin-bottom: 16px;
   font-size: 15px;
 }
@@ -222,6 +262,7 @@
   display: flex;
   align-items: center;
   color: #53716a;
+  margin-bottom: 16px;
 }
 
 .container .main__container .profile .profile__info .profile__createdAt svg {
@@ -230,6 +271,25 @@
 
 .container .main__container .profile .profile__info .profile__createdAt p {
   font-size: 14px;
+}
+
+/* 팔로우, 팔로워 숫자 */
+.container .main__container .profile .profile__info .profile__followInfo {
+  display: flex;
+  font-size: 14px;
+}
+
+.container
+  .main__container
+  .profile
+  .profile__info
+  .profile__followInfo
+  p:first-child {
+  margin-right: 20px;
+}
+
+.container .main__container .profile .profile__info .profile__followInfo p b {
+  font-weight: 500;
 }
 
 /* 카테고리 버튼 */
@@ -250,7 +310,7 @@
 
   /* 프로필 이미지 */
   .container .main__container .profile .profile__edit .profile__image {
-    top: 30%;
+    top: 18.7%;
     /* transform: translateY(-38%); */
     width: 100px;
     height: 100px;
@@ -266,8 +326,8 @@
     font-size: 17px;
   }
 
-  /* 카테고리 버튼 */
-  .container .main__container .categoryList {
-    /* font-size: ; */
+  /* 프로필 칸 */
+  .container .main__container .profile .profile__edit {
+    margin-bottom: 10px;
   }
 }

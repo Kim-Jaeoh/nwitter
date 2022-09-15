@@ -138,7 +138,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
     setIsEditing((prev) => !prev);
   };
 
-  const toggleLike = async () => {
+  const toggleLike = useCallback(async () => {
     if (nweetObj.like?.includes(currentUser.email)) {
       setLiked(false);
       const copy = [...nweetObj.like];
@@ -154,9 +154,9 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         like: copy,
       });
     }
-  };
+  }, [currentUser.email, nweetObj.id, nweetObj.like]);
 
-  const toggleBookmark = async () => {
+  const toggleBookmark = useCallback(async () => {
     if (currentUser.bookmark?.includes(nweetObj.id)) {
       setBookmark(false);
       const copy = [...currentUser.bookmark];
@@ -184,7 +184,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         })
       );
     }
-  };
+  }, [currentUser, dispatch, nweetObj.id]);
 
   useEffect(() => {
     if (reNweetsObj) {
@@ -198,7 +198,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
     }
   }, [nweetObj.id, reNweetsObj]);
 
-  const toggleReNweet = async () => {
+  const toggleReNweet = useCallback(async () => {
     if (nweetObj.reNweet?.includes(userObj.email)) {
       setReNweet(false);
       const copy = [...nweetObj.reNweet];
@@ -250,7 +250,18 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         })
       );
     }
-  };
+  }, [
+    currentUser,
+    dispatch,
+    nweetObj.email,
+    nweetObj.id,
+    nweetObj.reNweet,
+    nweetObj.reNweetAt,
+    nweetObj.text,
+    reNweetsId?.id,
+    userObj.email,
+    userObj.uid,
+  ]);
 
   const goPage = (e) => {
     if (

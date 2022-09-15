@@ -27,6 +27,8 @@ export const TopCategory = ({
       setSelected("notHome");
     } else if (location.pathname.includes("/profile")) {
       setSelected("notHome");
+    } else if (location.pathname.includes("/user")) {
+      setSelected("notHome");
     } else if (location.pathname.includes("/nweet")) {
       setSelected("notHome");
     }

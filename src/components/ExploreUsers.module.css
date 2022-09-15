@@ -65,6 +65,7 @@
   font-size: 12px;
 }
 
+/* 팔로우 버튼 기존 틀 */
 .followBox .follows .follow__user .follow__btn {
   min-width: 76px;
   min-height: 32px;
@@ -75,9 +76,36 @@
   background: #213025;
   font-size: 14px;
   color: #fff;
-  padding-bottom: 2px;
 }
 
 .followBox .follows .follow__user .follow__btn:hover {
   background: #414d45;
+}
+
+/* 팔로우 버튼 */
+.followBox .follows .follow__user .follow__btn.follow__btn {
+  color: #fff;
+  background-color: #213025;
+  border: 1.5px solid #213025;
+}
+
+.followBox .follows .follow__user .follow__btn.follow__btn:hover {
+  background-color: #414d45;
+}
+
+/* 팔로잉 버튼 */
+.followBox .follows .follow__user .follow__btn.follow__btn.follow {
+  background-color: white;
+  color: #213025;
+  border: 1.5px solid #c1dbd1;
+}
+
+.followBox .follows .follow__user .follow__btn.follow__btn.follow:hover {
+  background: #ececec;
+}
+
+@media screen and (max-width: 500px) {
+  .follow__user .follow__name p {
+    width: auto;
+  }
 }

@@ -18,7 +18,6 @@ const MyNweets = ({ myNweets, userObj }) => {
       }));
 
       setReNweets(reNweetArray);
-      // setLoading(true);
     });
   }, []);
 

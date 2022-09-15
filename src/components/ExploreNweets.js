@@ -11,6 +11,8 @@ import Nweet from "./Nweet";
 
 const ExploreNweets = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // setLoading(true); // 렌더링 후 로딩 스피너 on
@@ -30,6 +32,21 @@ const ExploreNweets = ({ userObj }) => {
     });
   }, []);
 
+  // 리트윗 정보
+  useEffect(() => {
+    const q = query(collection(dbService, "reNweets"));
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setReNweets(reNweetArray);
+      // setLoading(true);
+    });
+  }, []);
+
   return (
     <>
       {nweets.length !== 0 && (
@@ -38,8 +55,8 @@ const ExploreNweets = ({ userObj }) => {
             <Nweet
               key={nweet.id}
               nweetObj={nweet}
+              reNweetsObj={reNweets}
               userObj={userObj}
-              type={"nweets"}
               isOwner={nweet.email === userObj.email}
             />
           ))}

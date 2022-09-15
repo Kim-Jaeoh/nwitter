@@ -17,6 +17,7 @@ import SelectMenuBtn from "../components/SelectMenuBtn";
 import { TopCategory } from "../components/TopCategory";
 import styled from "./Notice.module.css";
 import { useCallback } from "react";
+import { NoticeFollow } from "../components/NoticeFollow";
 
 const Notice = ({ userObj }) => {
   const location = useLocation();
@@ -24,10 +25,18 @@ const Notice = ({ userObj }) => {
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterReplies, setFilterReplies] = useState([]);
+  const [myInfo, setMyInfo] = useState({});
 
   useEffect(() => {
     return () => setLoading(false);
   }, []);
+
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+      setMyInfo(doc.data());
+    });
+  }, [userObj.email]);
 
   // 리트윗 가져오기
   useEffect(() => {
@@ -77,6 +86,8 @@ const Notice = ({ userObj }) => {
       setSelected(1);
     } else if (location.pathname.includes("/reply")) {
       setSelected(2);
+    } else if (location.pathname.includes("/follow")) {
+      setSelected(3);
     }
   }, [location.pathname]);
 
@@ -104,6 +115,13 @@ const Notice = ({ userObj }) => {
               url={"/notice/reply"}
               text={"답글"}
             />
+            <SelectMenuBtn
+              num={3}
+              selected={selected}
+              onClick={() => onSelect(3)}
+              url={"/notice/follow"}
+              text={"팔로우"}
+            />
           </nav>
         </div>
 
@@ -117,7 +135,6 @@ const Notice = ({ userObj }) => {
                     reNweetsObj={reNweet}
                     loading={loading}
                     userObj={userObj}
-                    // filterReplies={filterReplies}
                   />
                 ))
               ) : (
@@ -146,6 +163,27 @@ const Notice = ({ userObj }) => {
                   <div className={styled.noInfo}>
                     <h2>아직은 여기에 아무 것도 없습니다.</h2>
                     <p>누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.</p>
+                  </div>
+                </div>
+              )}
+            </>
+          </Route>
+          <Route path="/notice/follow">
+            <>
+              {myInfo.follower?.length !== 0 ? (
+                myInfo.follower?.map((follow) => (
+                  <NoticeFollow
+                    key={follow.id}
+                    userObj={userObj}
+                    followObj={follow}
+                    loading={loading}
+                  />
+                ))
+              ) : (
+                <div className={styled.noInfoBox}>
+                  <div className={styled.noInfo}>
+                    <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                    <p>누군가가 나를 팔로우 하면 여기에 표시됩니다.</p>
                   </div>
                 </div>
               )}

@@ -22,9 +22,10 @@ const LeftBar = ({ userObj }) => {
   const [size, setSize] = useState(window.innerWidth);
   const [resize, setResize] = useState(false);
   const [userEtc, setUserEtc] = useState(false);
-
   const location = useLocation();
   const history = useHistory();
+  const uid2 = location.pathname.split("/").slice(0, 3).join("/");
+
   useEffect(() => {
     if (location.pathname === "/") {
       setSelected(1);
@@ -201,7 +202,6 @@ const LeftBar = ({ userObj }) => {
               </li>
               <li>
                 <Link
-                  // to={"/profile/mynweets/" + userObj.email?.split("@")[0]}
                   to={"/profile/mynweets/" + userObj.email}
                   onClick={() => onSelect(5)}
                 >

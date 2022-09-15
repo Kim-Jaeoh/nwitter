@@ -43,7 +43,10 @@ const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
                     <DetailNweet userObj={userObj} />
                   </Route>
                   <Route path="/profile/:type/:id">
-                    <Profile userObj={userObj} refreshUser={refreshUser} />
+                    <Profile userObj={userObj} />
+                  </Route>
+                  <Route path="/user/:type/:id">
+                    <Profile userObj={userObj} />
                   </Route>
                 </div>
                 <RightBar userObj={userObj} />

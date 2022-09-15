@@ -213,7 +213,9 @@
   align-items: center;
   max-width: 100%;
   overflow: hidden;
-  padding: 0 16px 16px;
+  /* padding: 0 16px 16px; */
+  margin-top: -16px;
+  padding: 16px;
 }
 
 .nweet .nweet__actions .actionBox {
