@@ -127,8 +127,6 @@ const ExploreUsers = ({ userObj }) => {
   };
 
   const goPage = (user, e) => {
-    console.log(e.target);
-    console.log(btnRef.current);
     if (!btnRef.current?.contains(e.target)) {
       history.push("/user/mynweets/" + user.email);
     }

@@ -29,6 +29,7 @@ const initialState = {
     bgURL: "",
     bookmark: [],
     reNweet: [],
+    followAt: [],
     follower: [],
     following: [],
   },

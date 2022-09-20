@@ -43,11 +43,7 @@ export const DetailNweet = ({ userObj }) => {
         ...doc.data(),
       }));
 
-      const filter = reNweetArray.filter(
-        (asd) => asd.replyEmail === userObj.email
-      );
-
-      setReNweets(filter);
+      setReNweets(reNweetArray);
       setLoading(true);
     });
   }, [userObj.email]);

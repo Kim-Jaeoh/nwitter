@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { authService } from "../fbase";
+import { authService, dbService } from "../fbase";
 import {
   GoogleAuthProvider,
   GithubAuthProvider,
@@ -11,8 +11,18 @@ import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { AiOutlineTwitter } from "react-icons/ai";
 import styled from "./Auth.module.css";
 import authBg from "../image/background.jpg";
+import noneProfile from "../image/noneProfile.jpg";
+import bgimg from "../image/bgimg.jpg";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setCurrentUser, setLoginToken } from "../reducer/user";
+import { useHistory } from "react-router-dom";
+import { GoogleBtn } from "../components/GoogleBtn";
+import { GithubBtn } from "../components/GithubBtn";
 
 const Auth = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [newAccount, setNewAccount] = useState(true);
 
   const onSocialClick = async (e) => {
@@ -20,13 +30,50 @@ const Auth = () => {
       target: { name },
     } = e;
     let provider;
+    let user;
     try {
       if (name === "google") {
         provider = new GoogleAuthProvider();
       } else if (name === "github") {
         provider = new GithubAuthProvider();
       }
-      await signInWithPopup(authService, provider);
+      await signInWithPopup(authService, provider).then(async (result) => {
+        user = result.user;
+        console.log(user);
+        const usersRef = collection(dbService, "users");
+        await setDoc(doc(usersRef, user.email), {
+          uid: user.uid,
+          displayName: user.email.split("@")[0],
+          email: user.email,
+          photoURL: noneProfile,
+          createdAtId: Date.now(),
+          description: "",
+          bgURL: bgimg,
+          bookmark: [],
+          followAt: [],
+          follower: [],
+          following: [],
+          reNweet: [],
+        });
+        dispatch(setLoginToken("login"));
+        dispatch(
+          setCurrentUser({
+            uid: user.uid,
+            displayName: user.email.split("@")[0],
+            email: user.email,
+            photoURL: noneProfile,
+            bgURL: bgimg,
+            description: "",
+            createdAtId: Date.now(),
+            bookmark: [],
+            followAt: [],
+            follower: [],
+            following: [],
+            reNweet: [],
+          })
+        );
+      });
+      history.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -57,22 +104,8 @@ const Auth = () => {
         )}
         <AuthForm newAccount={newAccount} />
         <div className={styled.authBtns}>
-          <button
-            onClick={onSocialClick}
-            name="google"
-            className={styled.authBtn}
-          >
-            <FontAwesomeIcon icon={faGoogle} />
-            {newAccount ? "Google로 로그인 하기" : "Google로 가입하기"}
-          </button>
-          <button
-            onClick={onSocialClick}
-            name="github"
-            className={styled.authBtn}
-          >
-            <FontAwesomeIcon icon={faGithub} />
-            {newAccount ? "Github로 로그인 하기" : "Github로 가입하기"}
-          </button>
+          <GoogleBtn newAccount={newAccount} />
+          <GithubBtn newAccount={newAccount} />
         </div>
         {newAccount ? (
           <div className={styled.auth__notice}>

@@ -74,8 +74,9 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         reNweetAt: [],
         parent: nweets.id,
         parentEmail: nweets.email,
-        // replyId: [],
-        // replyEmail: [],
+        replyId: [],
+        replyEmail: [],
+        isReply: true,
       };
 
       const replies = await addDoc(

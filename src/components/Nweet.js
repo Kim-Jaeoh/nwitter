@@ -39,16 +39,17 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
   const [nweetEtc, setNweetEtc] = useState(false);
   const [liked, setLiked] = useState(false);
   const [bookmark, setBookmark] = useState(false);
-  const [reNweetsId, setReNweetsId] = useState([]);
+  const [reNweetsId, setReNweetsId] = useState({});
+  const [replyReNweetsId, setReplyReNweetsId] = useState({});
   const [reNweet, setReNweet] = useState(false);
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   // const [time, setTime] = useState(Date.now());
 
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   //  map 처리 된 유저 정보들
   useEffect(() => {
@@ -130,33 +131,47 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
     return `${Math.floor(betweenTimeDay / 365)}년 전`;
   };
 
-  const toggleNweetEct = useCallback(() => {
+  const toggleNweetEct = () => {
     setNweetEtc((prev) => !prev);
-  }, []);
+  };
 
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
   };
 
-  const toggleLike = useCallback(async () => {
+  const toggleLike = async () => {
     if (nweetObj.like?.includes(currentUser.email)) {
       setLiked(false);
       const copy = [...nweetObj.like];
       const filter = copy.filter((email) => email !== currentUser.email);
-      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
-        like: filter,
-      });
+
+      if (Object.keys(nweetObj).includes("parent") === false) {
+        await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+          like: filter,
+        });
+      } else {
+        await updateDoc(doc(dbService, "replies", nweetObj.id), {
+          like: filter,
+        });
+      }
     } else {
       setLiked(true);
       const copy = [...nweetObj.like];
       copy.push(currentUser.email);
-      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
-        like: copy,
-      });
-    }
-  }, [currentUser.email, nweetObj.id, nweetObj.like]);
 
-  const toggleBookmark = useCallback(async () => {
+      if (Object.keys(nweetObj).includes("parent") === false) {
+        await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+          like: copy,
+        });
+      } else {
+        await updateDoc(doc(dbService, "replies", nweetObj.id), {
+          like: copy,
+        });
+      }
+    }
+  };
+
+  const toggleBookmark = async () => {
     if (currentUser.bookmark?.includes(nweetObj.id)) {
       setBookmark(false);
       const copy = [...currentUser.bookmark];
@@ -184,7 +199,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         })
       );
     }
-  }, [currentUser, dispatch, nweetObj.id]);
+  };
 
   useEffect(() => {
     if (reNweetsObj) {
@@ -214,6 +229,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
 
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
       await deleteDoc(reNweetsRef); // 원글의 reply 삭제
+
       dispatch(
         setCurrentUser({
           ...currentUser,
@@ -230,8 +246,8 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         like: [],
         // reNweet: [],
         reNweetAt: Date.now(),
-        parent: nweetObj.id,
-        parentEmail: nweetObj.email,
+        parent: nweetObj.id || null,
+        parentEmail: nweetObj.email || null,
       };
       await addDoc(collection(dbService, "reNweets"), _nweetReply);
 
@@ -338,6 +354,14 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
                   )}
                 </div>
               </div>
+              {nweetObj.parent && (
+                <div className={`${styled.nweet__reply} ${styled.select}`}>
+                  <div className={styled.nweet__replyText} ref={nameRef}>
+                    <p>@{nweetObj.parentEmail?.split("@")[0]}</p>
+                    <p>&nbsp;님에게 보내는 답글</p>
+                  </div>
+                </div>
+              )}
               <div className={styled.nweet__text}>
                 <h4>{nweetObj.text}</h4>
               </div>

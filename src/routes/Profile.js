@@ -17,7 +17,8 @@ import SelectMenuBtn from "../components/SelectMenuBtn";
 import Loading from "../components/Loading";
 import { IoMdExit } from "react-icons/io";
 import { TopCategory } from "../components/TopCategory";
-import ProfileBookmark from "../components/ProfileBookmark";
+import { Replies } from "../components/Replies";
+import LikeReplies from "../components/LikeReplies";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ const Profile = ({ refreshUser, userObj }) => {
   const [myInfo, setMyInfo] = useState({});
   const [loading, setLoading] = useState(false);
   const [myNweets, setMyNweets] = useState([]);
-  const [myLikeNweets, setMyLikeNweets] = useState([]);
   const [selected, setSelected] = useState(1);
   const [isEditing, setIsEditing] = useState(false);
   const [size, setSize] = useState(window.innerWidth);
@@ -41,10 +41,14 @@ const Profile = ({ refreshUser, userObj }) => {
       setSelected(1);
     } else if (location.pathname.includes("/renweets")) {
       setSelected(2);
-    } else if (location.pathname.includes("/likenweets")) {
+    } else if (location.pathname.includes("/replies")) {
       setSelected(3);
-    } else if (location.pathname.includes("/bookmark")) {
+    } else if (location.pathname.includes("/likenweets")) {
       setSelected(4);
+    } else if (location.pathname.includes("/likereplies")) {
+      setSelected(5);
+    } else if (location.pathname.includes("/bookmark")) {
+      setSelected(6);
     }
   }, [location.pathname]);
 
@@ -78,32 +82,7 @@ const Profile = ({ refreshUser, userObj }) => {
       setCreatorInfo(doc.data());
       setLoading(true);
     });
-  }, [uid]);
-
-  // 좋아요 필터링
-  useEffect(() => {
-    // query는 데이터를 요청할 때 사용됨
-    const q = query(
-      collection(dbService, "nweets"),
-      where("like", "array-contains", uid)
-    );
-
-    onSnapshot(q, (querySnapshot) => {
-      const array = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setMyLikeNweets(array);
-    });
-
-    // forEach
-    // onSnapshot(q, (querySnapshot) => {
-    //   const array = [];
-    //   querySnapshot.forEach((doc) => {
-    //     array.push({ id: doc.id, ...doc.data() });
-    //   });
-    //   setMyLikeNweets(array);
-    // });
+    // return () => setLoading(false);
   }, [uid]);
 
   // 리사이징
@@ -329,7 +308,7 @@ const Profile = ({ refreshUser, userObj }) => {
                     ? "/user/renweets/" + uid
                     : "/profile/renweets/" + uid
                 }
-                text={"리트윗 및 답글"}
+                text={"리트윗"}
               />
               <SelectMenuBtn
                 num={3}
@@ -337,16 +316,38 @@ const Profile = ({ refreshUser, userObj }) => {
                 onClick={() => onSelect(3)}
                 url={
                   uid2.includes("/user/")
+                    ? "/user/replies/" + uid
+                    : "/profile/replies/" + uid
+                }
+                text={"답글"}
+              />
+              <SelectMenuBtn
+                num={4}
+                selected={selected}
+                onClick={() => onSelect(4)}
+                url={
+                  uid2.includes("/user/")
                     ? "/user/likenweets/" + uid
                     : "/profile/likenweets/" + uid
                 }
-                text={"마음에 들어요"}
+                text={"트윗 좋아요"}
+              />
+              <SelectMenuBtn
+                num={5}
+                selected={selected}
+                onClick={() => onSelect(5)}
+                url={
+                  uid2.includes("/user/")
+                    ? "/user/likereplies/" + uid
+                    : "/profile/likereplies/" + uid
+                }
+                text={"답글 좋아요"}
               />
               {resize && (
                 <SelectMenuBtn
-                  num={4}
+                  num={6}
                   selected={selected}
-                  onClick={() => onSelect(4)}
+                  onClick={() => onSelect(6)}
                   url={
                     uid2.includes("/user/")
                       ? "/user/bookmark/" + uid
@@ -368,7 +369,6 @@ const Profile = ({ refreshUser, userObj }) => {
                 >
                   <MyNweets myNweets={myNweets} userObj={creatorInfo} />
                 </Route>
-                {/* <Route path="/profile/renweets/:id"> */}
                 <Route
                   path={
                     uid2.includes("/user/")
@@ -378,7 +378,15 @@ const Profile = ({ refreshUser, userObj }) => {
                 >
                   <ReNweets userObj={creatorInfo} />
                 </Route>
-                {/* <Route path="/profile/likenweets/:id"> */}
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/replies/" + uid
+                      : "/profile/replies/" + uid
+                  }
+                >
+                  <Replies userObj={creatorInfo} />
+                </Route>
                 <Route
                   path={
                     uid2.includes("/user/")
@@ -386,12 +394,17 @@ const Profile = ({ refreshUser, userObj }) => {
                       : "/profile/likenweets/" + uid
                   }
                 >
-                  <LikeNweets
-                    myLikeNweets={myLikeNweets}
-                    userObj={creatorInfo}
-                  />
+                  <LikeNweets userObj={creatorInfo} />
                 </Route>
-                {/* <Route path="/profile/bookmark/:id"> */}
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/likereplies/" + uid
+                      : "/profile/likereplies/" + uid
+                  }
+                >
+                  <LikeReplies userObj={creatorInfo} />
+                </Route>
                 <Route
                   path={
                     uid2.includes("/user/")
@@ -399,7 +412,7 @@ const Profile = ({ refreshUser, userObj }) => {
                       : "/profile/bookmark/" + uid
                   }
                 >
-                  <ProfileBookmark userObj={creatorInfo} />
+                  <Bookmark userObj={creatorInfo} />
                 </Route>
               </Switch>
             ) : (

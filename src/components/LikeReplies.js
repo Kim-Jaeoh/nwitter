@@ -12,11 +12,11 @@ import { dbService } from "../fbase";
 import { useLocation } from "react-router-dom";
 import ReNweetsSum from "./ReNweetsSum";
 
-const LikeNweets = ({ userObj }) => {
+const LikeReplies = ({ userObj }) => {
   const location = useLocation();
   const uid = location.pathname.split("/")[3];
   const [reNweets, setReNweets] = useState([]);
-  const [myLikeNweets, setMyLikeNweets] = useState([]);
+  const [myLikeReplies, setMyLikeReplies] = useState([] || null);
   const [loading, setLoading] = useState(false);
 
   // 리트윗 정보
@@ -36,10 +36,10 @@ const LikeNweets = ({ userObj }) => {
     });
   }, []);
 
-  // 원글의 좋아요 정보 가져오기
+  // 답글의 좋아요 정보 가져오기
   useEffect(() => {
     const q = query(
-      collection(dbService, "nweets"),
+      collection(dbService, "replies"),
       where("like", "array-contains", uid)
     );
 
@@ -48,21 +48,20 @@ const LikeNweets = ({ userObj }) => {
         id: doc.id,
         ...doc.data(),
       }));
-      setMyLikeNweets(array);
+      setMyLikeReplies(array);
       setLoading(true);
     });
   }, [uid]);
-
-  // console.log(myLikeNweets);
 
   return (
     <>
       {loading && (
         <>
-          {myLikeNweets.length !== 0 ? (
+          {myLikeReplies.length !== 0 ? (
             <div>
-              {myLikeNweets.map((myNweet) => (
+              {myLikeReplies.map((myNweet) => (
                 <ReNweetsSum
+                  info={"답글"}
                   key={myNweet.id}
                   nweetObj={myNweet}
                   userObj={userObj}
@@ -73,10 +72,10 @@ const LikeNweets = ({ userObj }) => {
           ) : (
             <div className={styled.noInfoBox}>
               <div className={styled.noInfo}>
-                <h2>아직 마음에 들어한 트윗이 없습니다</h2>
+                <h2>아직 마음에 들어한 답글이 없습니다</h2>
                 <p>
-                  좋아하는 트윗의 하트를 눌러 표시 해보세요. 마음에 들어한
-                  트윗은 여기에 표시됩니다.
+                  좋아하는 답글의 하트를 눌러 표시 해보세요. 마음에 들어한
+                  답글은 여기에 표시됩니다.
                 </p>
               </div>
             </div>
@@ -87,4 +86,4 @@ const LikeNweets = ({ userObj }) => {
   );
 };
 
-export default LikeNweets;
+export default LikeReplies;

@@ -43,7 +43,7 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
   const [bookmark, setBookmark] = useState(false);
   const [reNweet, setReNweet] = useState(false);
   const [reNweetsId, setReNweetsId] = useState({});
-  const [repleReNweetsId, setReplyReNweetsId] = useState({});
+  const [replyReNweetsId, setReplyReNweetsId] = useState({});
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -191,46 +191,35 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
 
   // map 처리 된 리트윗 정보들 중 본인 ID와 같은 index 정보들만 필터링
   useEffect(() => {
-    if (reNweetsObj) {
-      const copy = [...reNweetsObj];
-      const index = copy?.findIndex((obj) => {
-        return obj?.replyId === nweetObj.id;
-      });
-      setReNweetsId(copy[index]);
-      // } else if (reNweetsObj?.replyId.length !== 0) {
-      //   const copy = [...reNweetsObj];
-      //   const index = copy?.findIndex((obj) => {
-      //     return obj?.id === nweetObj.id;
-      //   });
-      //   setReplyReNweetsId(copy[index]);
-    } else {
-      return;
-    }
-  }, [nweetObj.id, nweets.id, reNweetsObj]);
+    const copy = [...reNweetsObj];
+
+    const index = copy?.findIndex((obj) => {
+      return obj?.replyId === nweetObj.id;
+    });
+    setReplyReNweetsId(copy[index]);
+
+    const index2 = copy?.findIndex((obj) => {
+      return obj?.parent === nweetObj.id;
+    });
+    setReNweetsId(copy[index2]);
+  }, [nweetObj.id, reNweetsObj]);
 
   const toggleReNweet = async () => {
-    if (nweetObj.reNweet?.includes(userObj.email)) {
-      setReNweet(false);
-      const copy = [...nweetObj.reNweet];
-      const copy2 = [...nweetObj.reNweetAt];
-      const filter = copy.filter((email) => email !== userObj.email);
-      const filter2 = copy2.filter(
-        (time) => !nweetObj.reNweetAt.includes(time)
-      );
-      // await updateDoc(doc(dbService, "nweets", nweets.id), {
-      //   reNweet: filter,
-      //   reNweetAt: filter2,
-      // });
+    const copy = [...nweetObj.reNweet];
+    const copy2 = [...nweetObj.reNweetAt];
+    const filter = copy.filter((email) => email !== userObj.email);
+    const filter2 = copy2.filter((time) => !nweetObj.reNweetAt.includes(time));
 
-      await updateDoc(doc(dbService, "replies", nweetObj.id), {
+    if (reNweetsId) {
+      setReNweet(false);
+
+      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: filter,
         reNweetAt: filter2,
       });
 
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
       await deleteDoc(reNweetsRef); // 원글의 리트윗 삭제
-      // const replyReNweetsRef = doc(dbService, "reNweets", repleReNweetsId.id);
-      // await deleteDoc(replyReNweetsRef); // 답글의 리트윗 삭제
 
       dispatch(
         setCurrentUser({
@@ -239,6 +228,15 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
           reNweetAt: filter2,
         })
       );
+    } else if (replyReNweetsId) {
+      setReNweet(false);
+      await updateDoc(doc(dbService, "replies", nweetObj.id), {
+        reNweet: filter,
+        reNweetAt: filter2,
+      });
+
+      const replyReNweetsRef = doc(dbService, "reNweets", replyReNweetsId.id);
+      await deleteDoc(replyReNweetsRef); // 답글의 리트윗 삭제
     } else {
       setReNweet(true);
       const _nweetReply = {
@@ -257,15 +255,18 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
 
       const copy = [...nweetObj.reNweet, userObj.email];
       const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
-      // await updateDoc(doc(dbService, "nweets", nweets.id), {
-      //   reNweet: copy,
-      //   reNweetAt: copy2,
-      // });
 
-      await updateDoc(doc(dbService, "replies", nweetObj.id), {
-        reNweet: copy,
-        reNweetAt: copy2,
-      });
+      if (Object.keys(nweetObj).includes("parent") === false) {
+        await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+          reNweet: copy,
+          reNweetAt: copy2,
+        });
+      } else {
+        await updateDoc(doc(dbService, "replies", nweetObj.id), {
+          reNweet: copy,
+          reNweetAt: copy2,
+        });
+      }
 
       dispatch(
         setCurrentUser({

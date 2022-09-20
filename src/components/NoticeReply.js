@@ -32,33 +32,6 @@ export const NoticeReply = ({ replyObj, userObj }) => {
           Obj={replyObj}
           text={"답글에 리트윗을 했습니다"}
         />
-        // <div className={styled.nweet}>
-        //   <div className={styled.nweet__container} onClick={goPage}>
-        //     <div className={styled.nweet__profile} ref={imgRef}>
-        //       <img
-        //         src={loading && creatorInfo?.photoURL}
-        //         alt="profileImg"
-        //         className={styled.profile__image}
-        //       />
-        //     </div>
-        //     <div className={styled.reNweetBox}>
-        //       <p>
-        //         <span>@{replyObj?.email?.split("@")[0]}</span>
-        //         <span>님이</span>
-        //         &nbsp;
-        //         <span className={styled.reNweet__name}>"{replyObj.text}"</span>
-        //         &nbsp;
-        //         <span> 답글에 리트윗을 했습니다.</span>
-        //       </p>
-        //     </div>
-        //     <div
-        //       style={{ marginLeft: "auto" }}
-        //       className={styled.reNweet__time}
-        //     >
-        //       <p>{timeToString(replyObj.createdAt)}</p>
-        //     </div>
-        //   </div>
-        // </div>
       )}
     </>
   );

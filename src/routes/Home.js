@@ -7,32 +7,17 @@ import NweetFactory from "../components/NweetFactory";
 import Loading from "../components/Loading";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { TopCategory } from "../components/TopCategory";
+import { useSelector } from "react-redux";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const currentUser = useSelector((state) => state.user.currentUser);
 
-  // // getNweets 아래 로직은 오래된 방식
-  // const getNweets = async () => {
-  //   const dbNweets = await getDocs(collection(dbService, "nweets"));
-
-  //   // QuerySnapShot = Collection으로 부터 Query, snapshot을 통해 받아온 데이터 타입
-  //   // Collection으로부터 특정 Document를 가져왔기 때문에 forEach 반복문으로 하나씩 실행
-  //   dbNweets.forEach((document) => {
-  //     const nweetObject = {
-  //       id: document.id,
-  //       ...document.data(), // document 안에 있는 것들 꺼냄
-  //     };
-  //     // useState의 값 변경 함수(set~)를 쓸 때 값 대신 함수를 전달할 수 있는데
-  //     // 그 때 이전 값에 접근할 수 있게 해준다
-  //     setNweets((prev) => [nweetObject, ...prev]); // 새로운 것 <- 예전 것 순서
-  //   });
-  // };
-
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   useEffect(() => {
     const q = query(
@@ -47,7 +32,12 @@ const Home = ({ userObj }) => {
         ...doc.data(),
       }));
       setNweets(nweetArray);
-      setLoading(true);
+
+      if (nweetArray) {
+        setLoading(true);
+      } else {
+        setLoading(false);
+      }
 
       // // forEach 사용 시 (리턴값 반환 X)
       // const nweetArrays = snapshot.docs.forEach((doc) => {
@@ -71,7 +61,6 @@ const Home = ({ userObj }) => {
       }));
 
       setReNweets(reNweetArray);
-      setLoading(true);
     });
   }, []);
 

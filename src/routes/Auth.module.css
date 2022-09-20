@@ -66,10 +66,11 @@
 
 .auth .authBtns {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   max-width: 400px;
   gap: 12px;
-  justify-content: space-between;
 }
 
 .auth .authBtn {
@@ -82,13 +83,15 @@
   background: #fff;
   border: 1px solid #ebebeb;
   margin-bottom: 48px;
-
   cursor: pointer;
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .auth .authBtn svg {
   margin-right: 6px;
+  font-size: 16px;
 }
 
 .auth .auth__notice {

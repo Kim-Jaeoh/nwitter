@@ -23,15 +23,16 @@ const NweetFactory = ({ userObj, placeholderText }) => {
   const [clickEmoji, setClickEmoji] = useState(false);
   const [select, setSelect] = useState("");
 
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
       setLoading(true);
     });
+    return () => setLoading(false);
   }, [userObj]);
 
   // 이모지 모달 밖 클릭 시 창 끔
@@ -81,7 +82,7 @@ const NweetFactory = ({ userObj, placeholderText }) => {
         like: [],
         reNweet: [],
         reNweetAt: [],
-        reply: [],
+        replyId: [],
       };
 
       await addDoc(collection(dbService, "nweets"), attachmentNweet);
@@ -198,7 +199,6 @@ const NweetFactory = ({ userObj, placeholderText }) => {
                 onBlur={() => setSelect("")}
                 onInput={handleResizeHeight}
                 maxLength={280}
-                // placeholder="무슨 일이 일어나고 있나요?"
                 placeholder={placeholderText}
               />
               {attachment && (

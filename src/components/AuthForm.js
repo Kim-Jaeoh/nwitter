@@ -52,19 +52,22 @@ const AuthForm = ({ newAccount }) => {
               dispatch(
                 setCurrentUser({
                   ...docSnap.data(),
-                  bookmark: docSnap.data().bookmark
-                    ? docSnap.data().bookmark
-                    : [],
-                  follower: docSnap.data().follower
-                    ? docSnap.data().follower
-                    : [],
-                  following: docSnap.data().following
-                    ? docSnap.data().folloing
-                    : [],
-                  reNweet: docSnap.data().reNweet ? docSnap.data().reNweet : [],
-                  reNweetAt: docSnap.data().reNweetAt
-                    ? docSnap.data().reNweetAt
-                    : [],
+                  // bookmark: docSnap.data().bookmark
+                  //   ? docSnap.data().bookmark
+                  //   : [],
+                  // followAt: docSnap.data().followAt
+                  //   ? docSnap.data().followAt
+                  //   : [],
+                  // follower: docSnap.data().follower
+                  //   ? docSnap.data().follower
+                  //   : [],
+                  // following: docSnap.data().following
+                  //   ? docSnap.data().following
+                  //   : [],
+                  // reNweet: docSnap.data().reNweet ? docSnap.data().reNweet : [],
+                  // reNweetAt: docSnap.data().reNweetAt
+                  //   ? docSnap.data().reNweetAt
+                  //   : [],
                 })
               );
             } else {
@@ -87,6 +90,7 @@ const AuthForm = ({ newAccount }) => {
               description: "",
               bgURL: bgimg,
               bookmark: [],
+              followAt: [],
               follower: [],
               following: [],
               reNweet: [],
@@ -102,6 +106,7 @@ const AuthForm = ({ newAccount }) => {
                 description: "",
                 createdAtId: Date.now(),
                 bookmark: [],
+                followAt: [],
                 follower: [],
                 following: [],
                 reNweet: [],

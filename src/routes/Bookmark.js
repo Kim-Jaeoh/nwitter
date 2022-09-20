@@ -1,21 +1,16 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { useHistory } from "react-router-dom";
-import Loading from "../components/Loading";
+import { useHistory, useLocation } from "react-router-dom";
 import Nweet from "../components/Nweet";
 import { TopCategory } from "../components/TopCategory";
 import { dbService } from "../fbase";
 import styled from "./Bookmark.module.css";
 
 const Bookmark = ({ userObj }) => {
+  const history = useHistory();
+  const location = useLocation();
+  const uid = location.pathname.split("/")[3];
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [filterBookmark, setFilterBookmark] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,7 +38,7 @@ const Bookmark = ({ userObj }) => {
       setFilterBookmark(filter);
       setLoading(true);
     });
-    return () => setLoading(false);
+    // return () => setLoading(false);
   }, [creatorInfo.bookmark]);
 
   useEffect(() => {
@@ -54,11 +49,13 @@ const Bookmark = ({ userObj }) => {
     <>
       {loading && (
         <div className={styled.container}>
-          <TopCategory
-            text={"북마크"}
-            iconName={<IoArrowBackOutline />}
-            creatorInfo={creatorInfo}
-          />
+          {uid !== userObj.email && (
+            <TopCategory
+              text={"북마크"}
+              iconName={<IoArrowBackOutline />}
+              creatorInfo={creatorInfo}
+            />
+          )}
           {filterBookmark.length !== 0 ? (
             <div>
               {filterBookmark.map((myBook) => (
@@ -68,10 +65,10 @@ const Bookmark = ({ userObj }) => {
           ) : (
             <div className={styled.noInfoBox}>
               <div className={styled.noInfo}>
-                <img
+                {/* <img
                   src="https://abs.twimg.com/sticky/illustrations/empty-states/book-in-bird-cage-400x200.v1.png"
                   alt=""
-                ></img>
+                ></img> */}
                 <h2>나중을 위해 트윗 저장하기</h2>
                 <p>
                   좋은 트윗은 그냥 흘려 보내지 마세요. 나중에 다시 쉽게 찾을 수

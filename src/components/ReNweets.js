@@ -1,45 +1,41 @@
-import { useLocation } from "react-router-dom";
 import {
   collection,
-  doc,
   onSnapshot,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { dbService } from "../fbase";
-import Nweet from "./Nweet";
-import styled from "./ReNweets.module.css";
-import DetailNweetReply from "./DetailNweetReply";
+// import styled from "./ReNweets.module.css";
+import styled from "./NoInfo.module.css";
 import ReNweetsSum from "./ReNweetsSum";
 
-const ReNweets = ({ myNweets, userObj }) => {
-  // const location = useLocation();
-  // const [creatorInfo, setCreatorInfo] = useState([]);
+const ReNweets = ({ userObj }) => {
   const [ogNweets, setOgNweets] = useState([]);
-  const [filterReplies, setFilterReplies] = useState([]);
   const [sum, setSum] = useState([]);
   const [reNweets, setReNweets] = useState([]);
+  const [replyReNweet, setReplyReNweet] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
-  // 리트윗, 답글 전개 연산자로
+  // 리트윗, 답글 전개 연산자 복사 및 시간 순서대로 정렬
   useEffect(() => {
-    const filterSum = [...filterReplies, ...ogNweets];
+    const filterSum = [...replyReNweet, ...ogNweets];
     const sortSum = filterSum.sort(
-      (prev, cur) => cur.createdAt - prev.createdAt
+      (prev, cur) => cur.reNweetAt - prev.reNweetAt
     );
     setSum(sortSum);
-  }, [filterReplies, ogNweets]);
+  }, [replyReNweet, ogNweets]);
 
   // 리트윗 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "reNweets"),
+      // where("email", "==", userObj.email)
       orderBy("reNweetAt", "desc")
     );
 
@@ -49,42 +45,16 @@ const ReNweets = ({ myNweets, userObj }) => {
         ...doc.data(),
       }));
 
-      // const filter = reNweetArray.filter(
-      //   (asd) => asd.replyEmail === userObj.email
-      // );
-
-      // console.log(reNweetArray);
       setReNweets(reNweetArray);
       setLoading(true);
     });
   }, [userObj.email]);
 
-  // console.log(sum);
-  // console.log(filterReplies);
-
-  // 답글 가져오기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "replies")
-      // orderBy("createdAt", "desc")
-    );
-    onSnapshot(q, (querySnapShot) => {
-      const userArray = querySnapShot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      const filter = userArray.filter((id) => id.email === userObj.email);
-      setFilterReplies(filter);
-      setLoading(true);
-    });
-  }, [userObj.email]);
-
-  // 원글의 답글 정보 가져오기
+  // 원글의 리트윗 정보 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
       where("reNweet", "array-contains", userObj.email)
-      // orderBy("createdAt", "desc")
     );
     onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
@@ -92,7 +62,21 @@ const ReNweets = ({ myNweets, userObj }) => {
         ...doc.data(),
       }));
       setOgNweets(userArray);
-      setLoading(true);
+    });
+  }, [userObj.email]);
+
+  // 답글의 리트윗 정보 가져오기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "replies"),
+      where("reNweet", "array-contains", userObj.email)
+    );
+    onSnapshot(q, (querySnapShot) => {
+      const userArray = querySnapShot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setReplyReNweet(userArray);
     });
   }, [userObj.email]);
 
@@ -100,17 +84,23 @@ const ReNweets = ({ myNweets, userObj }) => {
     <>
       {loading && (
         <>
-          {sum.length !== 0 && (
+          {sum.length !== 0 ? (
             <div>
-              {sum.map((filter) => (
+              {sum.map((myNweet) => (
                 <ReNweetsSum
-                  key={filter.id}
-                  reNweetsObj={reNweets}
-                  nweetObj={filter}
-                  filterReplies={filterReplies}
+                  key={myNweet.id}
+                  nweetObj={myNweet}
                   userObj={userObj}
+                  reNweetsObj={reNweets}
                 />
               ))}
+            </div>
+          ) : (
+            <div className={styled.noInfoBox}>
+              <div className={styled.noInfo}>
+                <h2>아직 리트윗이 없습니다</h2>
+                <p>좋은 트윗을 알리고 싶다면 리트윗을 눌러 표시를 해보세요.</p>
+              </div>
             </div>
           )}
         </>
