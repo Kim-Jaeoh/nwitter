@@ -284,7 +284,11 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
       imgRef.current.contains(e.target) ||
       nameRef.current.contains(e.target)
     ) {
-      history.push("/profile/mynweets/" + nweetObj.email);
+      if (nweetObj.email !== userObj.email) {
+        history.push("/user/mynweets/" + nweetObj.email);
+      } else {
+        history.push("/profile/mynweets/" + nweetObj.email);
+      }
     } else if (
       !imgRef.current.contains(e.target) &&
       !nameRef.current.contains(e.target) &&

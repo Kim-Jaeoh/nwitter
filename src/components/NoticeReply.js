@@ -19,18 +19,13 @@ export const NoticeReply = ({ replyObj, userObj }) => {
     });
   }, [replyObj]);
 
-  const goPage = () => {
-    console.log("");
-  };
-
   return (
     <>
       {loading && (
         <NoticeInnerContents
-          goPage={goPage}
           creatorInfo={creatorInfo}
-          Obj={replyObj}
-          text={"답글에 리트윗을 했습니다"}
+          obj={replyObj}
+          text={"글에 답글을 달았습니다"}
         />
       )}
     </>

@@ -320,7 +320,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
     <>
       {loading && (
         <>
-          <div className={styled.nweet} onClick={goPage}>
+          <div className={styled.nweet} onClick={(e) => goPage(e)}>
             {reNweet && (
               <div className={styled.nweet__reNweet}>
                 <div className={styled.nweet__reNweetIcon}>

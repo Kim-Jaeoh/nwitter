@@ -246,10 +246,11 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
         like: [],
         // reNweet: [],
         reNweetAt: Date.now(),
-        parent: nweetObj.parent,
-        parentEmail: nweetObj.parentEmail,
-        replyId: nweetObj.id,
-        replyEmail: nweetObj.email,
+        parent: nweetObj.parent || null,
+        parentEmail: nweetObj.parentEmail || null,
+        parentText: nweetObj.parentText || null,
+        replyId: nweetObj.id || null,
+        replyEmail: nweetObj.email || null,
       };
       await addDoc(collection(dbService, "reNweets"), _nweetReply);
 

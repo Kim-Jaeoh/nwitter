@@ -37,6 +37,10 @@ const Profile = ({ refreshUser, userObj }) => {
   const [resize, setResize] = useState(false);
 
   useEffect(() => {
+    return () => setLoading(false);
+  }, []);
+
+  useEffect(() => {
     if (location.pathname.includes("/mynweets")) {
       setSelected(1);
     } else if (location.pathname.includes("/renweets")) {
@@ -82,7 +86,6 @@ const Profile = ({ refreshUser, userObj }) => {
       setCreatorInfo(doc.data());
       setLoading(true);
     });
-    // return () => setLoading(false);
   }, [uid]);
 
   // 리사이징

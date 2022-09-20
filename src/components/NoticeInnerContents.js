@@ -1,8 +1,13 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "./NoticeReNweet.module.css";
 
-export const NoticeInnerContents = ({ goPage, obj, creatorInfo, text }) => {
+export const NoticeInnerContents = ({ obj, creatorInfo, text }) => {
   const imgRef = useRef();
+  const nameRef = useRef();
+  const history = useHistory();
+  const location = useLocation();
+  const [followTime, setFollowTime] = useState([]);
 
   // 시간 표기
   const timeToString = (timestamp) => {
@@ -30,32 +35,74 @@ export const NoticeInnerContents = ({ goPage, obj, creatorInfo, text }) => {
     return `${Math.floor(betweenTimeDay / 365)}년 전`;
   };
 
+  const goPage = (e) => {
+    if (
+      !imgRef.current?.contains(e.target) &&
+      !nameRef.current?.contains(e.target)
+    ) {
+      history.push("/nweet/" + obj.id);
+    } else {
+      history.push("/user/mynweets/" + obj.email);
+    }
+  };
+
+  const goPages = (e) => {
+    if (
+      imgRef.current.contains(e.target) ||
+      nameRef.current.contains(e.target)
+    ) {
+      history.push("/user/mynweets/" + obj.email);
+    } else if (
+      !imgRef.current.contains(e.target) &&
+      !nameRef.current.contains(e.target)
+    ) {
+      history.push("/nweet/" + obj.parent);
+    }
+  };
+
+  // 팔로우 시간 정보 가져오기
+  useEffect(() => {
+    if (creatorInfo.followAt) {
+      creatorInfo.followAt.map((time) => setFollowTime(time));
+    }
+  }, [creatorInfo.followAt]);
+
   return (
-    <div className={styled.nweet}>
-      <div className={styled.nweet__container} onClick={goPage}>
-        <div className={styled.nweet__profile} ref={imgRef}>
-          <img
-            src={creatorInfo?.photoURL}
-            alt="profileImg"
-            className={styled.profile__image}
-          />
-        </div>
-        <div className={styled.reNweetBox}>
-          <p>
-            <span>@{obj?.email?.split("@")[0]}</span>
-            <span>님이</span>
-            &nbsp;
-            {obj?.text && (
-              <span className={styled.reNweet__name}>"{obj.text}"</span>
+    <>
+      {/* {location.pathname.includes("renweets") && ( */}
+      <div className={styled.nweet} onClick={goPages}>
+        <div className={styled.nweet__container}>
+          <div className={styled.nweet__profile} ref={imgRef}>
+            <img
+              src={creatorInfo?.photoURL || obj?.photoURL}
+              alt="profileImg"
+              className={styled.profile__image}
+            />
+          </div>
+          <div className={styled.reNweetBox}>
+            <p>
+              <span ref={nameRef}>
+                @{(obj?.email || creatorInfo.email)?.split("@")[0]}
+              </span>
+              <span>님이 </span>
+              {location.pathname.includes("reply") ? (
+                <span className={styled.reNweet__name}>"{obj.parentText}"</span>
+              ) : obj.text ? (
+                <span className={styled.reNweet__name}>"{obj.text}"</span>
+              ) : null}
+              <span> {text}</span>
+            </p>
+          </div>
+          <div style={{ marginLeft: "auto" }} className={styled.reNweet__time}>
+            {location.pathname.includes("follow") ? (
+              <p>{timeToString(followTime)}</p>
+            ) : (
+              <p>{timeToString(obj?.createdAt || obj?.reNweetAt)}</p>
             )}
-            &nbsp;
-            <span> {text}</span>
-          </p>
-        </div>
-        <div style={{ marginLeft: "auto" }} className={styled.reNweet__time}>
-          <p>{timeToString(obj.createdAt)}</p>
+          </div>
         </div>
       </div>
-    </div>
+      {/* // )} */}
+    </>
   );
 };

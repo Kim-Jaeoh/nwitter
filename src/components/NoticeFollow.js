@@ -1,5 +1,11 @@
 import React from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { dbService } from "../fbase";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -9,26 +15,21 @@ export const NoticeFollow = ({ followObj, userObj }) => {
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // 정보 가져오기
+  // 팔로워 정보 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", followObj), (doc) => {
+    onSnapshot(doc(dbService, "users", followObj.email), (doc) => {
       setCreatorInfo(doc.data());
       setLoading(true);
     });
   }, [followObj]);
 
-  const goPage = () => {
-    console.log("");
-  };
-
   return (
     <>
       {loading && (
         <NoticeInnerContents
-          goPage={goPage}
           creatorInfo={creatorInfo}
-          Obj={followObj}
-          text={"팔로우 했습니다."}
+          obj={followObj}
+          text={"회원님을 팔로우 했습니다."}
         />
       )}
     </>

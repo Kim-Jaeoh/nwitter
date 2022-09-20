@@ -1,7 +1,5 @@
-import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { dbService } from "../fbase";
 import styled from "./TopCategory.module.css";
 
 export const TopCategory = ({
@@ -9,34 +7,31 @@ export const TopCategory = ({
   iconName,
   iconName2,
   text,
+  home,
   myNweets,
   onLogOutClick,
 }) => {
   const history = useHistory();
-  const location = useLocation();
-  const [selected, setSelected] = useState("home");
+  // const location = useLocation();
+  // const [selected, setSelected] = useState("home");
 
-  useEffect(() => {
-    if (location.pathname === "/") {
-      setSelected("home");
-    } else if (location.pathname.includes("explore")) {
-      setSelected("notHome");
-    } else if (location.pathname.includes("/notice")) {
-      setSelected("notHome");
-    } else if (location.pathname.includes("/bookmark")) {
-      setSelected("notHome");
-    } else if (location.pathname.includes("/profile")) {
-      setSelected("notHome");
-    } else if (location.pathname.includes("/user")) {
-      setSelected("notHome");
-    } else if (location.pathname.includes("/nweet")) {
-      setSelected("notHome");
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (location.pathname === "/") {
+  //     setSelected("home");
+  //   } else if (
+  //     location.pathname.includes("explore") ||
+  //     location.pathname.includes("/notice") ||
+  //     location.pathname.includes("/bookmark") ||
+  //     location.pathname.includes("/profile") ||
+  //     location.pathname.includes("/user")
+  //   ) {
+  //     setSelected("notHome");
+  //   }
+  // }, [location.pathname]);
 
   return (
     <>
-      {selected === "home" ? (
+      {home === "home" ? (
         <div className={styled.main__category}>
           <div className={styled.main_text}>
             <h2>{text}</h2>
@@ -59,7 +54,7 @@ export const TopCategory = ({
               </p>
             )}
           </div>
-          {onLogOutClick && (
+          {iconName2 && (
             <div className={styled.minor__iconExit} onClick={onLogOutClick}>
               {iconName2}
             </div>

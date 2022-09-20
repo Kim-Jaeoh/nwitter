@@ -43,7 +43,6 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
     textRef.current.style.height = "50px";
     textRef.current.style.height = textRef.current.scrollHeight + "px";
   }, [textRef]);
-
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -73,6 +72,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         reNweet: [],
         reNweetAt: [],
         parent: nweets.id,
+        parentText: nweets.text,
         parentEmail: nweets.email,
         replyId: [],
         replyEmail: [],
@@ -84,7 +84,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         _nweetReply
       );
       await updateDoc(doc(dbService, "nweets", nweets.id), {
-        reply: [...nweets.reply, replies.id],
+        replyId: [...nweets?.replyId, replies.id],
       });
       setIsLoading(false);
       setReply("");

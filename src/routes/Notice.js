@@ -7,6 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { orderByChild } from "firebase/database";
 import { dbService } from "../fbase";
 import { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
@@ -27,14 +28,33 @@ const Notice = ({ userObj }) => {
   const [filterReplies, setFilterReplies] = useState([]);
   const [myInfo, setMyInfo] = useState({});
 
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   // 본인 정보 가져오기
+  // useEffect(() => {
+  //   onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+  //     setMyInfo(doc.data());
+  //   });
+  // }, [userObj.email]);
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setMyInfo(doc.data());
+    const q = query(
+      collection(dbService, "users"),
+      orderBy("followAt", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const filter = reNweetArray.filter((asd) =>
+        asd.following.includes(userObj.email)
+      );
+
+      setMyInfo(filter);
     });
   }, [userObj.email]);
 
@@ -97,100 +117,108 @@ const Notice = ({ userObj }) => {
 
   return (
     <>
-      <div className={styled.container}>
-        <TopCategory text={"알림"} iconName={<IoArrowBackOutline />} />
-        <div className={styled.main__container}>
-          <nav className={styled.categoryList}>
-            <SelectMenuBtn
-              num={1}
-              selected={selected}
-              onClick={() => onSelect(1)}
-              url={"/notice/renweet/"}
-              text={"리트윗"}
-            />
-            <SelectMenuBtn
-              num={2}
-              selected={selected}
-              onClick={() => onSelect(2)}
-              url={"/notice/reply"}
-              text={"답글"}
-            />
-            <SelectMenuBtn
-              num={3}
-              selected={selected}
-              onClick={() => onSelect(3)}
-              url={"/notice/follow"}
-              text={"팔로우"}
-            />
-          </nav>
-        </div>
+      {loading && (
+        <>
+          <div className={styled.container}>
+            <TopCategory text={"알림"} iconName={<IoArrowBackOutline />} />
+            <div className={styled.main__container}>
+              <nav className={styled.categoryList}>
+                <SelectMenuBtn
+                  num={1}
+                  selected={selected}
+                  onClick={() => onSelect(1)}
+                  url={"/notice/renweet/"}
+                  text={"리트윗"}
+                />
+                <SelectMenuBtn
+                  num={2}
+                  selected={selected}
+                  onClick={() => onSelect(2)}
+                  url={"/notice/reply"}
+                  text={"답글"}
+                />
+                <SelectMenuBtn
+                  num={3}
+                  selected={selected}
+                  onClick={() => onSelect(3)}
+                  url={"/notice/follow"}
+                  text={"팔로우"}
+                />
+              </nav>
+            </div>
 
-        <Switch>
-          <Route path="/notice/renweet">
-            <>
-              {reNweets.length !== 0 ? (
-                reNweets?.map((reNweet) => (
-                  <NoticeReNweet
-                    key={reNweet.id}
-                    reNweetsObj={reNweet}
-                    loading={loading}
-                    userObj={userObj}
-                  />
-                ))
-              ) : (
-                <div className={styled.noInfoBox}>
-                  <div className={styled.noInfo}>
-                    <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                    <p>누군가가 나의 트윗을 리트윗 하면 여기에 표시됩니다.</p>
-                  </div>
-                </div>
-              )}
-            </>
-          </Route>
-          <Route path="/notice/reply">
-            <>
-              {filterReplies.length !== 0 ? (
-                filterReplies.map((reply) => (
-                  <NoticeReply
-                    key={reply.id}
-                    userObj={userObj}
-                    replyObj={reply}
-                    loading={loading}
-                  />
-                ))
-              ) : (
-                <div className={styled.noInfoBox}>
-                  <div className={styled.noInfo}>
-                    <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                    <p>누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.</p>
-                  </div>
-                </div>
-              )}
-            </>
-          </Route>
-          <Route path="/notice/follow">
-            <>
-              {myInfo.follower?.length !== 0 ? (
-                myInfo.follower?.map((follow) => (
-                  <NoticeFollow
-                    key={follow.id}
-                    userObj={userObj}
-                    followObj={follow}
-                    loading={loading}
-                  />
-                ))
-              ) : (
-                <div className={styled.noInfoBox}>
-                  <div className={styled.noInfo}>
-                    <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                    <p>누군가가 나를 팔로우 하면 여기에 표시됩니다.</p>
-                  </div>
-                </div>
-              )}
-            </>
-          </Route>
-        </Switch>
-      </div>
+            <Switch>
+              <Route path="/notice/renweet">
+                <>
+                  {reNweets.length !== 0 ? (
+                    reNweets?.map((reNweet) => (
+                      <NoticeReNweet
+                        key={reNweet}
+                        reNweetsObj={reNweet}
+                        loading={loading}
+                        userObj={userObj}
+                      />
+                    ))
+                  ) : (
+                    <div className={styled.noInfoBox}>
+                      <div className={styled.noInfo}>
+                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                        <p>
+                          누군가가 나의 트윗을 리트윗 하면 여기에 표시됩니다.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              </Route>
+              <Route path="/notice/reply">
+                <>
+                  {filterReplies.length !== 0 ? (
+                    filterReplies.map((reply) => (
+                      <NoticeReply
+                        key={reply}
+                        userObj={userObj}
+                        replyObj={reply}
+                        loading={loading}
+                      />
+                    ))
+                  ) : (
+                    <div className={styled.noInfoBox}>
+                      <div className={styled.noInfo}>
+                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                        <p>
+                          누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              </Route>
+              <Route path="/notice/follow">
+                <>
+                  {myInfo ? (
+                    myInfo.map((follow, index) => (
+                      <NoticeFollow
+                        key={index}
+                        userObj={userObj}
+                        followObj={follow}
+                        loading={loading}
+                      />
+                    ))
+                  ) : (
+                    <div className={styled.noInfoBox}>
+                      <div className={styled.noInfo}>
+                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                        <p>누군가가 나를 팔로우 하면 여기에 표시됩니다.</p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              </Route>
+            </Switch>
+          </div>
+        </>
+      )}
     </>
   );
 };

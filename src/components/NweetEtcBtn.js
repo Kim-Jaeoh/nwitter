@@ -32,7 +32,7 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
   useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
-      where("reply", "array-contains", nweetObj.id)
+      where("replyId", "array-contains", nweetObj.id)
     );
     onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
@@ -110,18 +110,18 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
       }
 
       // 답글만 삭제
-      if (nweets?.reply?.includes(nweetObj.id)) {
-        const copy = [...nweets.reply];
+      if (nweets?.replyId?.includes(nweetObj.id)) {
+        const copy = [...nweets.replyId];
         const filter = copy.filter((reply) => reply !== nweetObj.id);
         await updateDoc(doc(dbService, "nweets", nweets.id), {
-          reply: filter,
+          replyId: filter,
         });
         await deleteDoc(repliesRef); // 답글 삭제
 
         dispatch(
           setCurrentUser({
             ...currentUser,
-            reply: filter,
+            replyId: filter,
           })
         );
       }
