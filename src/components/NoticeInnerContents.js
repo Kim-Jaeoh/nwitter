@@ -85,13 +85,18 @@ export const NoticeInnerContents = ({ obj, creatorInfo, text }) => {
                 @{(obj?.email || creatorInfo.email)?.split("@")[0]}
               </span>
               <span>님이 </span>
-              {location.pathname.includes("reply") ? (
-                <span className={styled.reNweet__name}>"{obj.parentText}"</span>
-              ) : obj.text ? (
-                <span className={styled.reNweet__name}>"{obj.text}"</span>
-              ) : (
+
+              {location.pathname.includes("renweet") && (
+                <span className={styled.reNweet__name}>
+                  "{obj.text ? obj.text : obj.parentText}"
+                </span>
+              )}
+              {location.pathname.includes("reply") && (
                 <span className={styled.reNweet__name}>"{obj.parentText}"</span>
               )}
+
+              {location.pathname.includes("follow") && null}
+
               <span> {text}</span>
             </p>
           </div>
