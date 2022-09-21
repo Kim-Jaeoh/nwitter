@@ -14,7 +14,7 @@ export const Replies = ({ userObj }) => {
   useEffect(() => {
     const q = query(
       collection(dbService, "reNweets"),
-      where("email", "==", userObj.email)
+      where("parentEmail", "==", userObj.email)
       // orderBy("reNweetAt", "desc")
     );
 

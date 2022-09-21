@@ -36,8 +36,8 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
   const imgRef = useRef();
   const nameRef = useRef();
   const actionRef = useRef();
-  const dbRef = doc(dbService, "replies", `${nweetObj.id}`);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
+  const [filterReNweetId, setFilterReNweetId] = useState({});
   const [newNweetAttachment, setNewNweetAttachment] = useState(
     nweetObj.attachmentUrl
   );
@@ -98,13 +98,28 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
     setNewNweet(value);
   };
 
+  // 수정된 글 firebase에 업데이트
+  useEffect(() => {
+    const index = reNweetsObj?.findIndex((obj) => obj.replyId === nweetObj.id);
+    setFilterReNweetId(reNweetsObj[index]);
+  }, [nweetObj.id, nweetObj.replyId, reNweetsObj]);
+
   const onSubmit = async (e) => {
+    const dbRef = doc(dbService, "replies", nweetObj.id);
+    const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
+
     alert("업데이트 되었습니다");
     e.preventDefault();
+
     await updateDoc(dbRef, {
       text: newNweet,
-      attachmentUrl: newNweetAttachment,
+      attachmentUrl: nweetObj.attachmentUrl,
     });
+
+    await updateDoc(reNweetRef, {
+      text: newNweet,
+    });
+
     setIsEditing(false);
   };
 

@@ -29,6 +29,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
   const imgRef = useRef();
+  const nameRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
     nweetObj.attachmentUrl
@@ -278,7 +279,12 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   };
 
   const goPage = (e, type) => {
-    history.push("/profile/mynweets/" + nweetObj.email);
+    if (
+      imgRef.current.contains(e.target) ||
+      nameRef.current.contains(e.target)
+    ) {
+      history.push("/profile/mynweets/" + nweetObj.email);
+    }
   };
 
   return (
@@ -295,12 +301,11 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
               </div>
             )}
             <div className={styled.nweet__wrapper}>
-              <div className={styled.nweet__container}>
-                <div
-                  className={styled.nweet__profile}
-                  onClick={(e) => goPage(e, "profile")}
-                  ref={imgRef}
-                >
+              <div
+                className={styled.nweet__container}
+                onClick={(e) => goPage(e)}
+              >
+                <div className={styled.nweet__profile} ref={imgRef}>
                   <img
                     src={loading && creatorInfo.photoURL}
                     alt="profileImg"
@@ -309,10 +314,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
                 </div>
                 <div className={styled.userInfo}>
                   <div className={styled.userInfo__name}>
-                    <div
-                      className={styled.userInfo__one}
-                      onClick={(e) => goPage(e, "profile")}
-                    >
+                    <div className={styled.userInfo__one} ref={nameRef}>
                       <p>{creatorInfo.displayName}</p>
                     </div>
                     <div className={styled.userInfo__two}>
@@ -344,10 +346,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
                   )}
                 </div>
               </div>
-              <div
-                className={styled.nweet__text}
-                onClick={(e) => goPage(e, "nweet")}
-              >
+              <div className={styled.nweet__text}>
                 <h4>{nweetObj.text}</h4>
               </div>
               <div className={styled.nweet__created}>
