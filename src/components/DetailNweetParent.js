@@ -29,11 +29,13 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
   const imgRef = useRef();
-  const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [newNweetAttachment, setNewNweetAttachment] = useState(
     nweetObj.attachmentUrl
   );
+
+  const [filterReNweetId, setFilterReNweetId] = useState({});
+
   const [creatorInfo, setCreatorInfo] = useState({});
   const [nweetEtc, setNweetEtc] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -44,9 +46,18 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   reNweetsObj.forEach((asd) => {
+  //     if (asd.parent === nweetObj.id) {
+  //       setFilterReNweetId(asd.id);
+  //     }
+  //   });
+  //   console.log(filterReNweetId);
+  // }, [filterReNweetId, reNweetsObj, userObj.email]);
+
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   //  map 처리 된 각 유저 정보들
   useEffect(() => {
@@ -93,13 +104,28 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
     setNewNweet(value);
   };
 
+  // 수정된 글 firebase에 업데이트
+  useEffect(() => {
+    const index = reNweetsObj?.findIndex((obj) => obj.parent === nweetObj.id);
+    setFilterReNweetId(reNweetsObj[index]);
+  }, [nweetObj.id, nweetObj.replyId, reNweetsObj]);
+
   const onSubmit = async (e) => {
+    const dbRef = doc(dbService, "nweets", nweetObj.id);
+    const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
+
     alert("업데이트 되었습니다");
     e.preventDefault();
+
     await updateDoc(dbRef, {
       text: newNweet,
-      attachmentUrl: newNweetAttachment,
+      attachmentUrl: nweetObj.attachmentUrl,
     });
+
+    await updateDoc(reNweetRef, {
+      parentText: newNweet,
+    });
+
     setIsEditing(false);
   };
 
@@ -309,7 +335,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
                       </div>
                       {nweetEtc && (
                         <NweetEtcBtn
-                          newNweetAttachment={newNweetAttachment}
+                          nweetAttachment={nweetObj.attachmentUrl}
                           nweetObj={nweetObj}
                           toggleEdit={toggleEdit}
                         />
@@ -336,38 +362,42 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
               </div>
             ) : null}
             <nav className={styled.nweet__actions}>
-              <div className={styled.actions__text}>
-                <div className={styled.comment__text}>
-                  {nweetObj.reply?.length === 0 ? (
-                    ""
-                  ) : (
-                    <>
-                      <span>{nweetObj.reply?.length}</span>
-                      <span> 답글</span>
-                    </>
-                  )}
+              {(nweetObj.replyId.length ||
+                nweetObj.reNweet.length ||
+                nweetObj.like.length) !== 0 && (
+                <div className={styled.actions__text}>
+                  <div className={styled.comment__text}>
+                    {nweetObj.replyId?.length === 0 ? (
+                      ""
+                    ) : (
+                      <>
+                        <span>{nweetObj.replyId?.length}</span>
+                        <span> 답글</span>
+                      </>
+                    )}
+                  </div>
+                  <div className={styled.reNweet__text}>
+                    {nweetObj.reNweet?.length === 0 ? (
+                      ""
+                    ) : (
+                      <>
+                        <span>{nweetObj.reNweet?.length}</span>
+                        <span> 리트윗</span>
+                      </>
+                    )}
+                  </div>
+                  <div className={styled.like__text}>
+                    {nweetObj.like?.length === 0 ? (
+                      ""
+                    ) : (
+                      <>
+                        <span>{nweetObj.like?.length}</span>
+                        <span> 마음에 들어요</span>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div className={styled.reNweet__text}>
-                  {nweetObj.reNweet?.length === 0 ? (
-                    ""
-                  ) : (
-                    <>
-                      <span>{nweetObj.reNweet?.length}</span>
-                      <span> 리트윗</span>
-                    </>
-                  )}
-                </div>
-                <div className={styled.like__text}>
-                  {nweetObj.like?.length === 0 ? (
-                    ""
-                  ) : (
-                    <>
-                      <span>{nweetObj.like?.length}</span>
-                      <span> 마음에 들어요</span>
-                    </>
-                  )}
-                </div>
-              </div>
+              )}
               <div className={styled.actionBox}>
                 <div className={styled.comment}>
                   <div className={styled.actions__icon}>
@@ -410,8 +440,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
               onChange={onChange}
               onSubmit={onSubmit}
               newNweet={newNweet}
-              newNweetAttachment={newNweetAttachment}
-              setNewNweetAttachment={setNewNweetAttachment}
+              nweetAttachment={nweetObj.attachmentUrl}
               isEditing={isEditing}
               toggleEdit={toggleEdit}
               isAreaHeight={isAreaHeight}

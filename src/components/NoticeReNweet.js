@@ -26,7 +26,11 @@ export const NoticeReNweet = ({ reNweetsObj, userObj }) => {
         <NoticeInnerContents
           creatorInfo={creatorInfo}
           obj={reNweetsObj}
-          text={"글에 리트윗을 했습니다."}
+          text={
+            reNweetsObj?.replyId
+              ? "답글에 리트윗을 했습니다."
+              : "글에 리트윗을 했습니다."
+          }
         />
       )}
     </>

@@ -89,7 +89,9 @@ export const NoticeInnerContents = ({ obj, creatorInfo, text }) => {
                 <span className={styled.reNweet__name}>"{obj.parentText}"</span>
               ) : obj.text ? (
                 <span className={styled.reNweet__name}>"{obj.text}"</span>
-              ) : null}
+              ) : (
+                <span className={styled.reNweet__name}>"{obj.parentText}"</span>
+              )}
               <span> {text}</span>
             </p>
           </div>

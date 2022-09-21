@@ -13,6 +13,7 @@ import styled from "./LeftBar.module.css";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import UserEtcBtn from "../components/UserEtcBtn";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
+import { NweetModal } from "../components/NweetModal";
 
 const LeftBar = ({ userObj }) => {
   const userEtcRef = useRef();
@@ -22,6 +23,7 @@ const LeftBar = ({ userObj }) => {
   const [size, setSize] = useState(window.innerWidth);
   const [resize, setResize] = useState(false);
   const [userEtc, setUserEtc] = useState(false);
+  const [nweetModal, setNweetModal] = useState(false);
   const location = useLocation();
   const history = useHistory();
   const uid2 = location.pathname.split("/").slice(0, 3).join("/");
@@ -80,9 +82,13 @@ const LeftBar = ({ userObj }) => {
     setSelected(num);
   };
 
-  const toggleUserEtc = useCallback(() => {
+  const toggleUserEtc = () => {
     setUserEtc((prev) => !prev);
-  }, []);
+  };
+
+  const toggleNweetModal = () => {
+    setNweetModal((prev) => !prev);
+  };
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
@@ -108,171 +114,180 @@ const LeftBar = ({ userObj }) => {
     }
   };
   return (
-    <article className={styled.container}>
-      <section className={styled.wrapper}>
-        <section className={styled.leftBar__category}>
-          <div className={styled.leftBar__logobox}>
-            <div className={styled.leftBar__logo}>
-              <Link to="/">
-                <FaTwitter />
-              </Link>
+    <>
+      <section className={styled.container}>
+        <div className={styled.wrapper}>
+          <div className={styled.leftBar__category}>
+            <div className={styled.leftBar__logobox}>
+              <div className={styled.leftBar__logo}>
+                <Link to="/">
+                  <FaTwitter />
+                </Link>
+              </div>
+            </div>
+            <nav className={styled.leftBar__container}>
+              <ul>
+                <li>
+                  <Link to="/" onClick={() => onSelect(1)}>
+                    <div className={styled.leftBar__list}>
+                      {selected === 1 ? (
+                        <>
+                          <AiFillHome />
+                          <span>
+                            <b>홈</b>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <AiOutlineHome />
+                          <span>홈</span>
+                        </>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/explore/nweets/" + userObj.email?.split("@")[0]}
+                    onClick={() => onSelect(2)}
+                  >
+                    <div className={styled.leftBar__list}>
+                      {selected === 2 ? (
+                        <>
+                          <FaHashtag />
+                          <span>
+                            <b>탐색하기</b>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <FiHash />
+                          <span>탐색하기</span>
+                        </>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/notice/renweet" onClick={() => onSelect(3)}>
+                    <div className={styled.leftBar__list}>
+                      {selected === 3 ? (
+                        <>
+                          <BsBellFill />
+                          <span>
+                            <b>알림</b>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <BsBell />
+                          <span>알림</span>
+                        </>
+                      )}
+                      {/* {alarm } */}
+                    </div>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/bookmark" onClick={() => onSelect(4)}>
+                    <div className={styled.leftBar__list}>
+                      {selected === 4 ? (
+                        <>
+                          <IoBookmark />
+                          <span>
+                            <b>북마크</b>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <IoBookmarkOutline />
+                          <span>북마크</span>
+                        </>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/profile/mynweets/" + userObj.email}
+                    onClick={() => onSelect(5)}
+                  >
+                    <div className={styled.leftBar__list}>
+                      {selected === 5 ? (
+                        <>
+                          <BsPersonFill />
+                          <span>
+                            <b>프로필</b>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <BsPerson />
+                          <span>프로필</span>
+                        </>
+                      )}
+
+                      {resize && (
+                        <div className={styled.userInfo__profileHidden}>
+                          <div className={styled.userInfo__profile}>
+                            <img
+                              src={creatorInfo.photoURL}
+                              alt="profileImg"
+                              className={styled.profile__image}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+            <div className={styled.leftBar__nweet} onClick={toggleNweetModal}>
+              <div>
+                <span>트윗하기</span>
+                <FaFeatherAlt />
+              </div>
             </div>
           </div>
-          <nav className={styled.leftBar__container}>
-            <ul>
-              <li>
-                <Link to="/" onClick={() => onSelect(1)}>
-                  <div className={styled.leftBar__list}>
-                    {selected === 1 ? (
-                      <>
-                        <AiFillHome />
-                        <span>
-                          <b>홈</b>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <AiOutlineHome />
-                        <span>홈</span>
-                      </>
-                    )}
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={"/explore/nweets/" + userObj.email?.split("@")[0]}
-                  onClick={() => onSelect(2)}
-                >
-                  <div className={styled.leftBar__list}>
-                    {selected === 2 ? (
-                      <>
-                        <FaHashtag />
-                        <span>
-                          <b>탐색하기</b>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <FiHash />
-                        <span>탐색하기</span>
-                      </>
-                    )}
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to="/notice/renweet" onClick={() => onSelect(3)}>
-                  <div className={styled.leftBar__list}>
-                    {selected === 3 ? (
-                      <>
-                        <BsBellFill />
-                        <span>
-                          <b>알림</b>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <BsBell />
-                        <span>알림</span>
-                      </>
-                    )}
-                    {/* {alarm } */}
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link to="/bookmark" onClick={() => onSelect(4)}>
-                  <div className={styled.leftBar__list}>
-                    {selected === 4 ? (
-                      <>
-                        <IoBookmark />
-                        <span>
-                          <b>북마크</b>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <IoBookmarkOutline />
-                        <span>북마크</span>
-                      </>
-                    )}
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={"/profile/mynweets/" + userObj.email}
-                  onClick={() => onSelect(5)}
-                >
-                  <div className={styled.leftBar__list}>
-                    {selected === 5 ? (
-                      <>
-                        <BsPersonFill />
-                        <span>
-                          <b>프로필</b>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <BsPerson />
-                        <span>프로필</span>
-                      </>
-                    )}
-
-                    {resize && (
-                      <div className={styled.userInfo__profileHidden}>
-                        <div className={styled.userInfo__profile}>
-                          <img
-                            src={creatorInfo.photoURL}
-                            alt="profileImg"
-                            className={styled.profile__image}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-          <section className={styled.leftBar__nweet}>
-            <div>
-              <span>트윗하기</span>
-              <FaFeatherAlt />
-            </div>
-          </section>
-        </section>
-        <div style={{ position: "relative" }} ref={userEtcRef}>
-          {userEtc && (
-            <UserEtcBtn
-              onLogOutClick={onLogOutClick}
-              creatorInfo={creatorInfo}
-            />
-          )}
-          <section className={styled.leftBar__user}>
-            <div className={styled.leftBar__userInfo} onClick={toggleUserEtc}>
-              <div className={styled.userInfo__profile}>
-                <img
-                  src={
-                    creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile
-                  }
-                  alt="profileImg"
-                  className={styled.profile__image}
-                />
+          <div style={{ position: "relative" }} ref={userEtcRef}>
+            {userEtc && (
+              <UserEtcBtn
+                onLogOutClick={onLogOutClick}
+                creatorInfo={creatorInfo}
+              />
+            )}
+            <section className={styled.leftBar__user}>
+              <div className={styled.leftBar__userInfo} onClick={toggleUserEtc}>
+                <div className={styled.userInfo__profile}>
+                  <img
+                    src={
+                      creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile
+                    }
+                    alt="profileImg"
+                    className={styled.profile__image}
+                  />
+                </div>
+                <div className={styled.userInfo__name}>
+                  <p>{creatorInfo.displayName}</p>
+                  <p>@{userObj.email.split("@")[0]}</p>
+                </div>
+                <div className={styled.userInfo__etc}>
+                  <FiMoreHorizontal />
+                </div>
               </div>
-              <div className={styled.userInfo__name}>
-                <p>{creatorInfo.displayName}</p>
-                <p>@{userObj.email.split("@")[0]}</p>
-              </div>
-              <div className={styled.userInfo__etc}>
-                <FiMoreHorizontal />
-              </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       </section>
-    </article>
+      {nweetModal && (
+        <NweetModal
+          nweetModal={nweetModal}
+          userObj={userObj}
+          toggleNweetModal={toggleNweetModal}
+        />
+      )}
+    </>
   );
 };
 

@@ -11,8 +11,8 @@ const UpdateNweetModal = ({
   creatorInfo,
   newNweet,
   setNewNweet,
-  newNweetAttachment,
-  setNewNweetAttachment,
+  nweetAttachment,
+  // setNewNweetAttachment,
   isAreaHeight,
   setIsAreaHeight,
   onChange,
@@ -23,7 +23,7 @@ const UpdateNweetModal = ({
   const editRef = useRef();
   const emojiRef = useRef();
   const [clickEmoji, setClickEmoji] = useState(false);
-  const [attachment, setAttachment] = useState(newNweetAttachment);
+  // const [nweetAttachment, setAttachment] = useState(nweetAttachment);
   const [focus, setFocus] = useState(false);
 
   // 이모지 모달 밖 클릭 시 창 끔
@@ -96,7 +96,7 @@ const UpdateNweetModal = ({
                 type="submit"
                 value="수정하기"
                 className={styled.editInput__arrow}
-                disabled={newNweet === "" && newNweetAttachment === ""}
+                disabled={newNweet === "" && nweetAttachment === ""}
               />
             </div>
           </div>
@@ -145,13 +145,13 @@ const UpdateNweetModal = ({
                   </div>
                 </div>
               </div>
-              {attachment && (
+              {nweetAttachment && (
                 <div className={styled.editForm__attachment}>
                   <img
-                    src={attachment}
+                    src={nweetAttachment}
                     alt="upload file"
                     style={{
-                      backgroundImage: attachment,
+                      backgroundImage: nweetAttachment,
                     }}
                   />
                 </div>

@@ -43,6 +43,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
     textRef.current.style.height = "50px";
     textRef.current.style.height = textRef.current.scrollHeight + "px";
   }, [textRef]);
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -75,7 +76,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         parentText: nweets.text,
         parentEmail: nweets.email,
         replyId: [],
-        replyEmail: [],
+        reNweetEmail: [],
         isReply: true,
       };
 

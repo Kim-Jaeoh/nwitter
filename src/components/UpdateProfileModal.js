@@ -1,17 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styled from "./UpdateProfileModal.module.css";
 import Modal from "@mui/material/Modal";
 import bgImg from "../image/bgimg.jpg";
 import noneProfile from "../image/noneProfile.jpg";
 import { GrClose } from "react-icons/gr";
-import { setCurrentUser, setLoginToken } from "../reducer/user";
+import { setCurrentUser } from "../reducer/user";
 import { useDispatch, useSelector } from "react-redux";
-import { authService, dbService } from "../fbase";
-import { useHistory } from "react-router-dom";
+import { dbService } from "../fbase";
 import { doc, updateDoc } from "firebase/firestore";
 import imageCompression from "browser-image-compression";
-import { BiCamera } from "react-icons/bi";
-import { MdOutlineAddAPhoto } from "react-icons/md";
 import {
   IoCameraOutline,
   IoCameraReverseOutline,
@@ -26,10 +23,7 @@ const UpdateProfileModal = ({
 }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
-  const history = useHistory();
-
   const inputRef = useRef();
-
   const [newDisplayName, setNewDisplayName] = useState(creatorInfo.displayName);
   const [desc, setDesc] = useState(creatorInfo.description);
   const [editAttachment, setEditAttachment] = useState(creatorInfo.photoURL);

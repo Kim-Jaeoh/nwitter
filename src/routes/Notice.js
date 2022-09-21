@@ -24,8 +24,9 @@ const Notice = ({ userObj }) => {
   const location = useLocation();
   const [selected, setSelected] = useState(1);
   const [reNweets, setReNweets] = useState([]);
+  const [repliesReNweets, setRepliesReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filterReplies, setFilterReplies] = useState([]);
+  const [replies, setReplies] = useState([]);
   const [myInfo, setMyInfo] = useState({});
 
   // useEffect(() => {
@@ -38,6 +39,7 @@ const Notice = ({ userObj }) => {
   //     setMyInfo(doc.data());
   //   });
   // }, [userObj.email]);
+
   useEffect(() => {
     const q = query(
       collection(dbService, "users"),
@@ -82,6 +84,28 @@ const Notice = ({ userObj }) => {
     });
   }, [userObj.email]);
 
+  // // 답글의 리트윗 가져오기
+  // useEffect(() => {
+  //   const q = query(
+  //     collection(dbService, "replies"),
+  //     orderBy("reNweetAt", "desc")
+  //   );
+
+  //   onSnapshot(q, (snapshot) => {
+  //     const reNweetArray = snapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+
+  //     const filter = reNweetArray.filter((asd) => asd.email === userObj.email);
+
+  //     const notMe = filter.filter((asd) => asd.reNweet !== userObj.email);
+
+  //     setRepliesReNweets(notMe);
+  //     setLoading(true);
+  //   });
+  // }, [userObj.email]);
+
   // 답글 가져오기
   useEffect(() => {
     const q = query(
@@ -96,7 +120,7 @@ const Notice = ({ userObj }) => {
       const filter = userArray.filter((id) => id.parentEmail === userObj.email);
       const notMe = filter.filter((asd) => asd.email !== userObj.email);
 
-      setFilterReplies(notMe);
+      setReplies(notMe);
       setLoading(true);
     });
   }, [userObj.email]);
@@ -153,10 +177,11 @@ const Notice = ({ userObj }) => {
                   {reNweets.length !== 0 ? (
                     reNweets?.map((reNweet) => (
                       <NoticeReNweet
-                        key={reNweet}
+                        key={reNweet.id}
                         reNweetsObj={reNweet}
                         loading={loading}
                         userObj={userObj}
+                        repliesReNweets={repliesReNweets}
                       />
                     ))
                   ) : (
@@ -173,8 +198,8 @@ const Notice = ({ userObj }) => {
               </Route>
               <Route path="/notice/reply">
                 <>
-                  {filterReplies.length !== 0 ? (
-                    filterReplies.map((reply) => (
+                  {replies.length !== 0 ? (
+                    replies.map((reply) => (
                       <NoticeReply
                         key={reply}
                         userObj={userObj}

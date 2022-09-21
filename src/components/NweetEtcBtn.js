@@ -15,7 +15,7 @@ import { dbService, storageService } from "../fbase";
 import { setCurrentUser } from "../reducer/user";
 import styled from "./NweetEtcBtn.module.css";
 
-const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
+const NweetEtcBtn = ({ nweetAttachment, nweetObj, toggleEdit }) => {
   // nweets는 원글 정보
   // nweetObj는 답글 정보
 
@@ -24,7 +24,7 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
   const [nweets, setNweets] = useState([]);
   const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
   const repliesRef = doc(dbService, "replies", `${nweetObj.id}`);
-  const dbAttachmentRef = ref(storageService, newNweetAttachment);
+  const dbAttachmentRef = ref(storageService, nweetAttachment);
   const [reNweets, setReNweets] = useState([]);
   const [showReply, setShowReply] = useState("");
 
@@ -105,7 +105,7 @@ const NweetEtcBtn = ({ newNweetAttachment, nweetObj, toggleEdit }) => {
       }
 
       // 이미지 삭제
-      if (newNweetAttachment) {
+      if (nweetAttachment) {
         await deleteObject(dbAttachmentRef);
       }
 
