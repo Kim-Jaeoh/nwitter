@@ -76,7 +76,7 @@ const Home = ({ userObj }) => {
             />
             <NweetFactory
               userObj={userObj}
-              placeholderText={"무슨 일이 일어나고 있나요?"}
+              // placeholderText={"무슨 일이 일어나고 있나요?"}
             />
             <div>
               {nweets.map((nweet) => (

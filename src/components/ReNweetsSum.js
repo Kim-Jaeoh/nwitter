@@ -38,9 +38,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
   const actionRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [filterReNweetId, setFilterReNweetId] = useState({});
-  const [newNweetAttachment, setNewNweetAttachment] = useState(
-    nweetObj.attachmentUrl
-  );
+  const [filterRepliesReNweetId, setFilterRepliesReNweetId] = useState({});
   const [creatorInfo, setCreatorInfo] = useState({});
   const [nweetEtc, setNweetEtc] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -51,6 +49,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [time, setTime] = useState(Date.now());
 
   //  map 처리 된 유저 정보들
   useEffect(() => {
@@ -100,25 +99,43 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
 
   // 수정된 글 firebase에 업데이트
   useEffect(() => {
+    // 답글
     const index = reNweetsObj?.findIndex((obj) => obj.replyId === nweetObj.id);
     setFilterReNweetId(reNweetsObj[index]);
-  }, [nweetObj.id, nweetObj.replyId, reNweetsObj]);
+
+    // // 원글
+    // const index2 = reNweetsObj?.findIndex(
+    //   (obj) => obj?.parentEmail === userObj.email
+    // );
+    // setFilterRepliesReNweetId(reNweetsObj[index2]);
+  }, [nweetObj.id, reNweetsObj, userObj.email]);
 
   const onSubmit = async (e) => {
-    const dbRef = doc(dbService, "replies", nweetObj.id);
-    const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
-
     alert("업데이트 되었습니다");
     e.preventDefault();
 
-    await updateDoc(dbRef, {
-      text: newNweet,
-      attachmentUrl: nweetObj.attachmentUrl,
-    });
+    if (nweetObj?.parent) {
+      // 답글 업뎃
+      const repliesRef = doc(dbService, "replies", nweetObj.id);
+      await updateDoc(repliesRef, {
+        text: newNweet,
+        attachmentUrl: nweetObj.attachmentUrl,
+      });
+    } else {
+      // 원글 업뎃
+      const nweetsRef = doc(dbService, "nweets", nweetObj.id);
+      await updateDoc(nweetsRef, {
+        text: newNweet,
+        attachmentUrl: nweetObj.attachmentUrl,
+      });
+    }
 
-    await updateDoc(reNweetRef, {
-      text: newNweet,
-    });
+    if (filterReNweetId) {
+      const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
+      await updateDoc(reNweetRef, {
+        text: newNweet,
+      });
+    }
 
     setIsEditing(false);
   };
@@ -220,22 +237,32 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
 
   // map 처리 된 리트윗 정보들 중 본인 ID와 같은 index 정보들만 필터링
   useEffect(() => {
-    const copy = [...reNweetsObj];
+    // const copy = [...reNweetsObj];
 
-    const index = copy?.findIndex(
-      (obj) => obj?.replyId || obj.parent === nweetObj.id
+    // const index = copy?.findIndex(
+    //   (obj) => obj?.replyId || obj.parent === nweetObj.id
+    // );
+    // setReNweetsId(copy[index]);
+    const filter = reNweetsObj.filter((obj) => obj.parent === nweetObj.id);
+    const index = filter.findIndex((obj) => obj?.email === userObj.email);
+
+    setReNweetsId(filter[index]);
+
+    const index2 = reNweetsObj?.findIndex(
+      (obj) => obj?.parent === nweetObj.parent
     );
-    setReNweetsId(copy[index]);
-
-    const index2 = copy?.findIndex((obj) => obj?.parent === nweetObj.parent);
-    setReplyReNweetsId(copy[index2]);
-  }, [nweetObj.id, nweetObj.parent, reNweetsObj]);
+    setReplyReNweetsId(reNweetsObj[index2]);
+  }, [nweetObj.id, nweetObj.parent, reNweetsObj, userObj.email]);
 
   const toggleReNweet = async () => {
     const copy = [...nweetObj.reNweet];
-    const copy2 = [...nweetObj.reNweetAt];
-    const filter = copy.filter((email) => email !== userObj.email);
-    const filter2 = copy2.filter((time) => !nweetObj.reNweetAt.includes(time));
+    // const copy2 = [...nweetObj.reNweetAt];
+    const filter = copy.filter((email) => {
+      return email !== userObj.email;
+    });
+    // const filter2 = copy2.filter((reNweetTime) => {
+    //   return reNweetTime !== time;
+    // });
 
     if (nweetObj.reNweet?.includes(userObj.email)) {
       if (!nweetObj?.isReply) {
@@ -243,7 +270,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
 
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           reNweet: filter,
-          reNweetAt: filter2,
+          // reNweetAt: filter2,
         });
 
         const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
@@ -252,14 +279,14 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
           setCurrentUser({
             ...currentUser,
             reNweet: filter,
-            reNweetAt: filter2,
+            // reNweetAt: filter2,
           })
         );
       } else {
         setReNweet(false);
         await updateDoc(doc(dbService, "replies", nweetObj.id), {
           reNweet: filter,
-          reNweetAt: filter2,
+          // reNweetAt: filter2,
         });
 
         const replyReNweetsRef = doc(dbService, "reNweets", replyReNweetsId.id);
@@ -268,7 +295,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
           setCurrentUser({
             ...currentUser,
             reNweet: filter,
-            reNweetAt: filter2,
+            // reNweetAt: filter2,
           })
         );
       }
@@ -280,7 +307,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
         email: userObj.email,
         like: [],
         // reNweet: [],
-        reNweetAt: Date.now(),
+        reNweetAt: time,
         parent: nweetObj.parent || null,
         parentEmail: nweetObj.parentEmail || null,
         replyId: nweetObj.id || null,
@@ -289,18 +316,18 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
       await addDoc(collection(dbService, "reNweets"), _nweetReply);
 
       const copy = [...nweetObj.reNweet, userObj.email];
-      const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
+      // const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
 
       // if (Object.keys(nweetObj).includes("isReply") === false) {
       if (!nweetObj?.isReply) {
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           reNweet: copy,
-          reNweetAt: copy2,
+          // reNweetAt: copy2,
         });
       } else {
         await updateDoc(doc(dbService, "replies", nweetObj.id), {
           reNweet: copy,
-          reNweetAt: copy2,
+          // reNweetAt: copy2,
         });
       }
 
@@ -308,7 +335,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
         setCurrentUser({
           ...currentUser,
           reNweet: copy,
-          reNweetAt: copy2,
+          // reNweetAt: copy2,
         })
       );
     }
@@ -347,11 +374,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
 
             <div className={styled.nweet__wrapper}>
               <div className={styled.nweet__container}>
-                <div
-                  className={styled.nweet__profile}
-                  // onClick={(e) => goPage(e, "profile")}
-                  ref={imgRef}
-                >
+                <div className={styled.nweet__profile} ref={imgRef}>
                   <img
                     src={loading && creatorInfo.photoURL}
                     alt="profileImg"
@@ -360,10 +383,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
                 </div>
                 <div className={styled.userInfo}>
                   <div className={styled.userInfo__name}>
-                    <div
-                      className={styled.userInfo__one}
-                      // onClick={(e) => goPage(e, "profile")}
-                    >
+                    <div className={styled.userInfo__one}>
                       <p>{creatorInfo.displayName}</p>
                     </div>
                     <div className={styled.userInfo__two}>
@@ -390,7 +410,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
                       </div>
                       {nweetEtc && (
                         <NweetEtcBtn
-                          newNweetAttachment={newNweetAttachment}
+                          nweetAttachment={nweetObj.attachmentUrl}
                           nweetObj={nweetObj}
                           toggleEdit={toggleEdit}
                         />
@@ -407,10 +427,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
                   </div>
                 </div>
               )}
-              <div
-                className={styled.nweet__text}
-                onClick={(e) => goPage(e, "nweet")}
-              >
+              <div className={styled.nweet__text}>
                 <h4>{nweetObj.text}</h4>
               </div>
             </div>
@@ -426,7 +443,9 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
                 </div>
                 <div className={styled.actions__text}>
                   <p>
-                    {nweetObj.reply?.length === 0 ? "" : nweetObj.reply?.length}
+                    {nweetObj.replyId?.length === 0
+                      ? ""
+                      : nweetObj.replyId?.length}
                   </p>
                 </div>
               </div>
@@ -470,8 +489,7 @@ const ReNweetsSum = ({ nweetObj, userObj, reNweetsObj, sibal }) => {
               onChange={onChange}
               onSubmit={onSubmit}
               newNweet={newNweet}
-              newNweetAttachment={newNweetAttachment}
-              setNewNweetAttachment={setNewNweetAttachment}
+              nweetAttachment={nweetObj.attachmentUrl}
               isEditing={isEditing}
               toggleEdit={toggleEdit}
               isAreaHeight={isAreaHeight}

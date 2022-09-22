@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { dbService } from "../fbase";
 // import styled from "./ReNweets.module.css";
 import styled from "./NoInfo.module.css";
+import Nweet from "./Nweet";
 import ReNweetsSum from "./ReNweetsSum";
 
 const ReNweets = ({ userObj }) => {
@@ -35,7 +36,7 @@ const ReNweets = ({ userObj }) => {
   useEffect(() => {
     const q = query(
       collection(dbService, "reNweets"),
-      // where("email", "==", userObj.email)
+      // where("email", "==", userObj.email),
       orderBy("reNweetAt", "desc")
     );
 
@@ -87,7 +88,8 @@ const ReNweets = ({ userObj }) => {
           {sum.length !== 0 ? (
             <div>
               {sum.map((myNweet) => (
-                <ReNweetsSum
+                <Nweet
+                  isOwner={myNweet.creatorId === userObj.uid}
                   key={myNweet.id}
                   nweetObj={myNweet}
                   userObj={userObj}

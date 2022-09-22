@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "./NoticeReNweet.module.css";
 
-export const NoticeInnerContents = ({ obj, creatorInfo, text }) => {
+export const NoticeInnerContents = ({ obj, creatorInfo, text, nweets }) => {
   const imgRef = useRef();
   const nameRef = useRef();
   const history = useHistory();
@@ -66,7 +66,6 @@ export const NoticeInnerContents = ({ obj, creatorInfo, text }) => {
       creatorInfo.followAt.map((time) => setFollowTime(time));
     }
   }, [creatorInfo.followAt]);
-
   return (
     <>
       {/* {location.pathname.includes("renweets") && ( */}
@@ -88,11 +87,11 @@ export const NoticeInnerContents = ({ obj, creatorInfo, text }) => {
 
               {location.pathname.includes("renweet") && (
                 <span className={styled.reNweet__name}>
-                  "{obj.text ? obj.text : obj.parentText}"
+                  "{obj.text ? obj.text : nweets.text}"
                 </span>
               )}
               {location.pathname.includes("reply") && (
-                <span className={styled.reNweet__name}>"{obj.parentText}"</span>
+                <span className={styled.reNweet__name}>"{nweets.text}"</span>
               )}
 
               {location.pathname.includes("follow") && null}

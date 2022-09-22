@@ -53,8 +53,6 @@ const LikeNweets = ({ userObj }) => {
     });
   }, [uid]);
 
-  // console.log(myLikeNweets);
-
   return (
     <>
       {loading && (
@@ -62,7 +60,8 @@ const LikeNweets = ({ userObj }) => {
           {myLikeNweets.length !== 0 ? (
             <div>
               {myLikeNweets.map((myNweet) => (
-                <ReNweetsSum
+                <Nweet
+                  isOwner={myNweet.creatorId === userObj.uid}
                   key={myNweet.id}
                   nweetObj={myNweet}
                   userObj={userObj}

@@ -81,7 +81,7 @@ const NweetFactory = ({ userObj, placeholderText }) => {
         email: userObj.email,
         like: [],
         reNweet: [],
-        reNweetAt: [],
+        // reNweetAt: [],
         replyId: [],
       };
 
@@ -199,7 +199,7 @@ const NweetFactory = ({ userObj, placeholderText }) => {
                 onBlur={() => setSelect("")}
                 onInput={handleResizeHeight}
                 maxLength={280}
-                placeholder={placeholderText}
+                placeholder="무슨 일이 일어나고 있나요?"
               />
               {attachment && (
                 <div className={styled.factoryForm__attachment}>

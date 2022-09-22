@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "./UpdateNweetModal.module.css";
 import Modal from "@mui/material/Modal";
 import noneProfile from "../image/noneProfile.jpg";
-import { IoClose } from "react-icons/io5";
 import { GrEmoji } from "react-icons/gr";
 import { GrClose } from "react-icons/gr";
 import Picker from "emoji-picker-react";
@@ -12,7 +11,6 @@ const UpdateNweetModal = ({
   newNweet,
   setNewNweet,
   nweetAttachment,
-  // setNewNweetAttachment,
   isAreaHeight,
   setIsAreaHeight,
   onChange,
@@ -24,6 +22,7 @@ const UpdateNweetModal = ({
   const emojiRef = useRef();
   const [clickEmoji, setClickEmoji] = useState(false);
   // const [nweetAttachment, setAttachment] = useState(nweetAttachment);
+  const [select, setSelect] = useState("");
   const [focus, setFocus] = useState(false);
 
   // 이모지 모달 밖 클릭 시 창 끔
@@ -35,22 +34,21 @@ const UpdateNweetModal = ({
       if (!emojiRef.current.contains(e.target)) {
         setClickEmoji(false);
       }
-      if (!editRef.current.contains(e.target)) {
-        setFocus(false);
-      }
+      // if (!editRef.current.contains(e.target)) {
+      //   setFocus(false);
+      // }
     };
     window.addEventListener("click", handleClick);
     return () => window.removeEventListener("click", handleClick);
   }, [clickEmoji]);
 
-  const onClick = useCallback(
-    (e) => {
-      setFocus(!focus);
-      editRef.current.focus();
-      console.log(focus);
-    },
-    [focus]
-  );
+  // const onClick = useCallback(
+  //   (e) => {
+  //     setFocus(!focus);
+  //     editRef.current.focus();
+  //   },
+  //   [focus]
+  // );
 
   // 메세지 글자 수(높이)에 따라 인풋창 크기 조절
   const handleResizeHeight = useCallback(() => {
@@ -109,17 +107,20 @@ const UpdateNweetModal = ({
               />
             </div>
             <div className={styled.editInput}>
-              <div className={styled.editForm__content}>
+              <div
+                className={`${styled.editForm__content} ${
+                  select === "text" && styled.focus
+                }`}
+              >
                 <textarea
                   spellCheck="false"
-                  className={`${styled.editInput__input} ${
-                    focus && styled.focus
-                  }`}
+                  className={styled.editInput__input}
                   type="text"
                   value={newNweet}
                   ref={editRef}
                   onChange={onChange}
-                  onClick={onClick}
+                  onFocus={() => setSelect("text")}
+                  onBlur={() => setSelect("")}
                   onInput={handleResizeHeight}
                   maxLength={280}
                   style={{ height: isAreaHeight }}

@@ -84,8 +84,6 @@ const NweetEtcBtn = ({ nweetAttachment, nweetObj, toggleEdit }) => {
     });
   }, [currentUser.email]);
 
-  console.log(reNweets);
-
   const onDeleteClick = async () => {
     const ok = window.confirm("트윗을 삭제할까요?");
 

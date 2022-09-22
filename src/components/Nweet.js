@@ -42,6 +42,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
   const [isAreaHeight, setIsAreaHeight] = useState(""); // Modal에서 textArea 높이값 저장받음
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [time, setTime] = useState(Date.now());
 
   // useEffect(() => {
   //   return () => setLoading(false);
@@ -94,28 +95,73 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
 
   // 수정된 글 firebase에 업데이트
   useEffect(() => {
-    const index = reNweetsObj?.findIndex((obj) => obj.parent === nweetObj.id);
+    // 답글
+    const index = reNweetsObj?.findIndex((obj) => obj.replyId === nweetObj.id);
     setFilterReNweetId(reNweetsObj[index]);
-  }, [nweetObj.id, nweetObj.replyId, reNweetsObj]);
+
+    // // 원글
+    // const index2 = reNweetsObj?.findIndex(
+    //   (obj) => obj?.parentEmail === userObj.email
+    // );
+    // setFilterRepliesReNweetId(reNweetsObj[index2]);
+  }, [nweetObj.id, reNweetsObj, userObj.email]);
 
   const onSubmit = async (e) => {
-    const dbRef = doc(dbService, "nweets", nweetObj.id);
-    const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
-
     alert("업데이트 되었습니다");
     e.preventDefault();
 
-    await updateDoc(dbRef, {
-      text: newNweet,
-      attachmentUrl: nweetObj.attachmentUrl,
-    });
+    if (nweetObj?.parent) {
+      // 답글 업뎃
+      const repliesRef = doc(dbService, "replies", nweetObj.id);
+      await updateDoc(repliesRef, {
+        text: newNweet,
+        attachmentUrl: nweetObj.attachmentUrl,
+      });
+    } else {
+      // 원글 업뎃
+      const nweetsRef = doc(dbService, "nweets", nweetObj.id);
+      await updateDoc(nweetsRef, {
+        text: newNweet,
+        attachmentUrl: nweetObj.attachmentUrl,
+      });
+    }
 
-    await updateDoc(reNweetRef, {
-      parentText: newNweet,
-    });
+    if (filterReNweetId) {
+      const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
+      await updateDoc(reNweetRef, {
+        text: newNweet,
+      });
+    }
 
     setIsEditing(false);
   };
+
+  // 수정된 글 firebase에 업데이트
+  // useEffect(() => {
+  //   const index = reNweetsObj?.findIndex((obj) => obj.parent === nweetObj.id);
+  //   setFilterReNweetId(reNweetsObj[index]);
+  // }, [nweetObj.id, nweetObj.replyId, reNweetsObj]);
+
+  // const onSubmit = async (e) => {
+  //   const dbRef = doc(dbService, "nweets", nweetObj.id);
+
+  //   alert("업데이트 되었습니다");
+  //   e.preventDefault();
+
+  //   await updateDoc(dbRef, {
+  //     text: newNweet,
+  //     attachmentUrl: nweetObj.attachmentUrl,
+  //   });
+
+  //   // if (filterReNweetId) {
+  //   //   const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
+  //   //   await updateDoc(reNweetRef, {
+  //   //     parentText: newNweet,
+  //   //   });
+  //   // }
+
+  //   setIsEditing(false);
+  // };
 
   const timeToString = (timestamp) => {
     const today = new Date();
@@ -214,30 +260,25 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
 
   useEffect(() => {
     if (reNweetsObj) {
-      const copy = [...reNweetsObj];
-      const index = reNweetsObj?.findIndex((obj) => {
-        return obj?.parent === nweetObj.id;
-      });
-      setReNweetsId(reNweetsObj[index]);
+      const filter = reNweetsObj.filter((asd) => asd.parent === nweetObj.id);
+      const index = filter.findIndex((obj) => obj?.email === userObj.email);
+
+      setReNweetsId(filter[index]);
     } else {
       return;
     }
-  }, [nweetObj.id, reNweetsObj]);
+  }, [nweetObj.id, reNweetsObj, userObj.email]);
 
   const toggleReNweet = async () => {
     if (nweetObj.reNweet?.includes(userObj.email)) {
       setReNweet(false);
       const copy = [...nweetObj.reNweet];
-      const copy2 = [...nweetObj.reNweetAt];
-      const copy3 = [...nweetObj.reNweetId];
-      const filter = copy.filter((email) => email !== userObj.email);
-      const filter2 = copy2.filter(
-        (time) => !nweetObj.reNweetAt.includes(time)
-      );
+      const filter = copy.filter((email) => {
+        return email !== userObj.email;
+      });
 
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: filter,
-        reNweetAt: filter2,
       });
 
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
@@ -247,7 +288,6 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         setCurrentUser({
           ...currentUser,
           reNweet: filter,
-          reNweetAt: filter2,
         })
       );
     } else {
@@ -258,25 +298,22 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
         email: userObj.email,
         like: [],
         // reNweet: [],
-        reNweetAt: Date.now(),
+        reNweetAt: time,
         parent: nweetObj.id || null,
         parentEmail: nweetObj.email || null,
       };
       await addDoc(collection(dbService, "reNweets"), _nweetReply);
 
       const copy = [...nweetObj.reNweet, userObj.email];
-      const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
 
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: copy,
-        reNweetAt: copy2,
       });
 
       dispatch(
         setCurrentUser({
           ...currentUser,
           reNweet: copy,
-          reNweetAt: copy2,
         })
       );
     }

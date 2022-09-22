@@ -34,9 +34,7 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
   const imgRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj.text);
   const [filterReNweetId, setFilterReNweetId] = useState({});
-  const [newNweetAttachment, setNewNweetAttachment] = useState(
-    nweetObj.attachmentUrl
-  );
+
   const [creatorInfo, setCreatorInfo] = useState({});
   const [nweetEtc, setNweetEtc] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -48,9 +46,9 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   //  map 처리 된 유저 정보들
   useEffect(() => {
@@ -98,26 +96,26 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
   };
 
   // 수정된 글 firebase에 업데이트
-  useEffect(() => {
-    const index = reNweetsObj?.findIndex((obj) => obj?.replyId === nweetObj.id);
-    setFilterReNweetId(reNweetsObj[index]);
-  }, [nweetObj.id, nweetObj.replyId, reNweetsObj]);
+  // useEffect(() => {
+  //   const index = reNweetsObj?.findIndex((obj) => obj?.replyId === nweetObj.id);
+  //   setFilterReNweetId(reNweetsObj[index]);
+  // }, [nweetObj.id, nweetObj.replyId, reNweetsObj]);
 
   const onSubmit = async (e) => {
     const dbRef = doc(dbService, "replies", nweetObj.id);
-    const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
+    // const reNweetRef = doc(dbService, "reNweets", filterReNweetId.id);
 
     alert("업데이트 되었습니다");
     e.preventDefault();
 
     await updateDoc(dbRef, {
       text: newNweet,
-      attachmentUrl: newNweetAttachment,
+      attachmentUrl: nweetObj.attachmentUrl,
     });
 
-    await updateDoc(reNweetRef, {
-      text: newNweet,
-    });
+    // await updateDoc(reNweetRef, {
+    //   text: newNweet,
+    // });
 
     setIsEditing(false);
   };
@@ -221,16 +219,16 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
 
   const toggleReNweet = async () => {
     const copy = [...nweetObj.reNweet];
-    const copy2 = [...nweetObj.reNweetAt];
+    // const copy2 = [...nweetObj.reNweetAt];
     const filter = copy.filter((email) => email !== userObj.email);
-    const filter2 = copy2.filter((time) => !nweetObj.reNweetAt.includes(time));
+    // const filter2 = copy2.filter((time) => !nweetObj.reNweetAt.includes(time));
 
     if (reNweetsId) {
       setReNweet(false);
 
       await updateDoc(doc(dbService, "nweets", nweetObj.id), {
         reNweet: filter,
-        reNweetAt: filter2,
+        // reNweetAt: filter2,
       });
 
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
@@ -240,14 +238,14 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
         setCurrentUser({
           ...currentUser,
           reNweet: filter,
-          reNweetAt: filter2,
+          // reNweetAt: filter2,
         })
       );
     } else if (replyReNweetsId) {
       setReNweet(false);
       await updateDoc(doc(dbService, "replies", nweetObj.id), {
         reNweet: filter,
-        reNweetAt: filter2,
+        // reNweetAt: filter2,
       });
 
       const replyReNweetsRef = doc(dbService, "reNweets", replyReNweetsId.id);
@@ -270,17 +268,17 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
       await addDoc(collection(dbService, "reNweets"), _nweetReply);
 
       const copy = [...nweetObj.reNweet, userObj.email];
-      const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
+      // const copy2 = [...nweetObj.reNweetAt, _nweetReply.reNweetAt];
 
       if (Object.keys(nweetObj).includes("parent") === false) {
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           reNweet: copy,
-          reNweetAt: copy2,
+          // reNweetAt: copy2,
         });
       } else {
         await updateDoc(doc(dbService, "replies", nweetObj.id), {
           reNweet: copy,
-          reNweetAt: copy2,
+          // reNweetAt: copy2,
         });
       }
 
@@ -288,7 +286,7 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
         setCurrentUser({
           ...currentUser,
           reNweet: copy,
-          reNweetAt: copy2,
+          // reNweetAt: copy2,
         })
       );
     }
@@ -357,7 +355,7 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
                       </div>
                       {nweetEtc && (
                         <NweetEtcBtn
-                          newNweetAttachment={newNweetAttachment}
+                          nweetAttachment={nweetObj.attachmentUrl}
                           nweetObj={nweetObj}
                           toggleEdit={toggleEdit}
                         />
@@ -435,8 +433,8 @@ const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
               onChange={onChange}
               onSubmit={onSubmit}
               newNweet={newNweet}
-              newNweetAttachment={newNweetAttachment}
-              setNewNweetAttachment={setNewNweetAttachment}
+              nweetAttachment={nweetObj.attachmentUrl}
+              // setNewNweetAttachment={setNewNweetAttachment}
               isEditing={isEditing}
               toggleEdit={toggleEdit}
               isAreaHeight={isAreaHeight}

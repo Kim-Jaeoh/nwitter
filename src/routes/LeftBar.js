@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { AiOutlineHome, AiFillHome, AiTwotoneHome } from "react-icons/ai";
+import { AiOutlineHome, AiFillHome } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { BsPerson, BsBell, BsBellFill, BsPersonFill } from "react-icons/bs";
 import { FaFeatherAlt, FaHashtag, FaTwitter } from "react-icons/fa";
@@ -26,7 +26,7 @@ const LeftBar = ({ userObj }) => {
   const [nweetModal, setNweetModal] = useState(false);
   const location = useLocation();
   const history = useHistory();
-  const uid2 = location.pathname.split("/").slice(0, 3).join("/");
+  // const uid2 = location.pathname.split("/").slice(0, 3).join("/");
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -283,6 +283,7 @@ const LeftBar = ({ userObj }) => {
       {nweetModal && (
         <NweetModal
           nweetModal={nweetModal}
+          creatorInfo={creatorInfo}
           userObj={userObj}
           toggleNweetModal={toggleNweetModal}
         />

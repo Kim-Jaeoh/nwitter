@@ -30,13 +30,9 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const etcRef = useRef();
   const imgRef = useRef();
   const nameRef = useRef();
-  const [newNweet, setNewNweet] = useState(nweetObj.text);
-  const [newNweetAttachment, setNewNweetAttachment] = useState(
-    nweetObj.attachmentUrl
-  );
 
+  const [newNweet, setNewNweet] = useState(nweetObj?.text);
   const [filterReNweetId, setFilterReNweetId] = useState({});
-
   const [creatorInfo, setCreatorInfo] = useState({});
   const [nweetEtc, setNweetEtc] = useState(false);
   const [liked, setLiked] = useState(false);
