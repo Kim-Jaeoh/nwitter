@@ -1,10 +1,8 @@
-import RecommendUser from "../components/RecommendUser";
+import RecommendUser from "../components/recommendUser/RecommendUser";
 import styled from "./RightBar.module.css";
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, onSnapshot, query } from "firebase/firestore";
-import { dbService } from "../fbase";
 import { useLocation } from "react-router-dom";
-import { SearchBar } from "../components/SearchBar";
+import { SearchBar } from "../components/searchBar/SearchBar";
 
 const RightBar = ({ userObj }) => {
   const location = useLocation();

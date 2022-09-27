@@ -2,22 +2,18 @@ import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import styled from "./Home.module.css";
-import Nweet from "../components/Nweet";
-import NweetFactory from "../components/NweetFactory";
-import Loading from "../components/Loading";
+import Nweet from "../components/nweet/Nweet";
+import NweetFactory from "../components/nweet/NweetFactory";
+// import Loading from "../components/Loading";
 import { HiOutlineSparkles } from "react-icons/hi";
-import { TopCategory } from "../components/TopCategory";
-import { useSelector } from "react-redux";
+import { TopCategory } from "../components/topCategory/TopCategory";
+import { useInView } from "react-intersection-observer";
 
 const Home = ({ userObj }) => {
+  const [ref, inView] = useInView();
   const [nweets, setNweets] = useState([]);
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const currentUser = useSelector((state) => state.user.currentUser);
-
-  // useEffect(() => {
-  //   return () => setLoading(false);
-  // }, []);
 
   useEffect(() => {
     const q = query(
@@ -39,14 +35,14 @@ const Home = ({ userObj }) => {
         setLoading(false);
       }
 
-      // // forEach 사용 시 (리턴값 반환 X)
-      // const nweetArrays = snapshot.docs.forEach((doc) => {
-      //   const nweetObject = {
-      //     id: doc.id,
-      //     ...doc.data(),
-      //   };
-      //   setNweets((prev) => [nweetObject, ...prev]);
-      // });
+      //   // // forEach 사용 시 (리턴값 반환 X)
+      //   // const nweetArrays = snapshot.docs.forEach((doc) => {
+      //   //   const nweetObject = {
+      //   //     id: doc.id,
+      //   //     ...doc.data(),
+      //   //   };
+      //   //   setNweets((prev) => [nweetObject, ...prev]);
+      //   // });
     });
   }, []);
 
@@ -74,12 +70,9 @@ const Home = ({ userObj }) => {
               text={"홈"}
               iconName={<HiOutlineSparkles />}
             />
-            <NweetFactory
-              userObj={userObj}
-              // placeholderText={"무슨 일이 일어나고 있나요?"}
-            />
-            <div>
-              {nweets.map((nweet) => (
+            <NweetFactory userObj={userObj} />
+            <ul>
+              {nweets.map((nweet, index) => (
                 <Nweet
                   key={nweet.id}
                   nweetObj={nweet}
@@ -88,7 +81,8 @@ const Home = ({ userObj }) => {
                   isOwner={nweet.creatorId === userObj.uid}
                 />
               ))}
-            </div>
+              <div ref={ref} />
+            </ul>
           </div>
         </div>
       )}

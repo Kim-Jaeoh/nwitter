@@ -9,16 +9,18 @@ import { setCurrentUser, setLoginToken } from "../reducer/user";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { BsCalendar3 } from "react-icons/bs";
 import Bookmark from "./Bookmark";
-import UpdateProfileModal from "../components/UpdateProfileModal";
-import MyNweets from "../components/MyNweets";
-import ReNweets from "../components/ReNweets";
-import LikeNweets from "../components/LikeNweets";
-import SelectMenuBtn from "../components/SelectMenuBtn";
+import UpdateProfileModal from "../components/modal/UpdateProfileModal";
+import MyNweets from "../components/profile/ProfileMyNweets";
+import ReNweets from "../components/profile/ProfileReNweets";
+import LikeNweets from "../components/profile/ProfileLikeNweets";
+import { Replies } from "../components/profile/ProfileReplies";
+import LikeReplies from "../components/profile/ProfileLikeReplies";
+import SelectMenuBtn from "../components/button/SelectMenuBtn";
 import Loading from "../components/Loading";
 import { IoMdExit } from "react-icons/io";
-import { TopCategory } from "../components/TopCategory";
-import { Replies } from "../components/Replies";
-import LikeReplies from "../components/LikeReplies";
+import { TopCategory } from "../components/topCategory/TopCategory";
+import { useToggleFollow } from "../hooks/useToggleFollow";
+import { useTimeToString } from "../hooks/useTimeToString";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
@@ -36,9 +38,13 @@ const Profile = ({ refreshUser, userObj }) => {
   const [size, setSize] = useState(window.innerWidth);
   const [resize, setResize] = useState(false);
 
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+  // 커스텀 훅
+  const { timeToString3 } = useTimeToString();
+  const toggleFollow = useToggleFollow(myInfo);
+
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   useEffect(() => {
     if (location.pathname.includes("/mynweets")) {
@@ -128,91 +134,12 @@ const Profile = ({ refreshUser, userObj }) => {
     }
   };
 
-  const timeToString = (timestamp) => {
-    let date = new Date(timestamp);
-    let str =
-      date.getFullYear() +
-      "년 " +
-      Number(date.getMonth() + 1) +
-      "월 " +
-      date.getDate() +
-      "일 ";
-    return str;
-  };
-
   const onSelect = (num) => {
     setSelected(num);
   };
 
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
-  };
-
-  const toggleFollow = async () => {
-    if (myInfo.following?.includes(creatorInfo.email)) {
-      // setFollow(false);
-      const followCopy = [...myInfo.following];
-      const followCopyFilter = followCopy.filter(
-        (email) => email !== creatorInfo.email
-      );
-
-      const followAtCopy = [...myInfo.followAt];
-      const followAtCopyFilter = followAtCopy.filter(
-        (at) => !creatorInfo.followAt.includes(at)
-      );
-
-      const followerCopy = [...creatorInfo.follower];
-      const followerCopyFilter = followerCopy.filter(
-        (email) => email !== myInfo.email
-      );
-
-      const followerAtCopy = [...creatorInfo.followAt];
-      const followerAtCopyFilter = followerAtCopy.filter(
-        (at) => !myInfo.followAt.includes(at)
-      );
-
-      await updateDoc(doc(dbService, "users", myInfo.email), {
-        following: followCopyFilter,
-        followAt: followAtCopyFilter,
-      });
-      await updateDoc(doc(dbService, "users", creatorInfo.email), {
-        follower: followerCopyFilter,
-        followAt: followerAtCopyFilter,
-      });
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          following: myInfo.following,
-          follower: myInfo.follower,
-          followAt: myInfo.followAt,
-        })
-      );
-    } else {
-      // setFollow(true);
-      const time = Date.now();
-      const followCopy = [...myInfo.following, creatorInfo.email];
-      const followAtCopy = [...myInfo.followAt, time];
-      const followerCopy = [...creatorInfo.follower, myInfo.email];
-      const followerAtCopy = [...creatorInfo.followAt, time];
-
-      await updateDoc(doc(dbService, "users", myInfo.email), {
-        following: followCopy,
-        followAt: followAtCopy,
-      });
-      await updateDoc(doc(dbService, "users", creatorInfo.email), {
-        follower: followerCopy,
-        followAt: followerAtCopy,
-      });
-
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          following: myInfo.following,
-          follower: myInfo.follower,
-          followAt: myInfo.followAt,
-        })
-      );
-    }
   };
 
   return (
@@ -248,14 +175,14 @@ const Profile = ({ refreshUser, userObj }) => {
                       {myInfo.following.includes(creatorInfo.email) ? (
                         <div
                           className={`${styled.profile__editBtn} ${styled.follow} `}
-                          onClick={toggleFollow}
+                          onClick={() => toggleFollow(creatorInfo)}
                         >
                           <p>팔로잉</p>
                         </div>
                       ) : (
                         <div
                           className={`${styled.profile__editBtn} ${styled.profile__followBtn} `}
-                          onClick={toggleFollow}
+                          onClick={() => toggleFollow(creatorInfo)}
                         >
                           <p>팔로우</p>
                         </div>
@@ -277,7 +204,7 @@ const Profile = ({ refreshUser, userObj }) => {
                   </div>
                   <div className={styled.profile__createdAt}>
                     <BsCalendar3 />
-                    <p>가입일 : {timeToString(creatorInfo.createdAtId)}</p>
+                    <p>가입일 : {timeToString3(creatorInfo.createdAtId)}</p>
                   </div>
                   <div className={styled.profile__followInfo}>
                     <p>

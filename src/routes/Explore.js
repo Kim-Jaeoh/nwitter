@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "./Explore.module.css";
 import { Route, Switch, useLocation } from "react-router-dom";
-import { SearchBar } from "../components/SearchBar";
-import SelectMenuBtn from "../components/SelectMenuBtn";
-import ExploreNweets from "../components/ExploreNweets";
-import ExploreUsers from "../components/ExploreUsers";
+import { SearchBar } from "../components/searchBar/SearchBar";
+import SelectMenuBtn from "../components/button/SelectMenuBtn";
+import ExploreNweets from "../components/explore/ExploreNweets";
+import ExploreUsers from "../components/explore/ExploreUsers";
 
 const Explore = ({ userObj }) => {
   const location = useLocation();

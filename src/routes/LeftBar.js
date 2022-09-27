@@ -11,9 +11,9 @@ import { authService, dbService } from "../fbase";
 import noneProfile from "../image/noneProfile.jpg";
 import styled from "./LeftBar.module.css";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
-import UserEtcBtn from "../components/UserEtcBtn";
+import UserEtcBtn from "../components/button/UserEtcBtn";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
-import { NweetModal } from "../components/NweetModal";
+import { NweetModal } from "../components/modal/NweetModal";
 
 const LeftBar = ({ userObj }) => {
   const userEtcRef = useRef();
@@ -283,6 +283,7 @@ const LeftBar = ({ userObj }) => {
       {nweetModal && (
         <NweetModal
           nweetModal={nweetModal}
+          setNweetModal={setNweetModal}
           creatorInfo={creatorInfo}
           userObj={userObj}
           toggleNweetModal={toggleNweetModal}

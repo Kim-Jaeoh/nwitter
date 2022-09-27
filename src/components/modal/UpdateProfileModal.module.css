@@ -1,0 +1,328 @@
+.container {
+  overflow: hidden;
+  border-radius: 16px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  outline: none;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.363);
+  background: #fff;
+}
+
+.container .editForm {
+  /* overflow: auto; */
+  overflow: hidden;
+  width: 600px;
+  /* max-width: 80vw; */
+  max-height: 90vh;
+}
+
+/* 탑 박스 */
+.container .editForm .topBox {
+  z-index: 10;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  /* height: 53px; */
+  border-bottom: 1px solid #ebebeb;
+  background-color: #fff;
+  /* backdrop-filter: blur(12px); */
+}
+
+.container .editForm .topBox .close {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.container .editForm .topBox .close:hover {
+  background-color: #0f141933;
+}
+
+.container .editForm .topBox .close svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* 프로필 수정 버튼 */
+.container .editForm .topBox .submit .editInput__arrow {
+  background-color: #429170;
+  padding: 10px 16px;
+  margin-left: auto;
+  text-align: center;
+  border-radius: 9999px;
+  transition: all 0.2s;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  user-select: none;
+}
+
+.container .editForm .topBox .submit .editInput__arrow:hover {
+  background-color: #337258;
+  cursor: pointer;
+}
+
+.container .editForm .topBox .submit .editInput__arrow:disabled {
+  background-color: #75837d;
+  transition: all 0.3s;
+  cursor: auto;
+  z-index: 10;
+}
+
+/* 프로필 수정 칸 */
+.container .setUserInfo {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  /* height: 430px; */
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+/* 배경 이미지*/
+.container .backImage {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  /* background: #c1dbd1; */
+  overflow: hidden;
+}
+
+.container .backImage .bgImageBox {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* object-fit: contain; */
+}
+
+.container .backImage .bgImageBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 카메라 아이콘 */
+.container .image__iconBox {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  opacity: 0.8;
+}
+
+.container .image__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f1419bf;
+  cursor: pointer;
+  color: white;
+}
+
+.container .image__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.container .image__icon:hover {
+  background: rgba(39, 44, 48, 0.75);
+}
+
+/* 프로필 이미지 */
+.container .editBox .edit .profile__image {
+  position: absolute;
+  top: 27.5%;
+  /* transform: translateY(-25%); */
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid #fff;
+  background: white;
+  transition: all 0.2s;
+}
+
+.container .editBox .edit .profile__image:hover {
+  /* background: #ececec; */
+}
+
+.container .editBox .edit .profile__image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  z-index: 1;
+}
+
+/* 이름 및 자기소개 */
+.container .editForm .editBox {
+  width: 100%;
+}
+
+.container .editForm .editBox .edit {
+  min-height: 56px;
+  padding: 12px 16px;
+}
+
+.container .editForm .editBox .edit:first-child {
+  margin-bottom: 20px;
+}
+
+.container .editForm .editBox .edit:last-child {
+  margin-bottom: 20px;
+}
+
+.container .editForm .editBox .edit .edit__InputBox {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  min-height: 56px;
+  box-sizing: border-box;
+  border: 1px solid #bebebe;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+}
+
+.container .editForm .editBox .edit .edit__InputBox {
+}
+
+/* 인풋 제목 */
+.container .editForm .editBox .edit .edit__InputBox p {
+  position: absolute;
+  user-select: none;
+  padding: 16px 8px 0px;
+  color: #bebebe;
+  transition: all 0.2s;
+}
+
+.container .editForm .editBox .edit.select > .edit__InputBox {
+  border: 1px solid #429170;
+  box-shadow: #429170 0px 0px 0px 1px;
+}
+
+.container .editForm .editBox .edit.select > .edit__InputBox p {
+  padding: 8px 8px 0px;
+  color: #429170;
+  font-size: small;
+}
+
+.container .editForm .editBox .edit.focus > .edit__InputBox p {
+  /* color: #429170; */
+  padding: 8px 8px 0px;
+  font-size: small;
+}
+
+.container .editForm .editBox .edit .edit__InputBox .edit__Input {
+  margin: 22px 0 0;
+  padding: 12px 8px 8px;
+  flex: 1 1 auto;
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 500;
+  caret-color: #429170;
+}
+
+.container .editForm .editBox .edit .edit__InputBox .edit__textarea {
+  overflow-y: hidden;
+  /* width: 100%;
+  max-height: 100%;
+  height: 52px;
+  overflow: hidden;
+  box-sizing: border-box;
+  outline: none;
+  resize: none;
+  border: none;
+  border-bottom: 1px solid #ebebeb;
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 6px;
+  font-size: 16px;
+  line-height: 24px;
+  caret-color: #429170; */
+}
+
+@media screen and (max-width: 687px) {
+  .container {
+    /* width: 100vw; */
+    /* height: 100vh; */
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    border-radius: 0;
+  }
+
+  .container .editForm {
+    /* min-width: 100%; */
+    max-width: 100%;
+  }
+
+  .container .editInput__add {
+    display: none;
+  }
+
+  /* 프로필 이미지 */
+  .container .editBox .edit .profile__image {
+    top: 22.2%;
+    /* transform: translateY(-50%); */
+    width: 100px;
+    height: 100px;
+  }
+
+  /* 배경 이미지*/
+  .container .backImage {
+    height: 150px;
+  }
+
+  /* 아이콘 */
+  .container .image__iconBox {
+    gap: 18px;
+  }
+  .container .image__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f1419bf;
+    cursor: pointer;
+    color: white;
+  }
+
+  .container .image__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}

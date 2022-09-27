@@ -34,6 +34,7 @@ const initialState = {
     following: [],
   },
   mode: "white",
+  nweetText: "",
 };
 
 const user = (state = initialState, action) => {

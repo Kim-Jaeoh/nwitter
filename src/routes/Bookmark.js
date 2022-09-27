@@ -2,8 +2,8 @@ import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useHistory, useLocation } from "react-router-dom";
-import Nweet from "../components/Nweet";
-import { TopCategory } from "../components/TopCategory";
+import Nweet from "../components/nweet/Nweet";
+import { TopCategory } from "../components/topCategory/TopCategory";
 import { dbService } from "../fbase";
 import styled from "./Bookmark.module.css";
 

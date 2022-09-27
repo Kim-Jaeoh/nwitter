@@ -5,9 +5,7 @@ import {
   GithubAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import AuthForm from "../components/AuthForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
+import AuthForm from "../components/auth/AuthForm";
 import { AiOutlineTwitter } from "react-icons/ai";
 import styled from "./Auth.module.css";
 import authBg from "../image/background.jpg";
@@ -17,8 +15,8 @@ import { collection, doc, setDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import { useHistory } from "react-router-dom";
-import { GoogleBtn } from "../components/GoogleBtn";
-import { GithubBtn } from "../components/GithubBtn";
+import { GoogleBtn } from "../components/button/GoogleBtn";
+import { GithubBtn } from "../components/button/GithubBtn";
 
 const Auth = () => {
   const dispatch = useDispatch();
