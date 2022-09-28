@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "./Profile.module.css";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { collection, orderBy, query, where } from "firebase/firestore";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { authService, dbService } from "../fbase";
@@ -16,11 +16,12 @@ import LikeNweets from "../components/profile/ProfileLikeNweets";
 import { Replies } from "../components/profile/ProfileReplies";
 import LikeReplies from "../components/profile/ProfileLikeReplies";
 import SelectMenuBtn from "../components/button/SelectMenuBtn";
-import Loading from "../components/Loading";
+// import Loading from "../components/Loading";
 import { IoMdExit } from "react-icons/io";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import { useToggleFollow } from "../hooks/useToggleFollow";
 import { useTimeToString } from "../hooks/useTimeToString";
+import CircleLoader from "../components/Loader/CircleLoader";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
@@ -144,7 +145,7 @@ const Profile = ({ refreshUser, userObj }) => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <section className={styled.container}>
           <div className={styled.main__container}>
             <TopCategory
@@ -346,10 +347,12 @@ const Profile = ({ refreshUser, userObj }) => {
                 </Route>
               </Switch>
             ) : (
-              <Loading />
+              <CircleLoader />
             )}
           </div>
         </section>
+      ) : (
+        <CircleLoader />
       )}
       {isEditing && (
         <UpdateProfileModal

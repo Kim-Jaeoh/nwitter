@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
 import { useHistory } from "react-router-dom";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
+import CircleLoader from "../Loader/CircleLoader";
 
 const ExploreUsers = ({ userObj }) => {
   const history = useHistory();
@@ -92,7 +93,7 @@ const ExploreUsers = ({ userObj }) => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <div className={styled.followBox}>
           {users.length !== 0 && (
             <ul className={styled.follows}>
@@ -135,6 +136,8 @@ const ExploreUsers = ({ userObj }) => {
             </ul>
           )}
         </div>
+      ) : (
+        <CircleLoader height={60} />
       )}
     </>
   );

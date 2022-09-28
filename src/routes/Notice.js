@@ -10,6 +10,7 @@ import SelectMenuBtn from "../components/button/SelectMenuBtn";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import styled from "./Notice.module.css";
 import { NoticeFollow } from "../components/notice/NoticeFollow";
+import CircleLoader from "../components/Loader/CircleLoader";
 
 const Notice = ({ userObj }) => {
   const location = useLocation();
@@ -117,108 +118,104 @@ const Notice = ({ userObj }) => {
 
   return (
     <>
-      {loading && (
-        <>
-          <div className={styled.container}>
-            <TopCategory text={"알림"} iconName={<IoArrowBackOutline />} />
-            <div className={styled.main__container}>
-              <nav className={styled.categoryList}>
-                <SelectMenuBtn
-                  num={1}
-                  selected={selected}
-                  onClick={() => onSelect(1)}
-                  url={"/notice/renweet/"}
-                  text={"리트윗"}
-                />
-                <SelectMenuBtn
-                  num={2}
-                  selected={selected}
-                  onClick={() => onSelect(2)}
-                  url={"/notice/reply"}
-                  text={"답글"}
-                />
-                <SelectMenuBtn
-                  num={3}
-                  selected={selected}
-                  onClick={() => onSelect(3)}
-                  url={"/notice/follow"}
-                  text={"팔로우"}
-                />
-              </nav>
-            </div>
+      <div className={styled.container}>
+        <TopCategory text={"알림"} iconName={<IoArrowBackOutline />} />
+        <div className={styled.main__container}>
+          <nav className={styled.categoryList}>
+            <SelectMenuBtn
+              num={1}
+              selected={selected}
+              onClick={() => onSelect(1)}
+              url={"/notice/renweet/"}
+              text={"리트윗"}
+            />
+            <SelectMenuBtn
+              num={2}
+              selected={selected}
+              onClick={() => onSelect(2)}
+              url={"/notice/reply"}
+              text={"답글"}
+            />
+            <SelectMenuBtn
+              num={3}
+              selected={selected}
+              onClick={() => onSelect(3)}
+              url={"/notice/follow"}
+              text={"팔로우"}
+            />
+          </nav>
+        </div>
 
-            <Switch>
-              <Route path="/notice/renweet">
-                <>
-                  {reNweets.length !== 0 ? (
-                    reNweets?.map((reNweet, index) => (
-                      <NoticeReNweet
-                        key={reNweet.id}
-                        reNweetsObj={reNweet}
-                        loading={loading}
-                        userObj={userObj}
-                      />
-                    ))
-                  ) : (
-                    <div className={styled.noInfoBox}>
-                      <div className={styled.noInfo}>
-                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                        <p>
-                          누군가가 나의 트윗을 리트윗 하면 여기에 표시됩니다.
-                        </p>
-                      </div>
+        {loading ? (
+          <Switch>
+            <Route path="/notice/renweet">
+              <>
+                {reNweets.length !== 0 ? (
+                  reNweets?.map((reNweet, index) => (
+                    <NoticeReNweet
+                      key={reNweet.id}
+                      reNweetsObj={reNweet}
+                      loading={loading}
+                      userObj={userObj}
+                    />
+                  ))
+                ) : (
+                  <div className={styled.noInfoBox}>
+                    <div className={styled.noInfo}>
+                      <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                      <p>누군가가 나의 트윗을 리트윗 하면 여기에 표시됩니다.</p>
                     </div>
-                  )}
-                </>
-              </Route>
-              <Route path="/notice/reply">
-                <>
-                  {replies.length !== 0 ? (
-                    replies?.map((reply) => (
-                      <NoticeReply
-                        key={reply.id}
-                        userObj={userObj}
-                        replyObj={reply}
-                        loading={loading}
-                      />
-                    ))
-                  ) : (
-                    <div className={styled.noInfoBox}>
-                      <div className={styled.noInfo}>
-                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                        <p>
-                          누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.
-                        </p>
-                      </div>
+                  </div>
+                )}
+              </>
+            </Route>
+            <Route path="/notice/reply">
+              <>
+                {replies.length !== 0 ? (
+                  replies?.map((reply) => (
+                    <NoticeReply
+                      key={reply.id}
+                      userObj={userObj}
+                      replyObj={reply}
+                      loading={loading}
+                    />
+                  ))
+                ) : (
+                  <div className={styled.noInfoBox}>
+                    <div className={styled.noInfo}>
+                      <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                      <p>누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.</p>
                     </div>
-                  )}
-                </>
-              </Route>
-              <Route path="/notice/follow">
-                <>
-                  {myInfo.length !== 0 ? (
-                    myInfo.map((follow, index) => (
-                      <NoticeFollow
-                        key={index}
-                        userObj={userObj}
-                        followObj={follow}
-                        loading={loading}
-                      />
-                    ))
-                  ) : (
-                    <div className={styled.noInfoBox}>
-                      <div className={styled.noInfo}>
-                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                        <p>누군가가 나를 팔로우 하면 여기에 표시됩니다.</p>
-                      </div>
+                  </div>
+                )}
+              </>
+            </Route>
+            <Route path="/notice/follow">
+              <>
+                {myInfo.length !== 0 ? (
+                  myInfo.map((follow, index) => (
+                    <NoticeFollow
+                      key={index}
+                      userObj={userObj}
+                      followObj={follow}
+                      loading={loading}
+                    />
+                  ))
+                ) : (
+                  <div className={styled.noInfoBox}>
+                    <div className={styled.noInfo}>
+                      <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                      <p>누군가가 나를 팔로우 하면 여기에 표시됩니다.</p>
                     </div>
-                  )}
-                </>
-              </Route>
-            </Switch>
-          </div>
-        </>
-      )}
+                  </div>
+                )}
+              </>
+            </Route>
+          </Switch>
+        ) : (
+          <CircleLoader />
+        )}
+      </div>
     </>
   );
 };

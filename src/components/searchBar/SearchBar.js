@@ -18,6 +18,7 @@ export const SearchBar = ({ userObj }) => {
   const [users, setUsers] = useState([]);
   const [nweets, setNweets] = useState([]);
   const [select, setSelect] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { nweetEtc: focus, setNweetEtc: setFocus } =
     useNweetEctModalClick(searchRef);
@@ -76,6 +77,7 @@ export const SearchBar = ({ userObj }) => {
           user.email.split("@")[0].includes(search)
       );
       setUserResult(filterNameAndEmail);
+      setLoading(true);
     } else {
       setUserResult("");
     }
@@ -85,11 +87,13 @@ export const SearchBar = ({ userObj }) => {
         nweet.text.includes(search)
       );
       setNweetResult(filterNweets);
+      setLoading(true);
     } else {
       setNweetResult("");
     }
   }, [focus, nweets, search, users]);
 
+  // 디바운스
   const onChange = debounce((e) => {
     textRef.current.focus();
     setSearch(e.target.value);
@@ -127,6 +131,7 @@ export const SearchBar = ({ userObj }) => {
             nweets={nweets}
             userResult={userResult}
             nweetResult={nweetResult}
+            loading={loading}
           />
         )}
       </section>

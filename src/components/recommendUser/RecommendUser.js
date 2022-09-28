@@ -13,17 +13,20 @@ import noneProfile from "../../image/noneProfile.jpg";
 import { useHistory } from "react-router-dom";
 import { GrRefresh } from "react-icons/gr";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
+import CircleLoader from "../Loader/CircleLoader";
 
 const RecommendUser = ({ userObj }) => {
   const history = useHistory();
   const [myInfo, setMyInfo] = useState({});
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // 본인 정보 가져오기
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setMyInfo(doc.data());
+      setLoading(true);
     });
   }, [userObj.email]);
 
@@ -102,59 +105,67 @@ const RecommendUser = ({ userObj }) => {
 
   return (
     <section className={styled.followBox}>
-      <div className={styled.followBox__name}>
-        <h2>팔로우 추천</h2>
-        <div onClick={onRefresh} className={styled.actions__icon}>
-          <GrRefresh />
-        </div>
-      </div>
-      <ul className={styled.follows}>
-        {creatorInfo.map((userInfo, index) => {
-          if (index < 5) {
-            return (
-              <div key={userInfo.id}>
-                {/* 팔로우 안 되어 있는 것들 보여주기 */}
-                {/* {!myInfo.following.includes(userInfo.email) && ( */}
-                <li className={styled.follow__user}>
-                  <div
-                    className={styled.follow__userInfo}
-                    onClick={() => goPage(userInfo)}
-                  >
-                    <img
-                      src={userInfo.photoURL ? userInfo.photoURL : noneProfile}
-                      alt="profileImg"
-                      className={styled.follow__image}
-                    />
-                    <div className={styled.follow__name}>
-                      <p>{userInfo.displayName}</p>
-                      <p>@{userInfo.email.split("@")[0]}</p>
-                    </div>
+      {loading ? (
+        <>
+          <div className={styled.followBox__name}>
+            <h2>팔로우 추천</h2>
+            <div onClick={onRefresh} className={styled.actions__icon}>
+              <GrRefresh />
+            </div>
+          </div>
+          <ul className={styled.follows}>
+            {creatorInfo.map((userInfo, index) => {
+              if (index < 5) {
+                return (
+                  <div key={userInfo.id}>
+                    {/* 팔로우 안 되어 있는 것들 보여주기 */}
+                    {/* {!myInfo.following.includes(userInfo.email) && ( */}
+                    <li className={styled.follow__user}>
+                      <div
+                        className={styled.follow__userInfo}
+                        onClick={() => goPage(userInfo)}
+                      >
+                        <img
+                          src={
+                            userInfo.photoURL ? userInfo.photoURL : noneProfile
+                          }
+                          alt="profileImg"
+                          className={styled.follow__image}
+                        />
+                        <div className={styled.follow__name}>
+                          <p>{userInfo.displayName}</p>
+                          <p>@{userInfo.email.split("@")[0]}</p>
+                        </div>
+                      </div>
+                      {myInfo.following?.includes(userInfo.email) ? (
+                        <div
+                          className={`${styled.follow__btn} ${styled.follow} `}
+                          onClick={() => toggleFollow(userInfo)}
+                        >
+                          <p>팔로잉</p>
+                        </div>
+                      ) : (
+                        <div
+                          className={`${styled.follow__btn} ${styled.profile__followBtn} `}
+                          onClick={() => toggleFollow(userInfo)}
+                        >
+                          <p>팔로우</p>
+                        </div>
+                      )}
+                    </li>
+                    {/* )} */}
                   </div>
-                  {myInfo.following?.includes(userInfo.email) ? (
-                    <div
-                      className={`${styled.follow__btn} ${styled.follow} `}
-                      onClick={() => toggleFollow(userInfo)}
-                    >
-                      <p>팔로잉</p>
-                    </div>
-                  ) : (
-                    <div
-                      className={`${styled.follow__btn} ${styled.profile__followBtn} `}
-                      onClick={() => toggleFollow(userInfo)}
-                    >
-                      <p>팔로우</p>
-                    </div>
-                  )}
-                </li>
-                {/* )} */}
-              </div>
-            );
-          } else return null;
-        })}
-      </ul>
-      <div className={styled.more} onClick={showMore}>
-        더 보기
-      </div>
+                );
+              } else return null;
+            })}
+          </ul>
+          <div className={styled.more} onClick={showMore}>
+            더 보기
+          </div>
+        </>
+      ) : (
+        <CircleLoader />
+      )}
     </section>
   );
 };

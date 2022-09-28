@@ -372,27 +372,4 @@
     width: 30px;
     height: 30px;
   }
-
-  .container .wrapper .leftBar__category .leftBar__nweet > div {
-    /* position: absolute;
-    top: -80px;
-    right: 20px;
-    width: 56px;
-    height: 56px; */
-  }
-
-  .container .wrapper .leftBar__category .leftBar__nweet > div svg {
-    /* width: 22px;
-    height: 22px; */
-  }
-
-  .container .leftBar__user {
-    /* position: absolute;
-    display: none;
-    width: 58px;
-    height: 58px;
-    right: 16px;
-    padding: 0;
-    margin: 0; */
-  }
 }

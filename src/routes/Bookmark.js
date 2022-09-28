@@ -2,6 +2,7 @@ import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useHistory, useLocation } from "react-router-dom";
+import CircleLoader from "../components/Loader/CircleLoader";
 import Nweet from "../components/nweet/Nweet";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import { dbService } from "../fbase";
@@ -47,7 +48,7 @@ const Bookmark = ({ userObj }) => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <div className={styled.container}>
           {uid !== userObj.email && (
             <TopCategory
@@ -79,6 +80,8 @@ const Bookmark = ({ userObj }) => {
             // <Loading />
           )}
         </div>
+      ) : (
+        <CircleLoader />
       )}
     </>
   );

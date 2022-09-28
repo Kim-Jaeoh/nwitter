@@ -2,6 +2,7 @@ import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import { useEffect, useState } from "react";
 import Nweet from "../nweet/Nweet";
+import CircleLoader from "../Loader/CircleLoader";
 
 const ExploreNweets = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
@@ -40,7 +41,7 @@ const ExploreNweets = ({ userObj }) => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <>
           {nweets.length !== 0 && (
             <div style={{ marginTop: "53px" }}>
@@ -56,6 +57,8 @@ const ExploreNweets = ({ userObj }) => {
             </div>
           )}
         </>
+      ) : (
+        <CircleLoader height={60} />
       )}
     </>
   );

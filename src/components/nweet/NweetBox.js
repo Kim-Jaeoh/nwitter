@@ -16,6 +16,8 @@ import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
 import { useGoPage } from "../../hooks/useGoPage";
 import { useState } from "react";
 import UpdateNweetModal from "../modal/UpdateNweetModal";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export const NweetBox = ({
   loading,
@@ -36,6 +38,7 @@ export const NweetBox = ({
   const replyRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj.text); // Modal 취소 후 다시 수정 시 내용 남게
   const [isEditing, setIsEditing] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   // 커스텀 훅
   const { liked, setLiked, toggleLike } = useToggleLike(nweetObj);

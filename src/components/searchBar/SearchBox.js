@@ -1,4 +1,4 @@
-import Loading from "../Loading";
+import CircleLoader from "../Loader/CircleLoader";
 import styled from "./SearchBox.module.css";
 import SearchNweetsBox from "./SearchNweetsBox";
 import SearchUsersBox from "./SearchUsersBox";

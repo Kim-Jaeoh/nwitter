@@ -7,9 +7,12 @@ import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import { GrEmoji } from "react-icons/gr";
 import styled from "./NweetFactory.module.css";
 import Picker from "emoji-picker-react";
+import BarLoader from "../Loader/BarLoader";
 import imageCompression from "browser-image-compression";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
 import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
+import { useDispatch, useSelector } from "react-redux";
+import { setProgressBar } from "../../reducer/user";
 
 const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
   const fileInput = useRef();
@@ -20,15 +23,19 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
   const [loading, setLoading] = useState(false);
   const [creatorInfo, setCreatorInfo] = useState({});
   const [select, setSelect] = useState("");
+  const [barLoading, setBarLoading] = useState(false);
+  const dispatch = useDispatch();
+  const currentProgressBar = useSelector((state) => state.user.load);
 
   // 정보 가져오기
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
       setLoading(true);
+      dispatch(setProgressBar({ load: false }));
     });
     return () => setLoading(false);
-  }, [userObj]);
+  }, [dispatch, userObj]);
 
   const handleResizeHeight = useHandleResizeTextarea(textRef);
 
@@ -46,6 +53,7 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     let attachmentUrl = "";
+    dispatch(setProgressBar({ load: true }));
 
     // 입력 값 없을 시 업로드 X
     if (nweet !== "") {
@@ -73,7 +81,11 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
         replyId: [],
       };
 
-      await addDoc(collection(dbService, "nweets"), attachmentNweet);
+      setTimeout(async () => {
+        await addDoc(collection(dbService, "nweets"), attachmentNweet);
+        dispatch(setProgressBar({ load: false }));
+      }, 500);
+
       setNweet("");
       setAttachment("");
 
@@ -81,7 +93,7 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
         setNweetModal(false);
       }
 
-      // textRef.current.value = "";
+      return () => clearTimeout();
     } else {
       alert("글자를 입력하세요");
     }
@@ -133,8 +145,13 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
     fileInput.current.value = ""; // 취소 시 파일 문구 없애기
   };
 
+  useEffect(() => {
+    setBarLoading(true);
+  }, []);
+
   return (
     <>
+      {currentProgressBar.load && <BarLoader />}
       <div
         className={`${styled.factoryForm} ${nweetModal && styled.modalBorder}`}
       >

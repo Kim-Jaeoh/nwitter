@@ -14,18 +14,19 @@ import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import UserEtcBtn from "../components/button/UserEtcBtn";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import { NweetModal } from "../components/modal/NweetModal";
+import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
 
 const LeftBar = ({ userObj }) => {
   const userEtcRef = useRef();
+  const location = useLocation();
+  const history = useHistory();
   const dispatch = useDispatch();
   const [creatorInfo, setCreatorInfo] = useState({});
   const [selected, setSelected] = useState(1);
   const [size, setSize] = useState(window.innerWidth);
   const [resize, setResize] = useState(false);
-  const [userEtc, setUserEtc] = useState(false);
   const [nweetModal, setNweetModal] = useState(false);
-  const location = useLocation();
-  const history = useHistory();
+  const [loading, setLoading] = useState(false);
   // const uid2 = location.pathname.split("/").slice(0, 3).join("/");
 
   useEffect(() => {
@@ -42,19 +43,8 @@ const LeftBar = ({ userObj }) => {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
-    if (!userEtc) return;
-    const handleClick = (e) => {
-      if (!userEtcRef?.current?.contains(e.target)) {
-        setUserEtc(false);
-      } else if (userEtcRef.current === null) {
-        console.log("?");
-        return;
-      }
-    };
-    window.addEventListener("click", handleClick);
-    return () => window.addEventListener("click", handleClick);
-  }, [userEtc]);
+  const { nweetEtc: userEtc, setNweetEtc: setUserEtc } =
+    useNweetEctModalClick(userEtcRef);
 
   // 리사이징
   useEffect(() => {
@@ -75,6 +65,7 @@ const LeftBar = ({ userObj }) => {
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
+      setLoading(true);
     });
   }, [userObj]);
 
@@ -227,7 +218,7 @@ const LeftBar = ({ userObj }) => {
                         </>
                       )}
 
-                      {resize && (
+                      {loading && resize && (
                         <div className={styled.userInfo__profileHidden}>
                           <div className={styled.userInfo__profile}>
                             <img

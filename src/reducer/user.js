@@ -1,6 +1,7 @@
 export const SET_LOGIN_TOKEN = "SET_LOGIN_TOKEN";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const SET_MODE = "SET_MODE";
+export const SET_PROGRESS_BAR = "SET_PROGRESS_BAR";
 
 export const setLoginToken = (loginToken) => ({
   type: SET_LOGIN_TOKEN,
@@ -15,6 +16,11 @@ export const setCurrentUser = (currentUser) => ({
 export const setMode = (mode) => ({
   type: SET_MODE,
   payload: mode,
+});
+
+export const setProgressBar = (load) => ({
+  type: SET_PROGRESS_BAR,
+  payload: load,
 });
 
 const initialState = {
@@ -34,7 +40,9 @@ const initialState = {
     following: [],
   },
   mode: "white",
-  nweetText: "",
+  load: {
+    load: false,
+  },
 };
 
 const user = (state = initialState, action) => {
@@ -55,6 +63,12 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         mode: action.payload,
+      };
+
+    case SET_PROGRESS_BAR:
+      return {
+        ...state,
+        load: action.payload,
       };
 
     default:
