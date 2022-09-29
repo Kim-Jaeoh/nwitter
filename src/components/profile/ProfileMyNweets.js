@@ -2,6 +2,7 @@ import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
 import Nweet from "../nweet/Nweet";
+import styled from "./NoInfo.module.css";
 
 const MyNweets = ({ myNweets, userObj }) => {
   const [reNweets, setReNweets] = useState([]);
@@ -22,7 +23,7 @@ const MyNweets = ({ myNweets, userObj }) => {
 
   return (
     <>
-      {myNweets.length !== 0 && (
+      {myNweets.length !== 0 ? (
         <div>
           {myNweets.map((myNweet, index) => (
             <Nweet
@@ -33,6 +34,13 @@ const MyNweets = ({ myNweets, userObj }) => {
               isOwner={myNweet.creatorId === userObj.uid}
             />
           ))}
+        </div>
+      ) : (
+        <div className={styled.noInfoBox}>
+          <div className={styled.noInfo}>
+            <h2>아직 트윗이 없습니다</h2>
+            <p>지금 일어나는 일을 트윗에 담아보세요.</p>
+          </div>
         </div>
       )}
     </>

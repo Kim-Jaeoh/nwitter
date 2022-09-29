@@ -23,7 +23,6 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
   const [loading, setLoading] = useState(false);
   const [creatorInfo, setCreatorInfo] = useState({});
   const [select, setSelect] = useState("");
-  const [barLoading, setBarLoading] = useState(false);
   const dispatch = useDispatch();
   const currentProgressBar = useSelector((state) => state.user.load);
 
@@ -82,12 +81,12 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
       };
 
       setTimeout(async () => {
-        await addDoc(collection(dbService, "nweets"), attachmentNweet);
         dispatch(setProgressBar({ load: false }));
+        await addDoc(collection(dbService, "nweets"), attachmentNweet);
+        textRef.current.style.height = "52px";
+        setNweet("");
+        setAttachment("");
       }, 500);
-
-      setNweet("");
-      setAttachment("");
 
       if (nweetModal) {
         setNweetModal(false);
@@ -97,8 +96,6 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
     } else {
       alert("글자를 입력하세요");
     }
-
-    textRef.current.style.height = "50px";
   };
 
   const onChange = useCallback((e) => {
@@ -144,10 +141,6 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
     setAttachment("");
     fileInput.current.value = ""; // 취소 시 파일 문구 없애기
   };
-
-  useEffect(() => {
-    setBarLoading(true);
-  }, []);
 
   return (
     <>

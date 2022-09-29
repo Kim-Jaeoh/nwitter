@@ -13,7 +13,7 @@
   position: relative;
   width: 100%;
   height: 2.5px;
-  background: rgba(66, 145, 112, 0.123);
+  /* background: rgba(66, 145, 112, 0.123); */
   overflow: hidden;
 }
 

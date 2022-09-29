@@ -5,7 +5,7 @@ import { ProgressBar } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import styled from "./Loading.module.css";
 
-const BarLoader = ({ progress }) => {
+const BarLoader = ({ height }) => {
   const barRef = useRef();
   const [count, setCount] = useState(1);
   const currentProgressBar = useSelector((state) => state.user.load);
@@ -31,7 +31,7 @@ const BarLoader = ({ progress }) => {
   }, [currentProgressBar?.load]);
 
   return (
-    <div className={styled.loader}>
+    <div className={styled.loader} style={{ marginBottom: height }}>
       <div
         ref={barRef}
         className={styled.loader__bar}

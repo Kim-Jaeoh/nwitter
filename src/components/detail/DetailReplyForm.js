@@ -11,6 +11,9 @@ import styled from "./DetailReplyForm.module.css";
 import { useHistory } from "react-router-dom";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
 import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
+import BarLoader from "../Loader/BarLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { setProgressBar } from "../../reducer/user";
 
 export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
   const history = useHistory();
@@ -20,6 +23,8 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
   const [reply, setReply] = useState("");
   const [attachment, setAttachment] = useState("");
   const [select, setSelect] = useState("");
+  const dispatch = useDispatch();
+  const currentProgressBar = useSelector((state) => state.user.load);
 
   const handleResizeHeight = useHandleResizeTextarea(textRef);
 
@@ -37,6 +42,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     let attachmentUrl = "";
+    dispatch(setProgressBar({ load: true }));
 
     // 입력 값 없을 시 업로드 X
     if (reply !== "") {
@@ -69,22 +75,25 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         isReply: true,
       };
 
-      const replies = await addDoc(
-        collection(dbService, "replies"),
-        _nweetReply
-      );
-      await updateDoc(doc(dbService, "nweets", nweets.id), {
-        replyId: [...nweets?.replyId, replies.id],
-      });
-      setReply("");
-      setAttachment("");
-      setSelect("");
-      // textRef.current.value = "";
+      setTimeout(async () => {
+        dispatch(setProgressBar({ load: false }));
+        const replies = await addDoc(
+          collection(dbService, "replies"),
+          _nweetReply
+        );
+        await updateDoc(doc(dbService, "nweets", nweets.id), {
+          replyId: [...nweets?.replyId, replies.id],
+        });
+        setReply("");
+        setAttachment("");
+        setSelect("");
+        textRef.current.style.height = "52px";
+      }, 500);
+
+      return () => clearTimeout();
     } else {
       alert("글자를 입력하세요");
     }
-
-    textRef.current.style.height = "50px";
   };
 
   const onChange = useCallback((e) => {
@@ -137,6 +146,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
 
   return (
     <>
+      {currentProgressBar?.load && <BarLoader />}
       <div
         className={`${styled.nweet__reply} ${
           select === "text" && styled.select

@@ -2,7 +2,8 @@
   display: flex;
   position: relative;
   background-color: white;
-  padding: 0px 16px 16px;
+  /* padding: 0px 16px 16px; */
+  padding: 16px;
   box-sizing: border-box;
   border-bottom: 1px solid #ebebeb;
 }
@@ -11,7 +12,8 @@
 .nweet__reply {
   display: none;
   align-items: center;
-  margin-bottom: 12px;
+  margin-top: 12px;
+  /* margin-bottom: 12px; */
   height: 16px;
   color: #53716a;
 }

@@ -68,7 +68,7 @@ const Home = ({ userObj }) => {
             text={"홈"}
             iconName={<HiOutlineSparkles />}
           />
-          <NweetFactory userObj={userObj} />
+          {loading && <NweetFactory userObj={userObj} />}
           <ul>
             {loading ? (
               <>
