@@ -53,17 +53,17 @@ const Notice = ({ userObj }) => {
         ...doc.data(),
       }));
 
-      setReNweets(reNweetArray);
+      // setReNweets(reNweetArray);
 
-      // // 1. 내 이름으로 된 정보 가져오기
-      // const filter = reNweetArray.filter(
-      //   (asd) => !asd.replyEmail && asd.parentEmail === userObj.email
-      // );
+      // 1. 내 이름으로 된 정보 가져오기
+      const filter = reNweetArray.filter(
+        (asd) => !asd.replyEmail && asd.parentEmail === userObj.email
+      );
 
-      // // 2. 본인이 한 리트윗 제외
-      // const notMe = filter.filter(
-      //   (asd) => asd.email !== userObj.email || asd.replyEmail === userObj.email
-      // );
+      // 2. 본인이 한 리트윗 제외
+      const notMe = filter.filter(
+        (asd) => asd.email !== userObj.email || asd.replyEmail === userObj.email
+      );
 
       // // 3. 본인 답글에 리트윗한 정보만 가져오기
       // const myReplyReNweet = reNweetArray.filter(({ replyEmail: asd }) =>
@@ -77,7 +77,7 @@ const Notice = ({ userObj }) => {
       //   (prev, cur) => cur.reNweetAt - prev.reNweetAt
       // );
 
-      // setReNweets(sortSum);
+      setReNweets(notMe);
       setLoading(true);
     });
   }, [userObj.email]);
