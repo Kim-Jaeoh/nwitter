@@ -151,7 +151,7 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
 
   return (
     <>
-      {currentProgressBar.load && <BarLoader />}
+      {currentProgressBar?.load && <BarLoader />}
       <div
         className={`${styled.factoryForm} ${nweetModal && styled.modalBorder}`}
       >

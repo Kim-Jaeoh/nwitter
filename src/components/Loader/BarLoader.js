@@ -11,7 +11,7 @@ const BarLoader = ({ progress }) => {
   const currentProgressBar = useSelector((state) => state.user.load);
 
   useEffect(() => {
-    if (currentProgressBar.load) {
+    if (currentProgressBar?.load) {
       const counter = () => {
         let startCount = 0;
 
@@ -28,7 +28,7 @@ const BarLoader = ({ progress }) => {
       setInterval(() => counterNumber(), 500 / 100); // 3초 안에 100을 올려야 함 (3000s / 100)
     }
     return () => clearInterval();
-  }, [currentProgressBar.load, currentProgressBar.time]);
+  }, [currentProgressBar?.load]);
 
   return (
     <div className={styled.loader}>

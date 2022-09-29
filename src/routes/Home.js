@@ -7,14 +7,11 @@ import NweetFactory from "../components/nweet/NweetFactory";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import CircleLoader from "../components/Loader/CircleLoader";
-import { useDispatch, useSelector } from "react-redux";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const currentProgressBar = useSelector((state) => state.user.load);
 
   useEffect(() => {
     const q = query(
@@ -46,7 +43,7 @@ const Home = ({ userObj }) => {
       //   //   setNweets((prev) => [nweetObject, ...prev]);
       //   // });
     });
-  }, [currentProgressBar.load, dispatch]);
+  }, []);
 
   // 리트윗 정보
   useEffect(() => {
