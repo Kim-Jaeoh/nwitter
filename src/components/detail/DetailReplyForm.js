@@ -15,7 +15,14 @@ import BarLoader from "../Loader/BarLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { setProgressBar } from "../../reducer/user";
 
-export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
+export const DetailReplyForm = ({
+  loading,
+  userObj,
+  nweets,
+  creatorInfo,
+  replyModal,
+  setReplyModal,
+}) => {
   const history = useHistory();
   const fileInput = useRef();
   const textRef = useRef();
@@ -87,8 +94,15 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
         setReply("");
         setAttachment("");
         setSelect("");
-        textRef.current.style.height = "52px";
+
+        if (!replyModal) {
+          textRef.current.style.height = "52px";
+        }
       }, 500);
+
+      if (replyModal) {
+        setReplyModal(false);
+      }
 
       return () => clearTimeout();
     } else {
@@ -150,7 +164,7 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
       <div
         className={`${styled.nweet__reply} ${
           select === "text" && styled.select
-        }`}
+        } `}
       >
         <div className={styled.nweet__replyIcon}>{/* <BsReplyFill /> */}</div>
         <div className={styled.nweet__replyText}>
@@ -158,7 +172,9 @@ export const DetailReplyForm = ({ creatorInfo, userObj, nweets, loading }) => {
           <p>&nbsp;님에게 보내는 답글</p>
         </div>
       </div>
-      <div className={styled.factoryForm}>
+      <div
+        className={`${styled.factoryForm} ${replyModal && styled.modalBorder}`}
+      >
         <div className={styled.factoryInput__container}>
           <div className={styled.nweet__profile}>
             {loading && (

@@ -7,7 +7,7 @@ import styled from "./Loading.module.css";
 
 const BarLoader = ({ height }) => {
   const barRef = useRef();
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(0);
   const currentProgressBar = useSelector((state) => state.user.load);
 
   useEffect(() => {

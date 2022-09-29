@@ -20,6 +20,7 @@ import { useToggleReNweet } from "../../hooks/useToggleReNweet";
 import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
 import { useGoPage } from "../../hooks/useGoPage";
+import { ReplyModal } from "../modal/ReplyModal";
 
 const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const history = useHistory();
@@ -31,6 +32,11 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const [creatorInfo, setCreatorInfo] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [replyModal, setReplyModal] = useState(false);
+
+  const toggleReplyModal = () => {
+    setReplyModal((prev) => !prev);
+  };
 
   //  map 처리 된 각 유저 정보들
   useEffect(() => {
@@ -188,7 +194,10 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
               )}
               <div className={styled.actionBox}>
                 <div className={styled.comment}>
-                  <div className={styled.actions__icon}>
+                  <div
+                    className={styled.actions__icon}
+                    onClick={toggleReplyModal}
+                  >
                     <FaRegComment />
                   </div>
                 </div>
@@ -232,6 +241,17 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
               isEditing={isEditing}
               setIsEditing={setIsEditing}
               nweetAttachment={nweetObj.attachmentUrl}
+            />
+          )}
+          {replyModal && (
+            <ReplyModal
+              replyModal={replyModal}
+              setReplyModal={setReplyModal}
+              creatorInfo={creatorInfo}
+              nweetObj={nweetObj}
+              userObj={userObj}
+              loading={loading}
+              toggleReplyModal={toggleReplyModal}
             />
           )}
         </>

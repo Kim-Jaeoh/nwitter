@@ -1,13 +1,3 @@
-.factoryForm {
-  display: flex;
-  position: relative;
-  background-color: white;
-  /* padding: 0px 16px 16px; */
-  padding: 16px;
-  box-sizing: border-box;
-  border-bottom: 1px solid #ebebeb;
-}
-
 /* 리플 */
 .nweet__reply {
   display: none;
@@ -55,6 +45,25 @@
 
 .nweet__reply .nweet__replyText p:first-child:hover {
   text-decoration: underline;
+}
+
+/* 입력 BOX */
+.factoryForm {
+  display: flex;
+  position: relative;
+  background-color: white;
+  /* padding: 0px 16px 16px; */
+  padding: 16px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.factoryForm.modalBorer {
+  border-radius: 16px;
+}
+
+.factoryForm.modalBorder {
+  border-radius: 16px;
 }
 
 .factoryInput__container {

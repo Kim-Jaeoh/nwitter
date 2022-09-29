@@ -16,6 +16,7 @@ import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
 import { useGoPage } from "../../hooks/useGoPage";
 import { useState } from "react";
 import UpdateNweetModal from "../modal/UpdateNweetModal";
+import { ReplyModal } from "../modal/ReplyModal";
 
 export const NweetBox = ({
   loading,
@@ -37,6 +38,11 @@ export const NweetBox = ({
   const [newNweet, setNewNweet] = useState(nweetObj.text); // Modal 취소 후 다시 수정 시 내용 남게
   const [isEditing, setIsEditing] = useState(false);
   // const [loading, setLoading] = useState(false);
+  const [replyModal, setReplyModal] = useState(false);
+
+  const toggleReplyModal = () => {
+    setReplyModal((prev) => !prev);
+  };
 
   // 커스텀 훅
   const { liked, setLiked, toggleLike } = useToggleLike(nweetObj);
@@ -168,7 +174,10 @@ export const NweetBox = ({
             ) : null}
             <nav className={styled.nweet__actions}>
               <div className={`${styled.actionBox} ${styled.comment}`}>
-                <div className={styled.actions__icon}>
+                <div
+                  className={styled.actions__icon}
+                  onClick={toggleReplyModal}
+                >
                   <FaRegComment />
                 </div>
                 <div className={styled.actions__text}>
@@ -225,6 +234,17 @@ export const NweetBox = ({
           isEditing={isEditing}
           setIsEditing={setIsEditing}
           nweetAttachment={nweetObj.attachmentUrl}
+        />
+      )}
+      {replyModal && (
+        <ReplyModal
+          replyModal={replyModal}
+          setReplyModal={setReplyModal}
+          creatorInfo={creatorInfo}
+          nweetObj={nweetObj}
+          userObj={userObj}
+          loading={loading}
+          toggleReplyModal={toggleReplyModal}
         />
       )}
     </>
