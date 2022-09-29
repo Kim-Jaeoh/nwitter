@@ -10,6 +10,10 @@
   /* overflow: hidden; */
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 input {
   all: unset;
   box-sizing: border-box;

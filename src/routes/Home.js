@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
-import {
-  collection,
-  getDocs,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import styled from "./Home.module.css";
 import Nweet from "../components/nweet/Nweet";
 import NweetFactory from "../components/nweet/NweetFactory";
-// import Loading from "../components/Loading";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { TopCategory } from "../components/topCategory/TopCategory";
-import { useInView } from "react-intersection-observer";
 import CircleLoader from "../components/Loader/CircleLoader";
 import { useDispatch, useSelector } from "react-redux";
-import { setProgressBar } from "../reducer/user";
 
 const Home = ({ userObj }) => {
-  const [ref, inView] = useInView();
   const [nweets, setNweets] = useState([]);
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -98,7 +88,6 @@ const Home = ({ userObj }) => {
             ) : (
               <CircleLoader />
             )}
-            <div ref={ref} />
           </ul>
         </div>
       </div>

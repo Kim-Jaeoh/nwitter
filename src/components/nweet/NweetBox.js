@@ -16,8 +16,6 @@ import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
 import { useGoPage } from "../../hooks/useGoPage";
 import { useState } from "react";
 import UpdateNweetModal from "../modal/UpdateNweetModal";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 export const NweetBox = ({
   loading,

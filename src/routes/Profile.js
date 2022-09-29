@@ -145,25 +145,27 @@ const Profile = ({ refreshUser, userObj }) => {
 
   return (
     <>
-      {loading ? (
-        <section className={styled.container}>
-          <div className={styled.main__container}>
-            <TopCategory
-              text={creatorInfo.displayName}
-              iconName={<IoArrowBackOutline />}
-              iconName2={<IoMdExit />}
-              myNweets={myNweets}
-              onLogOutClick={onLogOutClick}
-            />
+      <section className={styled.container}>
+        <div className={styled.main__container}>
+          <TopCategory
+            text={creatorInfo.displayName}
+            iconName={<IoArrowBackOutline />}
+            iconName2={<IoMdExit />}
+            myNweets={myNweets}
+            onLogOutClick={onLogOutClick}
+          />
+          {loading ? (
             <div className={styled.setUserInfo}>
               <div className={styled.backImage}>
                 <img src={creatorInfo.bgURL} alt="배경사진" />
               </div>
+
               <div className={styled.profile}>
                 <div className={styled.profile__edit}>
                   <div className={styled.profile__image}>
                     <img src={creatorInfo.photoURL} alt="프로필 이미지" />
                   </div>
+
                   {userObj.email === uid ? (
                     <div
                       className={styled.profile__editBtn}
@@ -218,142 +220,143 @@ const Profile = ({ refreshUser, userObj }) => {
                 </div>
               </div>
             </div>
-            <nav className={styled.categoryList}>
+          ) : (
+            <CircleLoader />
+          )}
+
+          <nav className={styled.categoryList}>
+            <SelectMenuBtn
+              num={1}
+              selected={selected}
+              onClick={() => onSelect(1)}
+              url={
+                uid2.includes("user")
+                  ? "/user/mynweets/" + uid
+                  : "/profile/mynweets/" + uid
+              }
+              text={"트윗"}
+            />
+            <SelectMenuBtn
+              num={2}
+              selected={selected}
+              onClick={() => onSelect(2)}
+              url={
+                uid2.includes("/user/")
+                  ? "/user/renweets/" + uid
+                  : "/profile/renweets/" + uid
+              }
+              text={"리트윗"}
+            />
+            <SelectMenuBtn
+              num={3}
+              selected={selected}
+              onClick={() => onSelect(3)}
+              url={
+                uid2.includes("/user/")
+                  ? "/user/replies/" + uid
+                  : "/profile/replies/" + uid
+              }
+              text={"답글"}
+            />
+            <SelectMenuBtn
+              num={4}
+              selected={selected}
+              onClick={() => onSelect(4)}
+              url={
+                uid2.includes("/user/")
+                  ? "/user/likenweets/" + uid
+                  : "/profile/likenweets/" + uid
+              }
+              text={"트윗 좋아요"}
+            />
+            <SelectMenuBtn
+              num={5}
+              selected={selected}
+              onClick={() => onSelect(5)}
+              url={
+                uid2.includes("/user/")
+                  ? "/user/likereplies/" + uid
+                  : "/profile/likereplies/" + uid
+              }
+              text={"답글 좋아요"}
+            />
+            {resize && (
               <SelectMenuBtn
-                num={1}
+                num={6}
                 selected={selected}
-                onClick={() => onSelect(1)}
+                onClick={() => onSelect(6)}
                 url={
-                  uid2.includes("user")
+                  uid2.includes("/user/")
+                    ? "/user/bookmark/" + uid
+                    : "/profile/bookmark/" + uid
+                }
+                text={"북마크"}
+              />
+            )}
+          </nav>
+
+          {loading ? (
+            <Switch>
+              <Route
+                path={
+                  uid2.includes("/user/")
                     ? "/user/mynweets/" + uid
                     : "/profile/mynweets/" + uid
                 }
-                text={"트윗"}
-              />
-              <SelectMenuBtn
-                num={2}
-                selected={selected}
-                onClick={() => onSelect(2)}
-                url={
+              >
+                <MyNweets myNweets={myNweets} userObj={creatorInfo} />
+              </Route>
+              <Route
+                path={
                   uid2.includes("/user/")
                     ? "/user/renweets/" + uid
                     : "/profile/renweets/" + uid
                 }
-                text={"리트윗"}
-              />
-              <SelectMenuBtn
-                num={3}
-                selected={selected}
-                onClick={() => onSelect(3)}
-                url={
+              >
+                <ReNweets userObj={creatorInfo} />
+              </Route>
+              <Route
+                path={
                   uid2.includes("/user/")
                     ? "/user/replies/" + uid
                     : "/profile/replies/" + uid
                 }
-                text={"답글"}
-              />
-              <SelectMenuBtn
-                num={4}
-                selected={selected}
-                onClick={() => onSelect(4)}
-                url={
+              >
+                <Replies userObj={creatorInfo} />
+              </Route>
+              <Route
+                path={
                   uid2.includes("/user/")
                     ? "/user/likenweets/" + uid
                     : "/profile/likenweets/" + uid
                 }
-                text={"트윗 좋아요"}
-              />
-              <SelectMenuBtn
-                num={5}
-                selected={selected}
-                onClick={() => onSelect(5)}
-                url={
+              >
+                <LikeNweets userObj={creatorInfo} />
+              </Route>
+              <Route
+                path={
                   uid2.includes("/user/")
                     ? "/user/likereplies/" + uid
                     : "/profile/likereplies/" + uid
                 }
-                text={"답글 좋아요"}
-              />
-              {resize && (
-                <SelectMenuBtn
-                  num={6}
-                  selected={selected}
-                  onClick={() => onSelect(6)}
-                  url={
-                    uid2.includes("/user/")
-                      ? "/user/bookmark/" + uid
-                      : "/profile/bookmark/" + uid
-                  }
-                  text={"북마크"}
-                />
-              )}
-            </nav>
-
-            {loading ? (
-              <Switch>
-                <Route
-                  path={
-                    uid2.includes("/user/")
-                      ? "/user/mynweets/" + uid
-                      : "/profile/mynweets/" + uid
-                  }
-                >
-                  <MyNweets myNweets={myNweets} userObj={creatorInfo} />
-                </Route>
-                <Route
-                  path={
-                    uid2.includes("/user/")
-                      ? "/user/renweets/" + uid
-                      : "/profile/renweets/" + uid
-                  }
-                >
-                  <ReNweets userObj={creatorInfo} />
-                </Route>
-                <Route
-                  path={
-                    uid2.includes("/user/")
-                      ? "/user/replies/" + uid
-                      : "/profile/replies/" + uid
-                  }
-                >
-                  <Replies userObj={creatorInfo} />
-                </Route>
-                <Route
-                  path={
-                    uid2.includes("/user/")
-                      ? "/user/likenweets/" + uid
-                      : "/profile/likenweets/" + uid
-                  }
-                >
-                  <LikeNweets userObj={creatorInfo} />
-                </Route>
-                <Route
-                  path={
-                    uid2.includes("/user/")
-                      ? "/user/likereplies/" + uid
-                      : "/profile/likereplies/" + uid
-                  }
-                >
-                  <LikeReplies userObj={creatorInfo} />
-                </Route>
-                <Route
-                  path={
-                    uid2.includes("/user/")
-                      ? "/user/bookmark/" + uid
-                      : "/profile/bookmark/" + uid
-                  }
-                >
-                  <Bookmark userObj={creatorInfo} />
-                </Route>
-              </Switch>
-            ) : (
-              <CircleLoader />
-            )}
-          </div>
-        </section>
-      ) : (
-        <CircleLoader />
-      )}
+              >
+                <LikeReplies userObj={creatorInfo} />
+              </Route>
+              <Route
+                path={
+                  uid2.includes("/user/")
+                    ? "/user/bookmark/" + uid
+                    : "/profile/bookmark/" + uid
+                }
+              >
+                <Bookmark userObj={creatorInfo} />
+              </Route>
+            </Switch>
+          ) : (
+            <CircleLoader />
+          )}
+        </div>
+      </section>
       {isEditing && (
         <UpdateProfileModal
           creatorInfo={creatorInfo}
