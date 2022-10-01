@@ -16,8 +16,12 @@ import { TopCategory } from "../topCategory/TopCategory";
 import { DetailReplyForm } from "./DetailReplyForm";
 import DetailNweetParent from "./DetailNweetParent";
 import DetailNweetReply from "./DetailNweetReply";
+import { useDispatch, useSelector } from "react-redux";
+import BarLoader from "../loader/BarLoader";
+import { setNotModal } from "../../reducer/user";
 
 export const DetailNweet = ({ userObj }) => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const uid = location.pathname.split("/")[2];
   const [creatorInfo, setCreatorInfo] = useState({});
@@ -26,9 +30,16 @@ export const DetailNweet = ({ userObj }) => {
   const [showReply, setShowReply] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const currentProgressBar = useSelector((state) => state.user.load);
+  const currentNotModal = useSelector((state) => state.user.modal);
+
   useEffect(() => {
-    return () => setLoading(false);
-  }, []);
+    dispatch(setNotModal({ modal: true }));
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   return () => setLoading(false);
+  // }, []);
 
   // 리트윗 가져오기
   useEffect(() => {
@@ -103,8 +114,9 @@ export const DetailNweet = ({ userObj }) => {
             userObj={userObj}
             reNweetsObj={reNweets}
           />
+          {currentProgressBar?.load && currentNotModal.modal && <BarLoader />}
           <DetailReplyForm
-            nweets={nweets}
+            nweetObj={nweets}
             loading={loading}
             creatorInfo={creatorInfo}
             userObj={userObj}

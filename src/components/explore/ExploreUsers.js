@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
 import { useHistory } from "react-router-dom";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
-import CircleLoader from "../Loader/CircleLoader";
+import CircleLoader from "../loader/CircleLoader";
 
 const ExploreUsers = ({ userObj }) => {
   const history = useHistory();

@@ -2,6 +2,7 @@ export const SET_LOGIN_TOKEN = "SET_LOGIN_TOKEN";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const SET_MODE = "SET_MODE";
 export const SET_PROGRESS_BAR = "SET_PROGRESS_BAR";
+export const SET_NOT_MODAL = "SET_NOT_MODAL";
 
 export const setLoginToken = (loginToken) => ({
   type: SET_LOGIN_TOKEN,
@@ -21,6 +22,11 @@ export const setMode = (mode) => ({
 export const setProgressBar = (load) => ({
   type: SET_PROGRESS_BAR,
   payload: load,
+});
+
+export const setNotModal = (modal) => ({
+  type: SET_NOT_MODAL,
+  payload: modal,
 });
 
 const initialState = {
@@ -69,6 +75,12 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         load: action.payload,
+      };
+
+    case SET_NOT_MODAL:
+      return {
+        ...state,
+        modal: action.payload,
       };
 
     default:

@@ -13,7 +13,7 @@ import noneProfile from "../../image/noneProfile.jpg";
 import { useHistory } from "react-router-dom";
 import { GrRefresh } from "react-icons/gr";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
-import CircleLoader from "../Loader/CircleLoader";
+import CircleLoader from "../loader/CircleLoader";
 
 const RecommendUser = ({ userObj }) => {
   const history = useHistory();

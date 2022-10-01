@@ -11,14 +11,14 @@ import styled from "./DetailReplyForm.module.css";
 import { useHistory } from "react-router-dom";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
 import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
-import BarLoader from "../Loader/BarLoader";
+import BarLoader from "../loader/BarLoader";
 import { useDispatch, useSelector } from "react-redux";
-import { setProgressBar } from "../../reducer/user";
+import { setNotModal, setProgressBar } from "../../reducer/user";
 
 export const DetailReplyForm = ({
   loading,
   userObj,
-  nweets,
+  nweetObj,
   creatorInfo,
   replyModal,
   setReplyModal,
@@ -74,9 +74,9 @@ export const DetailReplyForm = ({
         like: [],
         reNweet: [],
         reNweetAt: [],
-        parent: nweets.id,
-        parentText: nweets.text,
-        parentEmail: nweets.email,
+        parent: nweetObj.id,
+        parentText: nweetObj.text,
+        parentEmail: nweetObj.email,
         replyId: [],
         reNweetEmail: [],
         isReply: true,
@@ -88,8 +88,8 @@ export const DetailReplyForm = ({
           collection(dbService, "replies"),
           _nweetReply
         );
-        await updateDoc(doc(dbService, "nweets", nweets.id), {
-          replyId: [...nweets?.replyId, replies.id],
+        await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+          replyId: [...nweetObj?.replyId, replies.id],
         });
         setReply("");
         setAttachment("");
@@ -97,12 +97,11 @@ export const DetailReplyForm = ({
 
         if (!replyModal) {
           textRef.current.style.height = "52px";
+        } else {
+          setReplyModal(false);
         }
+        dispatch(setNotModal({ modal: true }));
       }, 500);
-
-      if (replyModal) {
-        setReplyModal(false);
-      }
 
       return () => clearTimeout();
     } else {
@@ -155,12 +154,12 @@ export const DetailReplyForm = ({
   };
 
   const goPage = () => {
-    history.push("/profile/mynweets/" + nweets.email);
+    history.push("/profile/mynweets/" + nweetObj.email);
   };
 
   return (
     <>
-      {currentProgressBar?.load && <BarLoader />}
+      {/* {currentProgressBar?.load && replyModal === false && <BarLoader />} */}
       <div
         className={`${styled.nweet__reply} ${
           select === "text" && styled.select
@@ -168,7 +167,7 @@ export const DetailReplyForm = ({
       >
         <div className={styled.nweet__replyIcon}>{/* <BsReplyFill /> */}</div>
         <div className={styled.nweet__replyText}>
-          <p onClick={goPage}>@{nweets.email?.split("@")[0]}</p>
+          <p onClick={goPage}>@{nweetObj.email?.split("@")[0]}</p>
           <p>&nbsp;님에게 보내는 답글</p>
         </div>
       </div>

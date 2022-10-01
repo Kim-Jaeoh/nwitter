@@ -6,12 +6,22 @@ import Nweet from "../components/nweet/Nweet";
 import NweetFactory from "../components/nweet/NweetFactory";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { TopCategory } from "../components/topCategory/TopCategory";
-import CircleLoader from "../components/Loader/CircleLoader";
+import CircleLoader from "../components/loader/CircleLoader";
+import { useDispatch, useSelector } from "react-redux";
+import BarLoader from "../components/loader/BarLoader";
+import { setNotModal } from "../reducer/user";
 
 const Home = ({ userObj }) => {
+  const dispatch = useDispatch();
+  const currentNotModal = useSelector((state) => state.user.modal);
+  const currentProgressBar = useSelector((state) => state.user.load);
   const [nweets, setNweets] = useState([]);
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    dispatch(setNotModal({ modal: true }));
+  }, [dispatch]);
 
   useEffect(() => {
     const q = query(
@@ -68,6 +78,7 @@ const Home = ({ userObj }) => {
             text={"홈"}
             iconName={<HiOutlineSparkles />}
           />
+          {currentProgressBar?.load && currentNotModal.modal && <BarLoader />}
           {loading && <NweetFactory userObj={userObj} />}
           <ul>
             {loading ? (

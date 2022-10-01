@@ -10,7 +10,7 @@ import SelectMenuBtn from "../components/button/SelectMenuBtn";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import styled from "./Notice.module.css";
 import { NoticeFollow } from "../components/notice/NoticeFollow";
-import CircleLoader from "../components/Loader/CircleLoader";
+import CircleLoader from "../components/loader/CircleLoader";
 
 const Notice = ({ userObj }) => {
   const location = useLocation();

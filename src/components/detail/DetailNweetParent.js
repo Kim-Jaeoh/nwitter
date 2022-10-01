@@ -12,8 +12,6 @@ import {
   FaRegComment,
   FaRegHeart,
 } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
 import { useTimeToString } from "../../hooks/useTimeToString";
 import { useToggleReNweet } from "../../hooks/useToggleReNweet";
@@ -21,9 +19,11 @@ import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
 import { useGoPage } from "../../hooks/useGoPage";
 import { ReplyModal } from "../modal/ReplyModal";
+import { useDispatch, useSelector } from "react-redux";
+import { setNotModal } from "../../reducer/user";
 
 const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
-  const history = useHistory();
+  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
   const imgRef = useRef();
@@ -33,10 +33,6 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [replyModal, setReplyModal] = useState(false);
-
-  const toggleReplyModal = () => {
-    setReplyModal((prev) => !prev);
-  };
 
   //  map 처리 된 각 유저 정보들
   useEffect(() => {
@@ -56,6 +52,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
 
   const { timeToString2 } = useTimeToString();
+  const { goParent } = useGoPage(nweetObj, etcRef, imgRef, nameRef, "");
 
   // 좋아요 목록 중 본인 아이디 있으면 true
   useEffect(() => {
@@ -80,7 +77,10 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
     setIsEditing((prev) => !prev);
   };
 
-  const { goParent } = useGoPage(nweetObj, etcRef, imgRef, nameRef, "");
+  const toggleReplyModal = () => {
+    setReplyModal((prev) => !prev);
+    dispatch(setNotModal({ modal: false }));
+  };
 
   return (
     <>

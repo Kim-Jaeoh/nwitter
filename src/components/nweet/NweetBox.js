@@ -9,7 +9,7 @@ import {
   FaRegComment,
   FaRegHeart,
 } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
 import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
@@ -17,6 +17,8 @@ import { useGoPage } from "../../hooks/useGoPage";
 import { useState } from "react";
 import UpdateNweetModal from "../modal/UpdateNweetModal";
 import { ReplyModal } from "../modal/ReplyModal";
+import { setNotModal } from "../../reducer/user";
+import { useLocation } from "react-router-dom";
 
 export const NweetBox = ({
   loading,
@@ -30,6 +32,8 @@ export const NweetBox = ({
   isOwner,
   timeToString,
 }) => {
+  const dispatch = useDispatch();
+  const location = useLocation();
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
   const nameRef = useRef();
@@ -37,12 +41,7 @@ export const NweetBox = ({
   const replyRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj.text); // Modal 취소 후 다시 수정 시 내용 남게
   const [isEditing, setIsEditing] = useState(false);
-  // const [loading, setLoading] = useState(false);
   const [replyModal, setReplyModal] = useState(false);
-
-  const toggleReplyModal = () => {
-    setReplyModal((prev) => !prev);
-  };
 
   // 커스텀 훅
   const { liked, setLiked, toggleLike } = useToggleLike(nweetObj);
@@ -80,6 +79,13 @@ export const NweetBox = ({
 
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
+  };
+
+  const toggleReplyModal = () => {
+    if (!location.pathname.includes("/nweet/" + nweetObj.parent)) {
+      setReplyModal((prev) => !prev);
+      dispatch(setNotModal({ modal: false }));
+    }
   };
 
   return (

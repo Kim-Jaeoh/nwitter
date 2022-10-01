@@ -7,14 +7,14 @@ import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import { GrEmoji } from "react-icons/gr";
 import styled from "./NweetFactory.module.css";
 import Picker from "emoji-picker-react";
-import BarLoader from "../Loader/BarLoader";
+import BarLoader from "../loader/BarLoader";
 import imageCompression from "browser-image-compression";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
 import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
 import { useDispatch, useSelector } from "react-redux";
 import { setProgressBar } from "../../reducer/user";
 
-const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
+const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
   const fileInput = useRef();
   const textRef = useRef();
   const emojiRef = useRef();
@@ -33,7 +33,7 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
       setLoading(true);
       dispatch(setProgressBar({ load: false }));
     });
-    return () => setLoading(false);
+    // return () => setLoading(false);
   }, [dispatch, userObj]);
 
   const handleResizeHeight = useHandleResizeTextarea(textRef);
@@ -83,14 +83,14 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
       setTimeout(async () => {
         dispatch(setProgressBar({ load: false }));
         await addDoc(collection(dbService, "nweets"), attachmentNweet);
-        textRef.current.style.height = "52px";
         setNweet("");
         setAttachment("");
+        if (!nweetModal) {
+          textRef.current.style.height = "52px";
+        } else {
+          setNweetModal(false);
+        }
       }, 500);
-
-      if (nweetModal) {
-        setNweetModal(false);
-      }
 
       return () => clearTimeout();
     } else {
@@ -144,7 +144,7 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
 
   return (
     <>
-      {currentProgressBar?.load && <BarLoader />}
+      {/* {currentProgressBar?.load && notModal && <BarLoader />} */}
       <div
         className={`${styled.factoryForm} ${nweetModal && styled.modalBorder}`}
       >

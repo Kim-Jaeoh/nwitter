@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineHome, AiFillHome } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { BsPerson, BsBell, BsBellFill, BsPersonFill } from "react-icons/bs";
@@ -12,15 +12,15 @@ import noneProfile from "../image/noneProfile.jpg";
 import styled from "./LeftBar.module.css";
 import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import UserEtcBtn from "../components/button/UserEtcBtn";
-import { setCurrentUser, setLoginToken } from "../reducer/user";
+import { setCurrentUser, setLoginToken, setNotModal } from "../reducer/user";
 import { NweetModal } from "../components/modal/NweetModal";
 import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
 
 const LeftBar = ({ userObj }) => {
+  const dispatch = useDispatch();
   const userEtcRef = useRef();
   const location = useLocation();
   const history = useHistory();
-  const dispatch = useDispatch();
   const [creatorInfo, setCreatorInfo] = useState({});
   const [selected, setSelected] = useState(1);
   const [size, setSize] = useState(window.innerWidth);
@@ -79,6 +79,7 @@ const LeftBar = ({ userObj }) => {
 
   const toggleNweetModal = () => {
     setNweetModal((prev) => !prev);
+    dispatch(setNotModal({ modal: false }));
   };
 
   const onLogOutClick = () => {

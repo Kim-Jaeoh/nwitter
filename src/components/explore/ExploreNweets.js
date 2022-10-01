@@ -2,7 +2,7 @@ import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import { useEffect, useState } from "react";
 import Nweet from "../nweet/Nweet";
-import CircleLoader from "../Loader/CircleLoader";
+import CircleLoader from "../loader/CircleLoader";
 
 const ExploreNweets = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);

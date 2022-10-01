@@ -21,7 +21,7 @@ import { IoMdExit } from "react-icons/io";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import { useToggleFollow } from "../hooks/useToggleFollow";
 import { useTimeToString } from "../hooks/useTimeToString";
-import CircleLoader from "../components/Loader/CircleLoader";
+import CircleLoader from "../components/loader/CircleLoader";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();

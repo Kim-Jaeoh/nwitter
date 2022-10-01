@@ -7,13 +7,13 @@ import styled from "./Loading.module.css";
 
 const BarLoader = ({ height }) => {
   const barRef = useRef();
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const currentProgressBar = useSelector((state) => state.user.load);
 
   useEffect(() => {
     if (currentProgressBar?.load) {
       const counter = () => {
-        let startCount = 0;
+        let startCount = 1;
 
         return () => {
           setCount((startCount += 1));
