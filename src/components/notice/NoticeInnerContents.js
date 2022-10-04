@@ -12,10 +12,10 @@ export const NoticeInnerContents = ({ obj, creatorInfo, text, nweets }) => {
 
   // 팔로우 시간 정보 가져오기
   useEffect(() => {
-    if (creatorInfo?.followAt) {
-      creatorInfo?.followAt.map((time) => setFollowTime(time));
+    if (creatorInfo?.followerAt) {
+      creatorInfo?.followerAt.map((time) => setFollowTime(time));
     }
-  }, [creatorInfo.followAt]);
+  }, [creatorInfo.followerAt]);
 
   const { timeToString } = useTimeToString();
 

@@ -21,31 +21,31 @@ const App = () => {
     });
   }, []);
 
-  const refreshUser = async () => {
-    const user = authService.currentUser;
-    // #방법 1
-    //   setUserObj({
-    //     displayName: user.displayName,
-    //     uid: user.uid,
-    //   });
+  // const refreshUser = async () => {
+  //   const user = authService.currentUser;
+  //   // #방법 1
+  //   //   setUserObj({
+  //   //     displayName: user.displayName,
+  //   //     uid: user.uid,
+  //   //   });
 
-    // #방법 2
-    setUserObj({ ...user });
+  //   // #방법 2
+  //   setUserObj({ ...user });
 
-    // #방법 3 (profile.js에서 userObj 사용 가능)
-    // setNewName(user.displayName); // (useState 생성 후 props 전달)
+  //   // #방법 3 (profile.js에서 userObj 사용 가능)
+  //   // setNewName(user.displayName); // (useState 생성 후 props 전달)
 
-    // #방법 4
-    // setNewName((prev) => !prev);
-  };
+  //   // #방법 4
+  //   // setNewName((prev) => !prev);
+  // };
 
   return (
     <>
       {init ? (
         <AppRouters
-          refreshUser={refreshUser}
           isLoggedIn={Boolean(userObj)}
           userObj={userObj}
+          // refreshUser={refreshUser}
           // newName={newName} // #방법 3
         />
       ) : (
@@ -53,7 +53,6 @@ const App = () => {
           <AiOutlineTwitter className={styled.render__logo} />
         </div>
       )}
-      {/* <footer>&copy; {new Date().getFullYear()} Nwitter</footer> */}
     </>
   );
 };

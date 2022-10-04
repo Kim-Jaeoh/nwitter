@@ -65,7 +65,7 @@ export const DetailReplyForm = ({
         attachmentUrl = await getDownloadURL(ref(attachmentfileRef));
       }
 
-      const _nweetReply = {
+      const nweetReply = {
         text: reply,
         createdAt: Date.now(),
         creatorId: userObj.uid,
@@ -75,7 +75,6 @@ export const DetailReplyForm = ({
         reNweet: [],
         reNweetAt: [],
         parent: nweetObj.id,
-        parentText: nweetObj.text,
         parentEmail: nweetObj.email,
         replyId: [],
         reNweetEmail: [],
@@ -86,7 +85,7 @@ export const DetailReplyForm = ({
         dispatch(setProgressBar({ load: false }));
         const replies = await addDoc(
           collection(dbService, "replies"),
-          _nweetReply
+          nweetReply
         );
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           replyId: [...nweetObj?.replyId, replies.id],
@@ -159,7 +158,6 @@ export const DetailReplyForm = ({
 
   return (
     <>
-      {/* {currentProgressBar?.load && replyModal === false && <BarLoader />} */}
       <div
         className={`${styled.nweet__reply} ${
           select === "text" && styled.select

@@ -40,7 +40,7 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
       });
 
       const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
-      await deleteDoc(reNweetsRef); // 원글의 reply 삭제
+      await deleteDoc(reNweetsRef); // 원글의 리트윗 삭제
 
       dispatch(
         setCurrentUser({
@@ -55,7 +55,6 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
         creatorId: userObj.uid,
         email: userObj.email,
         like: [],
-        // reNweet: [],
         reNweetAt: time,
         parent: nweetObj.id || null,
         parentEmail: nweetObj.email || null,

@@ -31,22 +31,6 @@ export const GithubBtn = ({ newAccount }) => {
             dispatch(
               setCurrentUser({
                 ...docSnap.data(),
-                // bookmark: docSnap.data().bookmark
-                //   ? docSnap.data().bookmark
-                //   : [],
-                // followAt: docSnap.data().followAt
-                //   ? docSnap.data().followAt
-                //   : [],
-                // follower: docSnap.data().follower
-                //   ? docSnap.data().follower
-                //   : [],
-                // following: docSnap.data().following
-                //   ? docSnap.data().following
-                //   : [],
-                // reNweet: docSnap.data().reNweet ? docSnap.data().reNweet : [],
-                // reNweetAt: docSnap.data().reNweetAt
-                //   ? docSnap.data().reNweetAt
-                //   : [],
               })
             );
           } else {
@@ -60,7 +44,8 @@ export const GithubBtn = ({ newAccount }) => {
               description: "",
               bgURL: bgimg,
               bookmark: [],
-              followAt: [],
+              followerAt: [],
+              followingAt: [],
               follower: [],
               following: [],
               reNweet: [],
@@ -77,7 +62,8 @@ export const GithubBtn = ({ newAccount }) => {
                 description: "",
                 createdAtId: Date.now(),
                 bookmark: [],
-                followAt: [],
+                followerAt: [],
+                followingAt: [],
                 follower: [],
                 following: [],
                 reNweet: [],
@@ -89,7 +75,7 @@ export const GithubBtn = ({ newAccount }) => {
       history.push("/");
     } catch (error) {
       console.log(error);
-      alert("Google 로그인 오류");
+      alert("Github 로그인 오류");
     }
   };
 

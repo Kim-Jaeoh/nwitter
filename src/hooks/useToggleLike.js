@@ -13,7 +13,8 @@ export const useToggleLike = (nweetObj) => {
       const copy = [...nweetObj.like];
       const filter = copy.filter((email) => email !== currentUser.email);
 
-      if (Object.keys(nweetObj).includes("parent") === false) {
+      // if (Object.keys(nweetObj).includes("parent") === false) {
+      if (!nweetObj?.parent) {
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           like: filter,
         });
@@ -27,7 +28,8 @@ export const useToggleLike = (nweetObj) => {
       const copy = [...nweetObj.like];
       copy.push(currentUser.email);
 
-      if (Object.keys(nweetObj).includes("parent") === false) {
+      // if (Object.keys(nweetObj).includes("parent") === false) {
+      if (!nweetObj?.parent) {
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           like: copy,
         });

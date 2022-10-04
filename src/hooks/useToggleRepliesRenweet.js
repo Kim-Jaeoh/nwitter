@@ -75,7 +75,6 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
         creatorId: userObj.uid,
         email: userObj.email,
         like: [],
-        // reNweet: [],
         reNweetAt: time,
         parent: nweetObj.parent || null,
         parentEmail: nweetObj.parentEmail || null,

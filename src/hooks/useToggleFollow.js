@@ -1,4 +1,5 @@
 import { doc, updateDoc } from "firebase/firestore";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { dbService } from "../fbase";
 import { setCurrentUser } from "../reducer/user";
@@ -9,64 +10,60 @@ export const useToggleFollow = (myInfo) => {
 
   const toggleFollow = async (userInfo) => {
     if (myInfo.following?.includes(userInfo.email)) {
-      const followCopy = [...myInfo.following];
-      const followCopyFilter = followCopy.filter(
+      const followCopyFilter = myInfo.following.filter(
         (email) => email !== userInfo.email
       );
 
-      const followAtCopy = [...myInfo.followAt];
-      const followAtCopyFilter = followAtCopy.filter(
-        (at) => !userInfo.followAt.includes(at)
+      const followingAtCopyFilter = myInfo.followingAt.filter(
+        (at) => !userInfo.followerAt.includes(at)
       );
 
-      const followerCopy = [...userInfo.follower];
-      const followerCopyFilter = followerCopy.filter(
+      const followerCopyFilter = userInfo.follower.filter(
         (email) => email !== myInfo.email
       );
 
-      const followerAtCopy = [...userInfo.followAt];
-      const followerAtCopyFilter = followerAtCopy.filter(
-        (at) => !myInfo.followAt.includes(at)
+      const followerAtCopyFilter = userInfo.followerAt.filter(
+        (at) => !currentUser.followingAt.includes(at)
       );
 
       await updateDoc(doc(dbService, "users", myInfo.email), {
         following: followCopyFilter,
-        followAt: followAtCopyFilter,
+        // followingAt: followingAtCopyFilter,
       });
+
       await updateDoc(doc(dbService, "users", userInfo.email), {
         follower: followerCopyFilter,
-        followAt: followerAtCopyFilter,
+        followerAt: followerAtCopyFilter,
       });
+
       dispatch(
         setCurrentUser({
           ...currentUser,
-          following: myInfo.following,
-          follower: myInfo.follower,
-          followAt: myInfo.followAt,
+          following: followCopyFilter,
+          followingAt: followingAtCopyFilter,
         })
       );
     } else {
       const time = Date.now();
       const followCopy = [...myInfo.following, userInfo.email];
-      const followAtCopy = [...myInfo.followAt, time];
+      const followingAtCopy = [...myInfo.followingAt, time];
       const followerCopy = [...userInfo.follower, myInfo.email];
-      const followerAtCopy = [...userInfo.followAt, time];
+      const followerAtCopy = [...userInfo.followerAt, time];
 
       await updateDoc(doc(dbService, "users", myInfo.email), {
         following: followCopy,
-        followAt: followAtCopy,
+        // followingAt: followingAtCopy,
       });
       await updateDoc(doc(dbService, "users", userInfo.email), {
         follower: followerCopy,
-        followAt: followerAtCopy,
+        followerAt: followerAtCopy,
       });
 
       dispatch(
         setCurrentUser({
           ...currentUser,
-          following: myInfo.following,
-          follower: myInfo.follower,
-          followAt: myInfo.followAt,
+          following: followCopy,
+          followingAt: followingAtCopy,
         })
       );
     }

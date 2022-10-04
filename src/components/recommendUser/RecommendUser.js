@@ -39,7 +39,7 @@ const RecommendUser = ({ userObj }) => {
   // 실시간 문서 받아오기로 인한 무분별한 리렌더링 발생
   // (만약 수많은 사람이 한번에 프로필 변경 할 시 계속 리렌더링 되기 때문)
   // useEffect(() => {
-  //   const q = query(collection(dbService, "users"));
+  //   const q = query(collection(dbService, "users"), orderBy("follower", "asc"));
 
   //   onSnapshot(q, (snapshot) => {
   //     const usersArray = snapshot.docs.map((doc) => ({
@@ -50,19 +50,25 @@ const RecommendUser = ({ userObj }) => {
   //     //  본인 제외 노출
   //     const exceptArray = usersArray.filter((name) => name.uid !== userObj.uid);
 
-  //     const randomArray = (array) =>
-  //       array.sort(() => Math.floor(Math.random() - 0.5));
+  //     // // 랜덤 함수
+  //     // const randomArray = (array) => {
+  //     //   // 방법 1
+  //     //   // array.sort(() => Math.floor(Math.random() - 0.5));
 
-  //     randomArray(exceptArray);
+  //     //   // 방법 2 (피셔-예이츠)
+  //     //   for (let index = array.length - 1; index > 0; index--) {
+  //     //     // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+  //     //     const randomPosition = Math.floor(Math.random() * (index + 1));
+
+  //     //     // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+  //     //     const temporary = array[index];
+  //     //     array[index] = array[randomPosition];
+  //     //     array[randomPosition] = temporary;
+  //     //   }
+  //     // };
+
+  //     // randomArray(exceptArray);
   //     setCreatorInfo(exceptArray);
-
-  //     if (isAction === true) {
-  //       setIsAction(false);
-  //       return;
-  //     }
-  //     setIsAction(true);
-
-  //     return () => randomArray(exceptArray);
   //   });
   // }, []);
 
@@ -81,8 +87,22 @@ const RecommendUser = ({ userObj }) => {
       // 본인 제외 노출
       const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
 
-      const randomArray = (array) =>
-        array.sort(() => Math.floor(Math.random() - 0.5));
+      // 랜덤 함수
+      const randomArray = (array) => {
+        // 방법 1
+        // array.sort(() => Math.floor(Math.random() - 0.5));
+
+        // 방법 2 (피셔-예이츠)
+        for (let index = array.length - 1; index > 0; index--) {
+          // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+          const randomPosition = Math.floor(Math.random() * (index + 1));
+
+          // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+          const temporary = array[index];
+          array[index] = array[randomPosition];
+          array[randomPosition] = temporary;
+        }
+      };
 
       randomArray(exceptArray);
       setCreatorInfo(exceptArray);

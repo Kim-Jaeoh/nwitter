@@ -27,7 +27,6 @@ const LeftBar = ({ userObj }) => {
   const [resize, setResize] = useState(false);
   const [nweetModal, setNweetModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const uid2 = location.pathname.split("/").slice(0, 3).join("/");
 
   useEffect(() => {
     if (location.pathname === "/") {
