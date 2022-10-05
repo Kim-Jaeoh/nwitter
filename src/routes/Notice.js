@@ -1,5 +1,12 @@
 import React from "react";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { dbService } from "../fbase";
 import { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
@@ -18,12 +25,26 @@ const Notice = ({ userObj }) => {
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [replies, setReplies] = useState([]);
-  const [myInfo, setMyInfo] = useState({});
+  const [myFollowerInfo, setMyFollowerInfo] = useState({});
+  const [userInfo, setUserInfo] = useState([]);
 
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+      setUserInfo(doc.data());
+      setLoading(true);
+    });
+  }, [userObj]);
+
+  console.log(myFollowerInfo);
+
+  // 본인 팔로워 정보 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "users"),
-      orderBy("followAt", "desc")
+      // where("following", "array-contains", userObj.email)
+      // where("email", "==", userObj.email),
+      orderBy("followingAt", "desc")
     );
 
     onSnapshot(q, (snapshot) => {
@@ -32,11 +53,11 @@ const Notice = ({ userObj }) => {
         ...doc.data(),
       }));
 
-      const filter = reNweetArray.filter((asd) =>
-        asd.following.includes(userObj.email)
+      const filter = reNweetArray.filter((obj) =>
+        obj.following.includes(userObj.email)
       );
 
-      setMyInfo(filter);
+      setMyFollowerInfo(filter);
     });
   }, [userObj.email]);
 
@@ -192,13 +213,14 @@ const Notice = ({ userObj }) => {
             </Route>
             <Route path="/notice/follow">
               <>
-                {myInfo.length !== 0 ? (
-                  myInfo.map((follow, index) => (
+                {myFollowerInfo.length !== 0 ? (
+                  myFollowerInfo.map((follow, index) => (
                     <NoticeFollow
                       key={index}
                       userObj={userObj}
                       followObj={follow}
                       loading={loading}
+                      userInfo={userInfo.followerAt}
                     />
                   ))
                 ) : (

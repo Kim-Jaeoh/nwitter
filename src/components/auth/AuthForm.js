@@ -147,6 +147,13 @@ const AuthForm = ({ newAccount }) => {
             "로그인 시도가 여러 번 실패하여 이 계정에 대한 액세스가 일시적으로 비활성화되었습니다. 비밀번호를 재설정하여 즉시 복원하거나 나중에 다시 시도할 수 있습니다."
           )
         );
+      } else if (error.message.includes("(auth/user-not-found)")) {
+        setError(
+          error.message.replace(
+            "Firebase: Error (auth/user-not-found).",
+            "가입된 아이디를 찾을 수 없습니다."
+          )
+        );
       } else {
         setError(error.message);
       }

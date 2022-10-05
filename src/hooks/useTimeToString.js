@@ -38,7 +38,6 @@ export const useTimeToString = () => {
     let timeString = amPm + " " + hours + ":" + minutes;
 
     let str =
-      // (date.getHours() >= 12 ? "오후 " : "오전 ") +
       timeString +
       " · " +
       date.getFullYear() +

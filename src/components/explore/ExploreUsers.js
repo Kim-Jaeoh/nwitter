@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import styled from "./ExploreUsers.module.css";
 import {
   collection,
@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
 import CircleLoader from "../loader/CircleLoader";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +22,7 @@ const ExploreUsers = ({ userObj }) => {
   const btnRef = useRef();
   const [users, setUsers] = useState([]);
   const [myInfo, setMyInfo] = useState({});
+  const [followInfo, setFollowInfo] = useState({});
   const [loading, setLoading] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -34,52 +35,37 @@ const ExploreUsers = ({ userObj }) => {
     });
   }, [currentUser.follow, userObj.email]);
 
+  // 팔로우 정보 가져오기
+  useEffect(() => {
+    const q = query(
+      collection(dbService, "follow")
+      // ,orderBy("follower", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      const userArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // // 본인 제외 노출
+      // const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
+
+      setFollowInfo(userArray);
+    });
+  }, []);
+
   // // 실시간 문서 받아오기로 인한 무분별한 리렌더링 발생
   // // (만약 수많은 사람이 한번에 프로필 변경 할 시 계속 리렌더링 되기 때문)
-  // useEffect(() => {
-  //   const q = query(collection(dbService, "users"), orderBy("follower", "asc"));
 
-  //   onSnapshot(q, (snapshot) => {
-  //     const userArray = snapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-
-  //     // 본인 제외 노출
-  //     const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
-
-  //     // // 랜덤 함수
-  //     // const randomArray = (array) => {
-  //     //   // 방법 1
-  //     //   // array.sort(() => Math.floor(Math.random() - 0.5));
-
-  //     //   // 방법 2 (피셔-예이츠)
-  //     //   for (let index = array.length - 1; index > 0; index--) {
-  //     //     // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
-  //     //     const randomPosition = Math.floor(Math.random() * (index + 1));
-
-  //     //     // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
-  //     //     const temporary = array[index];
-  //     //     array[index] = array[randomPosition];
-  //     //     array[randomPosition] = temporary;
-  //     //   }
-  //     // };
-
-  //     // randomArray(exceptArray);
-
-  //     setUsers(exceptArray);
-  //     setLoading(true);
-  //   });
-  // }, []);
-
-  // 무분별한 리렌더링 방지 (실시간 문서 받아오기 x)
-  // (새로고침(랜덤 함수) 버튼 누를 때만 리렌더링 되도록 함) 단점은 로딩이 길다..
   useEffect(() => {
-    const userInfo = async () => {
-      const q = query(collection(dbService, "users"));
-      const data = await getDocs(q);
+    const q = query(
+      collection(dbService, "users"),
+      orderBy("follower", "desc")
+    );
 
-      const userArray = data.docs.map((doc) => ({
+    onSnapshot(q, (snapshot) => {
+      const userArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -87,30 +73,69 @@ const ExploreUsers = ({ userObj }) => {
       // 본인 제외 노출
       const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
 
-      // 랜덤 함수
-      const randomArray = (array) => {
-        // 방법 1
-        // array.sort(() => Math.floor(Math.random() - 0.5));
+      // // 랜덤 함수
+      // const randomArray = (array) => {
+      //   // 방법 1
+      //   // array.sort(() => Math.floor(Math.random() - 0.5));
 
-        // 방법 2 (피셔-예이츠)
-        for (let index = array.length - 1; index > 0; index--) {
-          // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
-          const randomPosition = Math.floor(Math.random() * (index + 1));
+      //   // 방법 2 (피셔-예이츠)
+      //   for (let index = array.length - 1; index > 0; index--) {
+      //     // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+      //     const randomPosition = Math.floor(Math.random() * (index + 1));
 
-          // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
-          const temporary = array[index];
-          array[index] = array[randomPosition];
-          array[randomPosition] = temporary;
-        }
-      };
+      //     // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+      //     const temporary = array[index];
+      //     array[index] = array[randomPosition];
+      //     array[randomPosition] = temporary;
+      //   }
+      // };
 
-      randomArray(exceptArray);
+      // randomArray(exceptArray);
       setUsers(exceptArray);
       setLoading(true);
-    };
-
-    userInfo();
+    });
   }, []);
+
+  // 무분별한 리렌더링 방지 (실시간 문서 받아오기 x)
+  // (새로고침(랜덤 함수) 버튼 누를 때만 리렌더링 되도록 함) 단점은 로딩이 길다..
+  // useEffect(() => {
+  //   const userInfo = async () => {
+  //     const q = query(collection(dbService, "users"));
+  //     const data = await getDocs(q);
+
+  //     const userArray = data.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+
+  //     // 본인 제외 노출
+  //     const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
+
+  //     // 랜덤 함수
+  //     const randomArray = (array) => {
+  //       // 방법 1
+  //       // array.sort(() => Math.floor(Math.random() - 0.5));
+
+  //       // 방법 2 (피셔-예이츠)
+  //       for (let index = array.length - 1; index > 0; index--) {
+  //         // 무작위 index 값을 만든다. (0 이상의 배열 길이 값)
+  //         const randomPosition = Math.floor(Math.random() * (index + 1));
+
+  //         // 임시로 원본 값을 저장하고, randomPosition을 사용해 배열 요소를 섞는다.
+  //         const temporary = array[index];
+  //         array[index] = array[randomPosition];
+  //         array[randomPosition] = temporary;
+  //       }
+  //     };
+
+  //     randomArray(exceptArray);
+  //     setUsers(exceptArray);
+
+  //     setLoading(true);
+  //   };
+
+  //   userInfo();
+  // }, []);
 
   const goPage = (user, e) => {
     if (!btnRef.current?.contains(e.target)) {

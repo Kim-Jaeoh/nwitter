@@ -4,7 +4,13 @@ import { useGoPage } from "../../hooks/useGoPage";
 import { useTimeToString } from "../../hooks/useTimeToString";
 import styled from "./NoticeInnerContents.module.css";
 
-export const NoticeInnerContents = ({ obj, creatorInfo, text, nweets }) => {
+export const NoticeInnerContents = ({
+  obj,
+  creatorInfo,
+  text,
+  nweets,
+  userInfo,
+}) => {
   const imgRef = useRef();
   const nameRef = useRef();
   const location = useLocation();
@@ -12,10 +18,10 @@ export const NoticeInnerContents = ({ obj, creatorInfo, text, nweets }) => {
 
   // 팔로우 시간 정보 가져오기
   useEffect(() => {
-    if (creatorInfo?.followerAt) {
-      creatorInfo?.followerAt.map((time) => setFollowTime(time));
+    if (creatorInfo?.followingAt) {
+      creatorInfo?.followingAt.map((time) => setFollowTime(time));
     }
-  }, [creatorInfo.followerAt]);
+  }, [creatorInfo?.followingAt]);
 
   const { timeToString } = useTimeToString();
 
