@@ -70,33 +70,14 @@ const Notice = ({ userObj }) => {
         ...doc.data(),
       }));
 
-      // // 1. 내 이름으로 된 정보 가져오기
-      // const filter = reNweetArray.filter(
-      //   (obj) => obj.parentEmail === userObj.email
-      // );
-
-      // 2. 본인이 한 리트윗 제외
-      // 답글 리트윗 필드값엔 replyEmail 값이 존재해서 이것이 없으면 원글 리트윗의 정보를 가져옴
-      const notMe = reNweetArray.filter(
+      const filter = reNweetArray.filter(
         (obj) =>
           obj.email !== userObj.email &&
           (obj?.replyEmail ? obj?.replyEmail : obj?.parentEmail) ===
             userObj.email
       );
 
-      // // 3. 본인 답글에 리트윗한 정보만 가져오기
-      // const myReplyReNweet = reNweetArray.filter(({ replyEmail: asd }) =>
-      //   asd?.includes(userObj.email)
-      // );
-
-      // // 4. 2번과 3번 전개 연산자로 복사
-      // const sumInfo = [...notMe, ...myReplyReNweet];
-
-      // const sortSum = sumInfo.sort(
-      //   (prev, cur) => cur.reNweetAt - prev.reNweetAt
-      // );
-
-      setReNweets(notMe);
+      setReNweets(filter);
       setLoading(true);
     });
   }, [userObj.email]);

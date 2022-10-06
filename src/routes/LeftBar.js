@@ -50,6 +50,7 @@ const LeftBar = ({ userObj }) => {
     // 렌더 시
     if (size < 500) {
       setResize(true);
+      history.push("/profile/bookmarknweets/" + userObj.email);
     } else if (size > 500) {
       setResize(false);
     }
@@ -59,7 +60,7 @@ const LeftBar = ({ userObj }) => {
     };
     window.addEventListener("resize", Resize);
     return () => window.addEventListener("resize", Resize);
-  }, [size]);
+  }, [history, size, userObj.email]);
 
   useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
@@ -176,17 +177,7 @@ const LeftBar = ({ userObj }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to={
-                      location.pathname.includes(userObj.email)
-                        ? [
-                            "/profile/bookmarknweets/" + userObj.email,
-                            "/profile/bookmarreplies/" + userObj.email,
-                          ]
-                        : "/bookmark/nweets"
-                    }
-                    onClick={() => onSelect(4)}
-                  >
+                  <Link to={"/bookmark/nweets"} onClick={() => onSelect(4)}>
                     <div className={styled.leftBar__list}>
                       {selected === 4 ? (
                         <>

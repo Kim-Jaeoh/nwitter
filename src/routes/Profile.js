@@ -12,9 +12,7 @@ import Bookmark from "./Bookmark";
 import UpdateProfileModal from "../components/modal/UpdateProfileModal";
 import MyNweets from "../components/profile/ProfileMyNweets";
 import ReNweets from "../components/profile/ProfileReNweets";
-import LikeNweets from "../components/profile/ProfileLikeNweets";
 import { Replies } from "../components/profile/ProfileReplies";
-import LikeReplies from "../components/profile/ProfileLikeReplies";
 import SelectMenuBtn from "../components/button/SelectMenuBtn";
 import { IoMdExit } from "react-icons/io";
 import { TopCategory } from "../components/topCategory/TopCategory";
@@ -23,7 +21,7 @@ import { useTimeToString } from "../hooks/useTimeToString";
 import CircleLoader from "../components/loader/CircleLoader";
 import ProfileLike from "../components/profile/ProfileLike";
 
-const Profile = ({ refreshUser, userObj }) => {
+const Profile = ({ userObj }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
@@ -95,6 +93,7 @@ const Profile = ({ refreshUser, userObj }) => {
       setResize(true);
     } else if (size > 500) {
       setResize(false);
+      history.push("/bookmark/nweets");
     }
     const Resize = () => {
       let innerSize = window.innerWidth;
@@ -102,7 +101,7 @@ const Profile = ({ refreshUser, userObj }) => {
     };
     window.addEventListener("resize", Resize);
     return () => window.addEventListener("resize", Resize);
-  }, [size]);
+  }, [history, size]);
 
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃 하시겠어요?");
