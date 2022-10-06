@@ -21,6 +21,7 @@ import { TopCategory } from "../components/topCategory/TopCategory";
 import { useToggleFollow } from "../hooks/useToggleFollow";
 import { useTimeToString } from "../hooks/useTimeToString";
 import CircleLoader from "../components/loader/CircleLoader";
+import ProfileLike from "../components/profile/ProfileLike";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
@@ -41,10 +42,6 @@ const Profile = ({ refreshUser, userObj }) => {
   const { timeToString3 } = useTimeToString();
   const toggleFollow = useToggleFollow(myInfo);
 
-  // useEffect(() => {
-  //   return () => setLoading(false);
-  // }, []);
-
   useEffect(() => {
     if (location.pathname.includes("/mynweets")) {
       setSelected(1);
@@ -52,14 +49,12 @@ const Profile = ({ refreshUser, userObj }) => {
       setSelected(2);
     } else if (location.pathname.includes("/replies")) {
       setSelected(3);
-    } else if (location.pathname.includes("/likenweets")) {
+    } else if (location.pathname.includes("/like")) {
       setSelected(4);
-    } else if (location.pathname.includes("/likereplies")) {
-      setSelected(5);
     } else if (location.pathname.includes("/bookmark")) {
-      setSelected(6);
+      setSelected(5);
     }
-  }, [location.pathname]);
+  }, [location.pathname, userObj.email]);
 
   // 본인 정보 가져오기
   useEffect(() => {
@@ -131,10 +126,6 @@ const Profile = ({ refreshUser, userObj }) => {
       );
       history.push("/auth");
     }
-  };
-
-  const onSelect = (num) => {
-    setSelected(num);
   };
 
   const toggleEdit = () => {
@@ -226,7 +217,6 @@ const Profile = ({ refreshUser, userObj }) => {
             <SelectMenuBtn
               num={1}
               selected={selected}
-              onClick={() => onSelect(1)}
               url={
                 uid2.includes("user")
                   ? "/user/mynweets/" + uid
@@ -237,7 +227,6 @@ const Profile = ({ refreshUser, userObj }) => {
             <SelectMenuBtn
               num={2}
               selected={selected}
-              onClick={() => onSelect(2)}
               url={
                 uid2.includes("/user/")
                   ? "/user/renweets/" + uid
@@ -248,7 +237,6 @@ const Profile = ({ refreshUser, userObj }) => {
             <SelectMenuBtn
               num={3}
               selected={selected}
-              onClick={() => onSelect(3)}
               url={
                 uid2.includes("/user/")
                   ? "/user/replies/" + uid
@@ -259,35 +247,18 @@ const Profile = ({ refreshUser, userObj }) => {
             <SelectMenuBtn
               num={4}
               selected={selected}
-              onClick={() => onSelect(4)}
               url={
                 uid2.includes("/user/")
                   ? "/user/likenweets/" + uid
                   : "/profile/likenweets/" + uid
               }
-              text={"트윗 좋아요"}
-            />
-            <SelectMenuBtn
-              num={5}
-              selected={selected}
-              onClick={() => onSelect(5)}
-              url={
-                uid2.includes("/user/")
-                  ? "/user/likereplies/" + uid
-                  : "/profile/likereplies/" + uid
-              }
-              text={"답글 좋아요"}
+              text={"좋아요"}
             />
             {resize && userObj.email === uid && (
               <SelectMenuBtn
-                num={6}
+                num={5}
                 selected={selected}
-                onClick={() => onSelect(6)}
-                url={
-                  uid2.includes("/user/")
-                    ? "/user/bookmark/" + uid
-                    : "/profile/bookmark/" + uid
-                }
+                url={"/profile/bookmarknweets/" + uid}
                 text={"북마크"}
               />
             )}
@@ -325,30 +296,24 @@ const Profile = ({ refreshUser, userObj }) => {
               <Route
                 path={
                   uid2.includes("/user/")
-                    ? "/user/likenweets/" + uid
-                    : "/profile/likenweets/" + uid
+                    ? ["/user/likenweets/" + uid, "/user/likereplies/" + uid]
+                    : [
+                        "/profile/likenweets/" + uid,
+                        "/profile/likereplies/" + uid,
+                      ]
                 }
               >
-                <LikeNweets userObj={userObj} creatorInfo={creatorInfo} />
+                <ProfileLike userObj={userObj} loading={loading} />
               </Route>
-              <Route
-                path={
-                  uid2.includes("/user/")
-                    ? "/user/likereplies/" + uid
-                    : "/profile/likereplies/" + uid
-                }
-              >
-                <LikeReplies userObj={userObj} />
-              </Route>
+
               {userObj.email === uid && (
                 <Route
-                  path={
-                    uid2.includes("/user/")
-                      ? "/user/bookmark/" + uid
-                      : "/profile/bookmark/" + uid
-                  }
+                  path={[
+                    "/profile/bookmarknweets/" + uid,
+                    "/profile/bookmarkreplies/" + uid,
+                  ]}
                 >
-                  <Bookmark userObj={userObj} creatorInfo={creatorInfo} />
+                  <Bookmark userObj={userObj} />
                 </Route>
               )}
             </Switch>

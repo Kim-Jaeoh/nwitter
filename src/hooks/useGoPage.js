@@ -1,8 +1,9 @@
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 export const useGoPage = (nweetObj, etcRef, imgRef, nameRef, replyRef) => {
   const history = useHistory();
+  const location = useLocation();
   const currentUser = useSelector((state) => state.user.currentUser);
 
   const goProfile = (e) => {
@@ -57,7 +58,8 @@ export const useGoPage = (nweetObj, etcRef, imgRef, nameRef, replyRef) => {
       history.push("/user/mynweets/" + nweetObj.email);
     } else if (
       !imgRef.current.contains(e.target) &&
-      !nameRef.current.contains(e.target)
+      !nameRef.current.contains(e.target) &&
+      !location.pathname.includes("followers")
     ) {
       history.push("/nweet/" + nweetObj.parent);
     }

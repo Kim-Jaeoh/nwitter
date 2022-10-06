@@ -28,7 +28,7 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
       (obj) => obj?.replyId && obj?.email === userObj.email
     );
     setReplyReNweetsId(reNweetsObj[index2]);
-  }, [nweetObj.id, nweetObj.parent, reNweetsObj, userObj.email]);
+  }, [nweetObj.id, reNweetsObj, userObj.email]);
 
   const toggleReNweet = async () => {
     const copy = [...nweetObj.reNweet];

@@ -40,8 +40,6 @@ const Notice = ({ userObj }) => {
   useEffect(() => {
     const q = query(
       collection(dbService, "users"),
-      // where("following", "array-contains", userObj.email)
-      // where("email", "==", userObj.email),
       orderBy("followingAt", "desc")
     );
 
@@ -78,6 +76,7 @@ const Notice = ({ userObj }) => {
       // );
 
       // 2. 본인이 한 리트윗 제외
+      // 답글 리트윗 필드값엔 replyEmail 값이 존재해서 이것이 없으면 원글 리트윗의 정보를 가져옴
       const notMe = reNweetArray.filter(
         (obj) =>
           obj.email !== userObj.email &&
@@ -115,7 +114,7 @@ const Notice = ({ userObj }) => {
       }));
 
       const filter = userArray.filter((id) => id.parentEmail === userObj.email);
-      const notMe = filter.filter((asd) => asd.email !== userObj.email);
+      const notMe = filter.filter((obj) => obj.email !== userObj.email);
 
       setReplies(notMe);
       setLoading(true);
@@ -132,10 +131,6 @@ const Notice = ({ userObj }) => {
     }
   }, [location.pathname]);
 
-  const onSelect = (num) => {
-    setSelected(num);
-  };
-
   return (
     <>
       <div className={styled.container}>
@@ -145,21 +140,18 @@ const Notice = ({ userObj }) => {
             <SelectMenuBtn
               num={1}
               selected={selected}
-              onClick={() => onSelect(1)}
               url={"/notice/renweets/"}
               text={"리트윗"}
             />
             <SelectMenuBtn
               num={2}
               selected={selected}
-              onClick={() => onSelect(2)}
               url={"/notice/replies"}
               text={"답글"}
             />
             <SelectMenuBtn
               num={3}
               selected={selected}
-              onClick={() => onSelect(3)}
               url={"/notice/followers"}
               text={"팔로우"}
             />
@@ -219,7 +211,6 @@ const Notice = ({ userObj }) => {
                       userObj={userObj}
                       followObj={follow}
                       loading={loading}
-                      userInfo={userInfo.followerAt}
                     />
                   ))
                 ) : (

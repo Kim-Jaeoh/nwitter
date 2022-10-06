@@ -2,7 +2,7 @@ import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
 import Nweet from "../nweet/Nweet";
-import styled from "./NoInfo.module.css";
+import styled from "./SelectNoInfo.module.css";
 
 const MyNweets = ({ myNweets, userObj }) => {
   const [reNweets, setReNweets] = useState([]);

@@ -3,7 +3,6 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useRef } from "react";
 import { NoticeInnerContents } from "./NoticeInnerContents";
 
 export const NoticeReNweet = ({ reNweetsObj, userObj }) => {
@@ -28,7 +27,8 @@ export const NoticeReNweet = ({ reNweetsObj, userObj }) => {
 
   return (
     <>
-      {loading && creatorInfo.email !== userObj.email && (
+      {loading && (
+        // creatorInfo.email !== userObj.email &&
         <NoticeInnerContents
           creatorInfo={creatorInfo}
           obj={reNweetsObj}

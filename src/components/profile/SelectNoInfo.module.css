@@ -1,12 +1,19 @@
+/* 카테고리 버튼 */
+.container .main__container .categoryList {
+  display: flex;
+  width: 100%;
+  height: 53px;
+  user-select: none;
+  background: #fff;
+  border-bottom: 1px solid #ebebeb;
+}
+
 /* 정보 없을 때 */
 .noInfoBox {
-  width: 100%;
-  text-align: center;
   word-break: keep-all;
 }
 
 .noInfoBox .noInfo {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +23,11 @@
   padding: 0 32px;
   text-align: center;
   letter-spacing: -0.5px;
-  opacity: 0.8;
+}
+
+.noInfoBox .noInfo img {
+  margin: 16px 0 20px;
+  width: 300px;
 }
 
 .noInfoBox .noInfo h2 {
@@ -33,6 +44,10 @@
 }
 
 @media screen and (max-width: 687px) {
+  .noInfoBox .noInfo img {
+    margin: 10px 0 15px;
+  }
+
   .noInfoBox .noInfo {
     width: 100%;
   }

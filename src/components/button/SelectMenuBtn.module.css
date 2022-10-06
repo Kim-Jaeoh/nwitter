@@ -54,6 +54,6 @@
   }
 
   .container.sizeContainer .selectedBox::after {
-    width: 100%;
+    width: 50%;
   }
 }

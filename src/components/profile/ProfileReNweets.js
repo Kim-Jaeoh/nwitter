@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
-import styled from "./NoInfo.module.css";
+import styled from "./SelectNoInfo.module.css";
 import NweetsSum from "../nweet/NweetsSum";
 
 const ReNweets = ({ userObj, creatorInfo }) => {

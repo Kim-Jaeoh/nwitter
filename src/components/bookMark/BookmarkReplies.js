@@ -2,7 +2,7 @@ import { collection, onSnapshot, query } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import React, { useEffect, useState } from "react";
 import Nweet from "../nweet/Nweet";
-import styled from "../profile/NoInfo.module.css";
+import styled from "../profile/SelectNoInfo.module.css";
 
 export const BookmarkReplies = ({ creatorInfo, reNweetsObj, userObj }) => {
   const [repliesBookmark, setRepliesBookmark] = useState([]);

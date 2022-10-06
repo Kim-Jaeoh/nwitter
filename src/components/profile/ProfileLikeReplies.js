@@ -1,5 +1,4 @@
-import Nweet from "../nweet/Nweet";
-import styled from "./NoInfo.module.css";
+import styled from "./SelectNoInfo.module.css";
 import { useEffect, useState } from "react";
 import {
   collection,

@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
-import styled from "./NoInfo.module.css";
+import styled from "./SelectNoInfo.module.css";
 import NweetsSum from "../nweet/NweetsSum";
 
 export const Replies = ({ userObj, creatorInfo }) => {
@@ -18,11 +12,7 @@ export const Replies = ({ userObj, creatorInfo }) => {
 
   // 리트윗 가져오기
   useEffect(() => {
-    const q = query(
-      collection(dbService, "reNweets")
-      // where("parentEmail", "==", userObj.email)
-      // orderBy("reNweetAt", "desc")
-    );
+    const q = query(collection(dbService, "reNweets"));
 
     onSnapshot(q, (snapshot) => {
       const reNweetArray = snapshot.docs.map((doc) => ({

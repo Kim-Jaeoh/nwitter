@@ -18,10 +18,6 @@ const Explore = ({ userObj }) => {
     }
   }, [location.pathname]);
 
-  const onSelect = (num) => {
-    setSelected(num);
-  };
-
   return (
     <>
       <div className={styled.container}>
@@ -33,14 +29,12 @@ const Explore = ({ userObj }) => {
             <SelectMenuBtn
               num={1}
               selected={selected}
-              onClick={() => onSelect(1)}
               url={"/explore/nweets/"}
               text={"트윗"}
             />
             <SelectMenuBtn
               num={2}
               selected={selected}
-              onClick={() => onSelect(2)}
               url={"/explore/users"}
               text={"사용자"}
             />

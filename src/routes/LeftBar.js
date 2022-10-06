@@ -172,12 +172,21 @@ const LeftBar = ({ userObj }) => {
                           <span>알림</span>
                         </>
                       )}
-                      {/* {alarm } */}
                     </div>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/bookmark/nweets" onClick={() => onSelect(4)}>
+                  <Link
+                    to={
+                      location.pathname.includes(userObj.email)
+                        ? [
+                            "/profile/bookmarknweets/" + userObj.email,
+                            "/profile/bookmarreplies/" + userObj.email,
+                          ]
+                        : "/bookmark/nweets"
+                    }
+                    onClick={() => onSelect(4)}
+                  >
                     <div className={styled.leftBar__list}>
                       {selected === 4 ? (
                         <>

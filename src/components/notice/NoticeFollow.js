@@ -5,9 +5,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { NoticeInnerContents } from "./NoticeInnerContents";
 
-export const NoticeFollow = ({ followObj, userObj, userInfo }) => {
+export const NoticeFollow = ({ followObj, userObj }) => {
   const [creatorInfo, setCreatorInfo] = useState([]);
-  const [userInfos, setUserInfos] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // 팔로워 정보 가져오기
@@ -18,13 +18,13 @@ export const NoticeFollow = ({ followObj, userObj, userInfo }) => {
     });
   }, [followObj]);
 
-  // // 본인 정보 가져오기
-  // useEffect(() => {
-  //   onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-  //     setUserInfo(doc.data());
-  //     setLoading(true);
-  //   });
-  // }, [userObj]);
+  // 본인 정보 가져오기
+  useEffect(() => {
+    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
+      setUserInfo(doc.data());
+      setLoading(true);
+    });
+  }, [userObj]);
 
   return (
     <>

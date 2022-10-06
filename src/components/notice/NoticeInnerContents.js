@@ -4,13 +4,7 @@ import { useGoPage } from "../../hooks/useGoPage";
 import { useTimeToString } from "../../hooks/useTimeToString";
 import styled from "./NoticeInnerContents.module.css";
 
-export const NoticeInnerContents = ({
-  obj,
-  creatorInfo,
-  text,
-  nweets,
-  userInfo,
-}) => {
+export const NoticeInnerContents = ({ obj, creatorInfo, text, nweets }) => {
   const imgRef = useRef();
   const nameRef = useRef();
   const location = useLocation();
@@ -53,19 +47,20 @@ export const NoticeInnerContents = ({
               {location.pathname.includes("replies") && (
                 <span className={styled.reNweet__name}>"{nweets?.text}"</span>
               )}
-
               {location.pathname.includes("followers") && null}
 
               <span> {text}</span>
             </p>
           </div>
           <div style={{ marginLeft: "auto" }} className={styled.reNweet__time}>
-            {location.pathname.includes("followers") ? (
-              <p>{timeToString(followTime)}</p>
-            ) : location.pathname.includes("replies") ? (
-              <p>{timeToString(obj?.createdAt)}</p>
-            ) : (
+            {location.pathname.includes("renweets") && (
               <p>{timeToString(obj?.reNweetAt)}</p>
+            )}
+            {location.pathname.includes("replies") && (
+              <p>{timeToString(obj?.createdAt)}</p>
+            )}
+            {location.pathname.includes("followers") && (
+              <p>{timeToString(followTime)}</p>
             )}
           </div>
         </div>

@@ -12,22 +12,19 @@ import styled from "./Bookmark.module.css";
 
 const Bookmark = ({ userObj }) => {
   const location = useLocation();
+  const uid = location.pathname.split("/")[3];
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(1);
 
   useEffect(() => {
-    if (location.pathname.includes("/nweets")) {
+    if (location.pathname.includes("nweets")) {
       setSelected(1);
-    } else if (location.pathname.includes("/replies")) {
+    } else if (location.pathname.includes("replies")) {
       setSelected(2);
     }
   }, [location.pathname]);
-
-  const onSelect = (num) => {
-    setSelected(num);
-  };
 
   // 본인 정보 가져오기
   useEffect(() => {
@@ -54,26 +51,33 @@ const Bookmark = ({ userObj }) => {
   return (
     <>
       <div className={styled.container}>
-        <TopCategory
-          text={"북마크"}
-          iconName={<IoArrowBackOutline />}
-          creatorInfo={creatorInfo}
-        />
-
+        {uid !== userObj.email && (
+          <TopCategory
+            text={"북마크"}
+            iconName={<IoArrowBackOutline />}
+            creatorInfo={creatorInfo}
+          />
+        )}
         <div className={styled.main__container}>
           <nav className={styled.categoryList}>
             <SelectMenuBtn
               num={1}
               selected={selected}
-              onClick={() => onSelect(1)}
-              url={"/bookmark/nweets/"}
+              url={
+                location.pathname.includes(userObj.email)
+                  ? "/profile/bookmarknweets/" + userObj.email
+                  : "/bookmark/nweets"
+              }
               text={"트윗"}
             />
             <SelectMenuBtn
               num={2}
               selected={selected}
-              onClick={() => onSelect(2)}
-              url={"/bookmark/replies"}
+              url={
+                location.pathname.includes(userObj.email)
+                  ? "/profile/bookmarkreplies/" + userObj.email
+                  : "/bookmark/replies"
+              }
               text={"답글"}
             />
           </nav>
@@ -81,7 +85,13 @@ const Bookmark = ({ userObj }) => {
 
         {loading ? (
           <Switch>
-            <Route path="/bookmark/nweets">
+            <Route
+              path={
+                location.pathname.includes(userObj.email)
+                  ? "/profile/bookmarknweets/" + userObj.email
+                  : "/bookmark/nweets"
+              }
+            >
               <BookmarkNweets
                 userObj={userObj}
                 reNweetsObj={reNweets}
@@ -89,7 +99,13 @@ const Bookmark = ({ userObj }) => {
                 loading={loading}
               />
             </Route>
-            <Route path="/bookmark/replies">
+            <Route
+              path={
+                location.pathname.includes(userObj.email)
+                  ? "/profile/bookmarkreplies/" + userObj.email
+                  : "/bookmark/replies"
+              }
+            >
               <BookmarkReplies
                 userObj={userObj}
                 reNweetsObj={reNweets}
