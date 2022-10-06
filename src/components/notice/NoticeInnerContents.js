@@ -45,24 +45,24 @@ export const NoticeInnerContents = ({
               </span>
               <span>님이 </span>
 
-              {location.pathname.includes("renweet") && (
+              {location.pathname.includes("renweets") && (
                 <span className={styled.reNweet__name}>
                   "{obj.text ? obj.text : nweets?.text}"
                 </span>
               )}
-              {location.pathname.includes("reply") && (
+              {location.pathname.includes("replies") && (
                 <span className={styled.reNweet__name}>"{nweets?.text}"</span>
               )}
 
-              {location.pathname.includes("follow") && null}
+              {location.pathname.includes("followers") && null}
 
               <span> {text}</span>
             </p>
           </div>
           <div style={{ marginLeft: "auto" }} className={styled.reNweet__time}>
-            {location.pathname.includes("follow") ? (
+            {location.pathname.includes("followers") ? (
               <p>{timeToString(followTime)}</p>
-            ) : location.pathname.includes("reply") ? (
+            ) : location.pathname.includes("replies") ? (
               <p>{timeToString(obj?.createdAt)}</p>
             ) : (
               <p>{timeToString(obj?.reNweetAt)}</p>
