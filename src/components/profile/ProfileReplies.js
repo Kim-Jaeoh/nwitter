@@ -11,7 +11,7 @@ import { dbService } from "../../fbase";
 import styled from "./NoInfo.module.css";
 import NweetsSum from "../nweet/NweetsSum";
 
-export const Replies = ({ userObj }) => {
+export const Replies = ({ userObj, creatorInfo }) => {
   const [filterReplies, setFilterReplies] = useState([]);
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,13 +33,13 @@ export const Replies = ({ userObj }) => {
       setReNweets(reNweetArray);
       // setLoading(true);
     });
-  }, [userObj.email]);
+  }, []);
 
   // 답글 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "replies"),
-      where("email", "==", userObj.email)
+      where("email", "==", creatorInfo.email)
     );
     onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
@@ -50,7 +50,7 @@ export const Replies = ({ userObj }) => {
       setFilterReplies(userArray);
       setLoading(true);
     });
-  }, [userObj.email]);
+  }, [creatorInfo.email]);
 
   return (
     <>

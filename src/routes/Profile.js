@@ -280,7 +280,7 @@ const Profile = ({ refreshUser, userObj }) => {
               }
               text={"답글 좋아요"}
             />
-            {resize && (
+            {resize && userObj.email === uid && (
               <SelectMenuBtn
                 num={6}
                 selected={selected}
@@ -304,7 +304,7 @@ const Profile = ({ refreshUser, userObj }) => {
                     : "/profile/mynweets/" + uid
                 }
               >
-                <MyNweets myNweets={myNweets} userObj={creatorInfo} />
+                <MyNweets myNweets={myNweets} userObj={userObj} />
               </Route>
               <Route
                 path={
@@ -313,7 +313,7 @@ const Profile = ({ refreshUser, userObj }) => {
                     : "/profile/renweets/" + uid
                 }
               >
-                <ReNweets userObj={creatorInfo} />
+                <ReNweets userObj={userObj} creatorInfo={creatorInfo} />
               </Route>
               <Route
                 path={
@@ -322,7 +322,7 @@ const Profile = ({ refreshUser, userObj }) => {
                     : "/profile/replies/" + uid
                 }
               >
-                <Replies userObj={creatorInfo} />
+                <Replies userObj={userObj} creatorInfo={creatorInfo} />
               </Route>
               <Route
                 path={
@@ -331,7 +331,7 @@ const Profile = ({ refreshUser, userObj }) => {
                     : "/profile/likenweets/" + uid
                 }
               >
-                <LikeNweets userObj={creatorInfo} />
+                <LikeNweets userObj={userObj} creatorInfo={creatorInfo} />
               </Route>
               <Route
                 path={
@@ -340,17 +340,19 @@ const Profile = ({ refreshUser, userObj }) => {
                     : "/profile/likereplies/" + uid
                 }
               >
-                <LikeReplies userObj={creatorInfo} />
+                <LikeReplies userObj={userObj} />
               </Route>
-              <Route
-                path={
-                  uid2.includes("/user/")
-                    ? "/user/bookmark/" + uid
-                    : "/profile/bookmark/" + uid
-                }
-              >
-                <Bookmark userObj={creatorInfo} />
-              </Route>
+              {userObj.email === uid && (
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/bookmark/" + uid
+                      : "/profile/bookmark/" + uid
+                  }
+                >
+                  <Bookmark userObj={userObj} creatorInfo={creatorInfo} />
+                </Route>
+              )}
             </Switch>
           ) : (
             <CircleLoader />

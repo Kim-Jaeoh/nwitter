@@ -10,7 +10,7 @@ import { dbService } from "../../fbase";
 import styled from "./NoInfo.module.css";
 import NweetsSum from "../nweet/NweetsSum";
 
-const ReNweets = ({ userObj }) => {
+const ReNweets = ({ userObj, creatorInfo }) => {
   const [ogNweets, setOgNweets] = useState([]);
   const [sum, setSum] = useState([]);
   const [reNweets, setReNweets] = useState([]);
@@ -43,13 +43,13 @@ const ReNweets = ({ userObj }) => {
       setReNweets(reNweetArray);
       setLoading(true);
     });
-  }, [userObj.email]);
+  }, []);
 
   // 원글의 리트윗 정보 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
-      where("reNweet", "array-contains", userObj.email)
+      where("reNweet", "array-contains", creatorInfo.email)
     );
     onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
@@ -58,13 +58,13 @@ const ReNweets = ({ userObj }) => {
       }));
       setOgNweets(userArray);
     });
-  }, [userObj.email]);
+  }, [creatorInfo.email]);
 
   // 답글의 리트윗 정보 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "replies"),
-      where("reNweet", "array-contains", userObj.email)
+      where("reNweet", "array-contains", creatorInfo.email)
     );
     onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
@@ -73,7 +73,7 @@ const ReNweets = ({ userObj }) => {
       }));
       setReplyReNweet(userArray);
     });
-  }, [userObj.email]);
+  }, [creatorInfo.email]);
 
   return (
     <>

@@ -1,20 +1,18 @@
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import styled from "./ExploreUsers.module.css";
 import {
   collection,
   doc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
 import CircleLoader from "../loader/CircleLoader";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentUser } from "../../reducer/user";
 
 const ExploreUsers = ({ userObj }) => {
   const history = useHistory();
@@ -22,7 +20,6 @@ const ExploreUsers = ({ userObj }) => {
   const btnRef = useRef();
   const [users, setUsers] = useState([]);
   const [myInfo, setMyInfo] = useState({});
-  const [followInfo, setFollowInfo] = useState({});
   const [loading, setLoading] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -35,29 +32,8 @@ const ExploreUsers = ({ userObj }) => {
     });
   }, [currentUser.follow, userObj.email]);
 
-  // 팔로우 정보 가져오기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "follow")
-      // ,orderBy("follower", "desc")
-    );
-
-    onSnapshot(q, (snapshot) => {
-      const userArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      // // 본인 제외 노출
-      // const exceptArray = userArray.filter((name) => name.uid !== userObj.uid);
-
-      setFollowInfo(userArray);
-    });
-  }, []);
-
   // // 실시간 문서 받아오기로 인한 무분별한 리렌더링 발생
   // // (만약 수많은 사람이 한번에 프로필 변경 할 시 계속 리렌더링 되기 때문)
-
   useEffect(() => {
     const q = query(
       collection(dbService, "users"),
