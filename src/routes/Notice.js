@@ -36,8 +36,6 @@ const Notice = ({ userObj }) => {
     });
   }, [userObj]);
 
-  console.log(myFollowerInfo);
-
   // 본인 팔로워 정보 가져오기
   useEffect(() => {
     const q = query(
@@ -74,16 +72,17 @@ const Notice = ({ userObj }) => {
         ...doc.data(),
       }));
 
-      // setReNweets(reNweetArray);
-
-      // 1. 내 이름으로 된 정보 가져오기
-      const filter = reNweetArray.filter(
-        (asd) => !asd.replyEmail && asd.parentEmail === userObj.email
-      );
+      // // 1. 내 이름으로 된 정보 가져오기
+      // const filter = reNweetArray.filter(
+      //   (obj) => obj.parentEmail === userObj.email
+      // );
 
       // 2. 본인이 한 리트윗 제외
-      const notMe = filter.filter(
-        (asd) => asd.email !== userObj.email || asd.replyEmail === userObj.email
+      const notMe = reNweetArray.filter(
+        (obj) =>
+          obj.email !== userObj.email &&
+          (obj?.replyEmail ? obj?.replyEmail : obj?.parentEmail) ===
+            userObj.email
       );
 
       // // 3. 본인 답글에 리트윗한 정보만 가져오기

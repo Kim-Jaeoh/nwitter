@@ -62,8 +62,10 @@ export const NoticeInnerContents = ({
           <div style={{ marginLeft: "auto" }} className={styled.reNweet__time}>
             {location.pathname.includes("follow") ? (
               <p>{timeToString(followTime)}</p>
+            ) : location.pathname.includes("reply") ? (
+              <p>{timeToString(obj?.createdAt)}</p>
             ) : (
-              <p>{timeToString(obj?.createdAt || obj?.reNweetAt)}</p>
+              <p>{timeToString(obj?.reNweetAt)}</p>
             )}
           </div>
         </div>

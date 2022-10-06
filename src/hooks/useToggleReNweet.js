@@ -19,7 +19,7 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
 
   useEffect(() => {
     if (reNweetsObj) {
-      const filter = reNweetsObj.filter((asd) => asd.parent === nweetObj.id);
+      const filter = reNweetsObj.filter((obj) => obj.parent === nweetObj.id);
       const index = filter.findIndex((obj) => obj?.email === userObj.email);
       setReNweetsId(filter[index]);
     } else {
@@ -55,7 +55,7 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
         creatorId: userObj.uid,
         email: userObj.email,
         like: [],
-        reNweetAt: time,
+        reNweetAt: Date.now(),
         parent: nweetObj.id || null,
         parentEmail: nweetObj.email || null,
       };
