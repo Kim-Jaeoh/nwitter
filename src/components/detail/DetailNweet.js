@@ -8,10 +8,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import styled from "./DetailNweet.module.css";
-
 import { useLocation } from "react-router-dom";
 import { dbService } from "../../fbase";
-import Nweet from "../nweet/Nweet";
 import { TopCategory } from "../topCategory/TopCategory";
 import { DetailReplyForm } from "./DetailReplyForm";
 import DetailNweetParent from "./DetailNweetParent";
@@ -36,10 +34,6 @@ export const DetailNweet = ({ userObj }) => {
   useEffect(() => {
     dispatch(setNotModal({ modal: true }));
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   return () => setLoading(false);
-  // }, []);
 
   // 리트윗 가져오기
   useEffect(() => {

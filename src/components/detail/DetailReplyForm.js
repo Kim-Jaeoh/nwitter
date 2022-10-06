@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
@@ -11,8 +11,7 @@ import styled from "./DetailReplyForm.module.css";
 import { useHistory } from "react-router-dom";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
 import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
-import BarLoader from "../loader/BarLoader";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setNotModal, setProgressBar } from "../../reducer/user";
 
 export const DetailReplyForm = ({
@@ -31,7 +30,6 @@ export const DetailReplyForm = ({
   const [attachment, setAttachment] = useState("");
   const [select, setSelect] = useState("");
   const dispatch = useDispatch();
-  const currentProgressBar = useSelector((state) => state.user.load);
 
   const handleResizeHeight = useHandleResizeTextarea(textRef);
 

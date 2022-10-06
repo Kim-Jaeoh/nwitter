@@ -15,7 +15,7 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [reNweetsId, setReNweetsId] = useState({});
   const [reNweet, setReNweet] = useState(false);
-  const [time, setTime] = useState(Date.now());
+  // const [time, setTime] = useState(Date.now());
 
   useEffect(() => {
     if (reNweetsObj) {
@@ -50,7 +50,7 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
       );
     } else {
       setReNweet(true);
-      const _nweetReply = {
+      const reNweetCreator = {
         parentText: nweetObj.text,
         creatorId: userObj.uid,
         email: userObj.email,
@@ -59,7 +59,7 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
         parent: nweetObj.id || null,
         parentEmail: nweetObj.email || null,
       };
-      await addDoc(collection(dbService, "reNweets"), _nweetReply);
+      await addDoc(collection(dbService, "reNweets"), reNweetCreator);
 
       const copy = [...nweetObj.reNweet, userObj.email];
 

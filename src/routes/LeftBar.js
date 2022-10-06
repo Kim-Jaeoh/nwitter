@@ -138,10 +138,7 @@ const LeftBar = ({ userObj }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to={"/explore/nweets/" + userObj.email?.split("@")[0]}
-                    onClick={() => onSelect(2)}
-                  >
+                  <Link to="/explore/nweets/" onClick={() => onSelect(2)}>
                     <div className={styled.leftBar__list}>
                       {selected === 2 ? (
                         <>
@@ -160,7 +157,7 @@ const LeftBar = ({ userObj }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/notice/renweet" onClick={() => onSelect(3)}>
+                  <Link to="/notice/renweets" onClick={() => onSelect(3)}>
                     <div className={styled.leftBar__list}>
                       {selected === 3 ? (
                         <>
@@ -180,7 +177,7 @@ const LeftBar = ({ userObj }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/bookmark" onClick={() => onSelect(4)}>
+                  <Link to="/bookmark/nweets" onClick={() => onSelect(4)}>
                     <div className={styled.leftBar__list}>
                       {selected === 4 ? (
                         <>

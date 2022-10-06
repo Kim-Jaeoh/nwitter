@@ -1,88 +1,107 @@
 import { collection, doc, onSnapshot, query } from "firebase/firestore";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { useHistory, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
+import { BookmarkNweets } from "../components/bookMark/BookmarkNweets";
+import { BookmarkReplies } from "../components/bookMark/BookmarkReplies";
+import SelectMenuBtn from "../components/button/SelectMenuBtn";
 import CircleLoader from "../components/loader/CircleLoader";
-import Nweet from "../components/nweet/Nweet";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import { dbService } from "../fbase";
 import styled from "./Bookmark.module.css";
 
 const Bookmark = ({ userObj }) => {
-  const history = useHistory();
   const location = useLocation();
-  const uid = location.pathname.split("/")[3];
   const [creatorInfo, setCreatorInfo] = useState([]);
-  const [filterBookmark, setFilterBookmark] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState(1);
 
-  // 내 정보 가져오기
-  const getMyInfo = useCallback(async () => {
-    // 실시간
+  useEffect(() => {
+    if (location.pathname.includes("/nweets")) {
+      setSelected(1);
+    } else if (location.pathname.includes("/replies")) {
+      setSelected(2);
+    }
+  }, [location.pathname]);
+
+  const onSelect = (num) => {
+    setSelected(num);
+  };
+
+  // 본인 정보 가져오기
+  useEffect(() => {
     onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
       setCreatorInfo(doc.data());
+      setLoading(true);
     });
   }, [userObj.email]);
 
-  // 트윗 정보 가져오기
+  // 리트윗 정보
   useEffect(() => {
-    // 실시간
-    const q = query(collection(dbService, "nweets"));
-    onSnapshot(q, (querySnapShot) => {
-      const userArray = querySnapShot.docs.map((doc) => ({
+    const q = query(collection(dbService, "reNweets"));
+
+    onSnapshot(q, (snapshot) => {
+      const reNweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      const filter = userArray.filter((id) =>
-        creatorInfo.bookmark?.includes(id.id)
-      );
-      setFilterBookmark(filter);
-      setLoading(true);
-    });
-    // return () => setLoading(false);
-  }, [creatorInfo.bookmark]);
 
-  useEffect(() => {
-    getMyInfo();
-  }, [getMyInfo]);
+      setReNweets(reNweetArray);
+    });
+  }, []);
 
   return (
     <>
-      {loading ? (
-        <div className={styled.container}>
-          {uid !== userObj.email && (
-            <TopCategory
-              text={"북마크"}
-              iconName={<IoArrowBackOutline />}
-              creatorInfo={creatorInfo}
+      <div className={styled.container}>
+        <TopCategory
+          text={"북마크"}
+          iconName={<IoArrowBackOutline />}
+          creatorInfo={creatorInfo}
+        />
+
+        <div className={styled.main__container}>
+          <nav className={styled.categoryList}>
+            <SelectMenuBtn
+              num={1}
+              selected={selected}
+              onClick={() => onSelect(1)}
+              url={"/bookmark/nweets/"}
+              text={"트윗"}
             />
-          )}
-          {filterBookmark.length !== 0 ? (
-            <div>
-              {filterBookmark.map((myBook) => (
-                <Nweet key={myBook.id} nweetObj={myBook} userObj={userObj} />
-              ))}
-            </div>
-          ) : (
-            <div className={styled.noInfoBox}>
-              <div className={styled.noInfo}>
-                {/* <img
-                  src="https://abs.twimg.com/sticky/illustrations/empty-states/book-in-bird-cage-400x200.v1.png"
-                  alt=""
-                ></img> */}
-                <h2>나중을 위해 트윗 저장하기</h2>
-                <p>
-                  좋은 트윗은 그냥 흘려 보내지 마세요. 나중에 다시 쉽게 찾을 수
-                  있도록 북마크에 추가하세요.
-                </p>
-              </div>
-            </div>
-            // <Loading />
-          )}
+            <SelectMenuBtn
+              num={2}
+              selected={selected}
+              onClick={() => onSelect(2)}
+              url={"/bookmark/replies"}
+              text={"답글"}
+            />
+          </nav>
         </div>
-      ) : (
-        <CircleLoader />
-      )}
+
+        {loading ? (
+          <Switch>
+            <Route path="/bookmark/nweets">
+              <BookmarkNweets
+                userObj={userObj}
+                reNweetsObj={reNweets}
+                creatorInfo={creatorInfo}
+                loading={loading}
+              />
+            </Route>
+            <Route path="/bookmark/replies">
+              <BookmarkReplies
+                userObj={userObj}
+                reNweetsObj={reNweets}
+                creatorInfo={creatorInfo}
+                loading={loading}
+              />
+            </Route>
+          </Switch>
+        ) : (
+          <CircleLoader />
+        )}
+      </div>
     </>
   );
 };

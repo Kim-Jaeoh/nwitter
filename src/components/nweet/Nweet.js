@@ -3,8 +3,8 @@ import { dbService } from "../../fbase";
 import React, { useEffect, useState } from "react";
 
 import { NweetBox } from "./NweetBox";
-import { useToggleReNweet } from "../../hooks/useToggleReNweet";
 import { useTimeToString } from "../../hooks/useTimeToString";
+import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 
 const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
   const [creatorInfo, setCreatorInfo] = useState({});
@@ -19,7 +19,7 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
     });
   }, [nweetObj]);
 
-  const { reNweet, setReNweet, toggleReNweet } = useToggleReNweet(
+  const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
     reNweetsObj,
     nweetObj,
     userObj

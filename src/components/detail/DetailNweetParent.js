@@ -21,6 +21,7 @@ import { useGoPage } from "../../hooks/useGoPage";
 import { ReplyModal } from "../modal/ReplyModal";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotModal } from "../../reducer/user";
+import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 
 const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
     });
   }, [nweetObj]);
 
-  const { reNweet, setReNweet, toggleReNweet } = useToggleReNweet(
+  const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
     reNweetsObj,
     nweetObj,
     userObj

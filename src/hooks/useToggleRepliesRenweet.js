@@ -22,7 +22,6 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
   useEffect(() => {
     const filter = reNweetsObj.filter((obj) => obj.parent === nweetObj.id);
     const index = filter.findIndex((obj) => obj?.email === userObj.email);
-
     setReNweetsId(filter[index]);
 
     const index2 = reNweetsObj?.findIndex(
@@ -70,26 +69,50 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
       }
     } else {
       setReNweet(true);
-      const _nweetReply = {
-        text: nweetObj.text,
-        creatorId: userObj.uid,
-        email: userObj.email,
-        like: [],
-        reNweetAt: Date.now(),
-        parent: nweetObj.parent || null,
-        parentEmail: nweetObj.parentEmail || null,
-        replyId: nweetObj.id || null,
-        replyEmail: nweetObj.email || null,
-      };
-      await addDoc(collection(dbService, "reNweets"), _nweetReply);
+      // const _nweetReply = {
+      //   text: nweetObj.text,
+      //   creatorId: userObj.uid,
+      //   email: userObj.email,
+      //   like: [],
+      //   reNweetAt: Date.now(),
+      //   parent: nweetObj.parent || null,
+      //   parentEmail: nweetObj.parentEmail || null,
+      //   replyId: nweetObj.id || null,
+      //   replyEmail: nweetObj.email || null,
+      // };
+      // await addDoc(collection(dbService, "reNweets"), _nweetReply);
 
       const copy = [...nweetObj.reNweet, userObj.email];
 
       if (!nweetObj?.isReply) {
+        const reNweetCreator = {
+          parentText: nweetObj.text,
+          creatorId: userObj.uid,
+          email: userObj.email,
+          like: [],
+          reNweetAt: Date.now(),
+          parent: nweetObj.id || null,
+          parentEmail: nweetObj.email || null,
+        };
+        await addDoc(collection(dbService, "reNweets"), reNweetCreator);
+
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           reNweet: copy,
         });
       } else {
+        const reNweetReplyCreator = {
+          text: nweetObj.text,
+          creatorId: userObj.uid,
+          email: userObj.email,
+          like: [],
+          reNweetAt: Date.now(),
+          parent: nweetObj.parent || null,
+          parentEmail: nweetObj.parentEmail || null,
+          replyId: nweetObj.id || null,
+          replyEmail: nweetObj.email || null,
+        };
+        await addDoc(collection(dbService, "reNweets"), reNweetReplyCreator);
+
         await updateDoc(doc(dbService, "replies", nweetObj.id), {
           reNweet: copy,
         });

@@ -9,7 +9,6 @@ import ExploreUsers from "../components/explore/ExploreUsers";
 const Explore = ({ userObj }) => {
   const location = useLocation();
   const [selected, setSelected] = useState(1);
-  // const [loading, setLoading] = useState(null);
 
   useEffect(() => {
     if (location.pathname.includes("/nweets")) {

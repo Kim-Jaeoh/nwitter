@@ -4,7 +4,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { collection, orderBy, query, where } from "firebase/firestore";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { authService, dbService } from "../fbase";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setCurrentUser, setLoginToken } from "../reducer/user";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { BsCalendar3 } from "react-icons/bs";
@@ -16,7 +16,6 @@ import LikeNweets from "../components/profile/ProfileLikeNweets";
 import { Replies } from "../components/profile/ProfileReplies";
 import LikeReplies from "../components/profile/ProfileLikeReplies";
 import SelectMenuBtn from "../components/button/SelectMenuBtn";
-// import Loading from "../components/Loading";
 import { IoMdExit } from "react-icons/io";
 import { TopCategory } from "../components/topCategory/TopCategory";
 import { useToggleFollow } from "../hooks/useToggleFollow";
@@ -25,7 +24,6 @@ import CircleLoader from "../components/loader/CircleLoader";
 
 const Profile = ({ refreshUser, userObj }) => {
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.currentUser);
   const location = useLocation();
   const history = useHistory();
   const uid = location.pathname.split("/")[3];

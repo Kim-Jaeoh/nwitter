@@ -123,11 +123,11 @@ const Notice = ({ userObj }) => {
   }, [userObj.email]);
 
   useEffect(() => {
-    if (location.pathname.includes("/renweet")) {
+    if (location.pathname.includes("/renweets")) {
       setSelected(1);
-    } else if (location.pathname.includes("/reply")) {
+    } else if (location.pathname.includes("/replies")) {
       setSelected(2);
-    } else if (location.pathname.includes("/follow")) {
+    } else if (location.pathname.includes("/followers")) {
       setSelected(3);
     }
   }, [location.pathname]);
@@ -146,21 +146,21 @@ const Notice = ({ userObj }) => {
               num={1}
               selected={selected}
               onClick={() => onSelect(1)}
-              url={"/notice/renweet/"}
+              url={"/notice/renweets/"}
               text={"리트윗"}
             />
             <SelectMenuBtn
               num={2}
               selected={selected}
               onClick={() => onSelect(2)}
-              url={"/notice/reply"}
+              url={"/notice/replies"}
               text={"답글"}
             />
             <SelectMenuBtn
               num={3}
               selected={selected}
               onClick={() => onSelect(3)}
-              url={"/notice/follow"}
+              url={"/notice/followers"}
               text={"팔로우"}
             />
           </nav>
@@ -168,7 +168,7 @@ const Notice = ({ userObj }) => {
 
         {loading ? (
           <Switch>
-            <Route path="/notice/renweet">
+            <Route path="/notice/renweets">
               <>
                 {reNweets.length !== 0 ? (
                   reNweets?.map((reNweet, index) => (
@@ -189,7 +189,7 @@ const Notice = ({ userObj }) => {
                 )}
               </>
             </Route>
-            <Route path="/notice/reply">
+            <Route path="/notice/replies">
               <>
                 {replies.length !== 0 ? (
                   replies?.map((reply) => (
@@ -210,7 +210,7 @@ const Notice = ({ userObj }) => {
                 )}
               </>
             </Route>
-            <Route path="/notice/follow">
+            <Route path="/notice/followers">
               <>
                 {myFollowerInfo.length !== 0 ? (
                   myFollowerInfo.map((follow, index) => (
