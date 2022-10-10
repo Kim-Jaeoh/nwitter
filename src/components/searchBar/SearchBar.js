@@ -23,10 +23,13 @@ export const SearchBar = ({ userObj }) => {
   const { nweetEtc: focus, setNweetEtc: setFocus } =
     useNweetEctModalClick(searchRef);
 
-  const onClick = useCallback((e) => {
-    setFocus(true);
-    textRef.current.focus();
-  }, []);
+  const onClick = useCallback(
+    (e) => {
+      setFocus(true);
+      textRef.current.focus();
+    },
+    [setFocus]
+  );
 
   useEffect(() => {
     // 유저 정보
@@ -57,7 +60,7 @@ export const SearchBar = ({ userObj }) => {
 
           // 본인 제외 노출
           const exceptArray = nweetArray.filter(
-            (name) => name.creatorId !== userObj.uid
+            (nweet) => nweet.creatorId !== userObj.uid
           );
           setNweets(exceptArray);
         },

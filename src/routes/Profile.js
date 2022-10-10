@@ -93,7 +93,7 @@ const Profile = ({ userObj }) => {
       setResize(true);
     } else if (size > 500) {
       setResize(false);
-      history.push("/bookmark/nweets");
+      // history.push("/bookmark/nweets");
     }
     const Resize = () => {
       let innerSize = window.innerWidth;

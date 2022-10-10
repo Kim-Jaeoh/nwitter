@@ -53,6 +53,7 @@ const LeftBar = ({ userObj }) => {
       history.push("/profile/bookmarknweets/" + userObj.email);
     } else if (size > 500) {
       setResize(false);
+      history.push("/bookmark/nweets");
     }
     const Resize = () => {
       let innerSize = window.innerWidth;
