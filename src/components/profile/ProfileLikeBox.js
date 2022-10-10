@@ -4,10 +4,10 @@ import styled from "./SelectNoInfo.module.css";
 import ProfileLikeNweets from "./ProfileLikeNweets";
 import ProfileLikeReplies from "./ProfileLikeReplies";
 import SelectMenuBtn from "../button/SelectMenuBtn";
-import CircleLoader from "../loader/CircleLoader";
 
-const ProfileLike = ({ userObj, loading }) => {
+const ProfileLikeBox = ({ userObj }) => {
   const location = useLocation();
+  const uid = location.pathname.split("/")[3];
   const [selected, setSelected] = useState(1);
 
   useEffect(() => {
@@ -26,33 +26,49 @@ const ProfileLike = ({ userObj, loading }) => {
             <SelectMenuBtn
               num={1}
               selected={selected}
-              url={"/profile/likenweets/" + userObj.email}
+              url={
+                location.pathname.includes("/user/")
+                  ? "/user/likenweets/" + uid
+                  : "/profile/likenweets/" + uid
+              }
               text={"트윗"}
             />
             <SelectMenuBtn
               num={2}
               selected={selected}
-              url={"/profile/likereplies/" + userObj.email}
+              url={
+                location.pathname.includes("/user/")
+                  ? "/user/likereplies/" + uid
+                  : "/profile/likereplies/" + uid
+              }
               text={"답글"}
             />
           </nav>
         </div>
 
-        {loading ? (
-          <Switch>
-            <Route path={"/profile/likenweets/" + userObj.email}>
-              <ProfileLikeNweets userObj={userObj} />
-            </Route>
-            <Route path={"/profile/likereplies/" + userObj.email}>
-              <ProfileLikeReplies userObj={userObj} />
-            </Route>
-          </Switch>
-        ) : (
-          <CircleLoader />
-        )}
+        <Switch>
+          <Route
+            path={
+              location.pathname.includes("/user/")
+                ? "/user/likenweets/" + uid
+                : "/profile/likenweets/" + uid
+            }
+          >
+            <ProfileLikeNweets userObj={userObj} />
+          </Route>
+          <Route
+            path={
+              location.pathname.includes("/user/")
+                ? "/user/likereplies/" + uid
+                : "/profile/likereplies/" + uid
+            }
+          >
+            <ProfileLikeReplies userObj={userObj} />
+          </Route>
+        </Switch>
       </div>
     </>
   );
 };
 
-export default ProfileLike;
+export default ProfileLikeBox;

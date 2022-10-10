@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import { useLocation } from "react-router-dom";
+import CircleLoader from "../loader/CircleLoader";
 
 const LikeNweets = ({ userObj }) => {
   const location = useLocation();
@@ -54,7 +55,7 @@ const LikeNweets = ({ userObj }) => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <>
           {myLikeNweets.length !== 0 ? (
             <div>
@@ -80,6 +81,8 @@ const LikeNweets = ({ userObj }) => {
             </div>
           )}
         </>
+      ) : (
+        <CircleLoader />
       )}
     </>
   );

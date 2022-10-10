@@ -11,7 +11,6 @@ import { BsCalendar3 } from "react-icons/bs";
 import Bookmark from "./Bookmark";
 import UpdateProfileModal from "../components/modal/UpdateProfileModal";
 import MyNweets from "../components/profile/ProfileMyNweets";
-import ReNweets from "../components/profile/ProfileReNweets";
 import { Replies } from "../components/profile/ProfileReplies";
 import SelectMenuBtn from "../components/button/SelectMenuBtn";
 import { IoMdExit } from "react-icons/io";
@@ -19,7 +18,8 @@ import { TopCategory } from "../components/topCategory/TopCategory";
 import { useToggleFollow } from "../hooks/useToggleFollow";
 import { useTimeToString } from "../hooks/useTimeToString";
 import CircleLoader from "../components/loader/CircleLoader";
-import ProfileLike from "../components/profile/ProfileLike";
+import ProfileLikeBox from "../components/profile/ProfileLikeBox";
+import ProfileReNweetBox from "../components/profile/ProfileReNweetBox";
 
 const Profile = ({ userObj }) => {
   const dispatch = useDispatch();
@@ -43,9 +43,9 @@ const Profile = ({ userObj }) => {
   useEffect(() => {
     if (location.pathname.includes("/mynweets")) {
       setSelected(1);
-    } else if (location.pathname.includes("/renweets")) {
-      setSelected(2);
     } else if (location.pathname.includes("/replies")) {
+      setSelected(2);
+    } else if (location.pathname.includes("/renweets")) {
       setSelected(3);
     } else if (location.pathname.includes("/like")) {
       setSelected(4);
@@ -93,7 +93,6 @@ const Profile = ({ userObj }) => {
       setResize(true);
     } else if (size > 500) {
       setResize(false);
-      // history.push("/bookmark/nweets");
     }
     const Resize = () => {
       let innerSize = window.innerWidth;
@@ -143,179 +142,190 @@ const Profile = ({ userObj }) => {
             onLogOutClick={onLogOutClick}
           />
           {loading ? (
-            <div className={styled.setUserInfo}>
-              <div className={styled.backImage}>
-                <img src={creatorInfo.bgURL} alt="배경사진" />
-              </div>
-
-              <div className={styled.profile}>
-                <div className={styled.profile__edit}>
-                  <div className={styled.profile__image}>
-                    <img src={creatorInfo.photoURL} alt="프로필 이미지" />
-                  </div>
-
-                  {userObj.email === uid ? (
-                    <div
-                      className={styled.profile__editBtn}
-                      onClick={toggleEdit}
-                    >
-                      프로필 수정
-                    </div>
-                  ) : (
-                    <>
-                      {myInfo.following.includes(creatorInfo.email) ? (
-                        <div
-                          className={`${styled.profile__editBtn} ${styled.follow} `}
-                          onClick={() => toggleFollow(creatorInfo)}
-                        >
-                          <p>팔로잉</p>
-                        </div>
-                      ) : (
-                        <div
-                          className={`${styled.profile__editBtn} ${styled.profile__followBtn} `}
-                          onClick={() => toggleFollow(creatorInfo)}
-                        >
-                          <p>팔로우</p>
-                        </div>
-                      )}
-                    </>
-                  )}
+            <>
+              <div className={styled.setUserInfo}>
+                <div className={styled.backImage}>
+                  <img src={creatorInfo.bgURL} alt="배경사진" />
                 </div>
-                <div className={styled.profile__info}>
-                  <div className={styled.userInfo}>
-                    <p>{creatorInfo.displayName}</p>
-                    <p>@{creatorInfo?.email?.split("@")[0]}</p>
-                  </div>
-                  <div className={styled.profile__desc}>
-                    {creatorInfo.description === "" ? (
-                      <p className={styled.notDesc}>소개글이 없습니다</p>
+
+                <div className={styled.profile}>
+                  <div className={styled.profile__edit}>
+                    <div className={styled.profile__image}>
+                      <img src={creatorInfo.photoURL} alt="프로필 이미지" />
+                    </div>
+
+                    {userObj.email === uid ? (
+                      <div
+                        className={styled.profile__editBtn}
+                        onClick={toggleEdit}
+                      >
+                        프로필 수정
+                      </div>
                     ) : (
-                      <p>{creatorInfo.description}</p>
+                      <>
+                        {myInfo.following.includes(creatorInfo.email) ? (
+                          <div
+                            className={`${styled.profile__editBtn} ${styled.follow} `}
+                            onClick={() => toggleFollow(creatorInfo)}
+                          >
+                            <p>팔로잉</p>
+                          </div>
+                        ) : (
+                          <div
+                            className={`${styled.profile__editBtn} ${styled.profile__followBtn} `}
+                            onClick={() => toggleFollow(creatorInfo)}
+                          >
+                            <p>팔로우</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
-                  <div className={styled.profile__createdAt}>
-                    <BsCalendar3 />
-                    <p>가입일 : {timeToString3(creatorInfo.createdAtId)}</p>
-                  </div>
-                  <div className={styled.profile__followInfo}>
-                    <p>
-                      <b>{creatorInfo.following?.length}</b> 팔로잉
-                    </p>
-                    <p>
-                      <b>{creatorInfo.follower?.length}</b> 팔로워
-                    </p>
+                  <div className={styled.profile__info}>
+                    <div className={styled.userInfo}>
+                      <p>{creatorInfo.displayName}</p>
+                      <p>@{creatorInfo?.email?.split("@")[0]}</p>
+                    </div>
+                    <div className={styled.profile__desc}>
+                      {creatorInfo.description === "" ? (
+                        <p className={styled.notDesc}>소개글이 없습니다</p>
+                      ) : (
+                        <p>{creatorInfo.description}</p>
+                      )}
+                    </div>
+                    <div className={styled.profile__createdAt}>
+                      <BsCalendar3 />
+                      <p>가입일 : {timeToString3(creatorInfo.createdAtId)}</p>
+                    </div>
+                    <div className={styled.profile__followInfo}>
+                      <p>
+                        <b>{creatorInfo.following?.length}</b> 팔로잉
+                      </p>
+                      <p>
+                        <b>{creatorInfo.follower?.length}</b> 팔로워
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <CircleLoader />
-          )}
 
-          <nav className={styled.categoryList}>
-            <SelectMenuBtn
-              num={1}
-              selected={selected}
-              url={
-                uid2.includes("user")
-                  ? "/user/mynweets/" + uid
-                  : "/profile/mynweets/" + uid
-              }
-              text={"트윗"}
-            />
-            <SelectMenuBtn
-              num={2}
-              selected={selected}
-              url={
-                uid2.includes("/user/")
-                  ? "/user/renweets/" + uid
-                  : "/profile/renweets/" + uid
-              }
-              text={"리트윗"}
-            />
-            <SelectMenuBtn
-              num={3}
-              selected={selected}
-              url={
-                uid2.includes("/user/")
-                  ? "/user/replies/" + uid
-                  : "/profile/replies/" + uid
-              }
-              text={"답글"}
-            />
-            <SelectMenuBtn
-              num={4}
-              selected={selected}
-              url={
-                uid2.includes("/user/")
-                  ? "/user/likenweets/" + uid
-                  : "/profile/likenweets/" + uid
-              }
-              text={"좋아요"}
-            />
-            {resize && userObj.email === uid && (
-              <SelectMenuBtn
-                num={5}
-                selected={selected}
-                url={"/profile/bookmarknweets/" + uid}
-                text={"북마크"}
-              />
-            )}
-          </nav>
+              <nav className={styled.categoryList}>
+                <SelectMenuBtn
+                  num={1}
+                  selected={selected}
+                  url={
+                    uid2.includes("user")
+                      ? "/user/mynweets/" + uid
+                      : "/profile/mynweets/" + uid
+                  }
+                  text={"트윗"}
+                />
+                <SelectMenuBtn
+                  num={2}
+                  selected={selected}
+                  url={
+                    uid2.includes("/user/")
+                      ? "/user/replies/" + uid
+                      : "/profile/replies/" + uid
+                  }
+                  text={"답글"}
+                />
+                <SelectMenuBtn
+                  num={3}
+                  selected={selected}
+                  url={
+                    uid2.includes("/user/")
+                      ? "/user/renweets/" + uid
+                      : "/profile/renweets/" + uid
+                  }
+                  text={"리트윗"}
+                />
 
-          {loading ? (
-            <Switch>
-              <Route
-                path={
-                  uid2.includes("/user/")
-                    ? "/user/mynweets/" + uid
-                    : "/profile/mynweets/" + uid
-                }
-              >
-                <MyNweets myNweets={myNweets} userObj={userObj} />
-              </Route>
-              <Route
-                path={
-                  uid2.includes("/user/")
-                    ? "/user/renweets/" + uid
-                    : "/profile/renweets/" + uid
-                }
-              >
-                <ReNweets userObj={userObj} creatorInfo={creatorInfo} />
-              </Route>
-              <Route
-                path={
-                  uid2.includes("/user/")
-                    ? "/user/replies/" + uid
-                    : "/profile/replies/" + uid
-                }
-              >
-                <Replies userObj={userObj} creatorInfo={creatorInfo} />
-              </Route>
-              <Route
-                path={
-                  uid2.includes("/user/")
-                    ? ["/user/likenweets/" + uid, "/user/likereplies/" + uid]
-                    : [
-                        "/profile/likenweets/" + uid,
-                        "/profile/likereplies/" + uid,
-                      ]
-                }
-              >
-                <ProfileLike userObj={userObj} loading={loading} />
-              </Route>
+                <SelectMenuBtn
+                  num={4}
+                  selected={selected}
+                  url={
+                    uid2.includes("/user/")
+                      ? "/user/likenweets/" + uid
+                      : "/profile/likenweets/" + uid
+                  }
+                  text={"좋아요"}
+                />
+                {resize && userObj.email === uid && (
+                  <SelectMenuBtn
+                    num={5}
+                    selected={selected}
+                    url={"/profile/bookmarknweets/" + uid}
+                    text={"북마크"}
+                  />
+                )}
+              </nav>
 
-              {userObj.email === uid && (
+              <Switch>
                 <Route
-                  path={[
-                    "/profile/bookmarknweets/" + uid,
-                    "/profile/bookmarkreplies/" + uid,
-                  ]}
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/mynweets/" + uid
+                      : "/profile/mynweets/" + uid
+                  }
                 >
-                  <Bookmark userObj={userObj} />
+                  <MyNweets myNweets={myNweets} userObj={userObj} />
                 </Route>
-              )}
-            </Switch>
+
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? "/user/replies/" + uid
+                      : "/profile/replies/" + uid
+                  }
+                >
+                  <Replies userObj={userObj} creatorInfo={creatorInfo} />
+                </Route>
+
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? [
+                          "/user/renweets/" + uid,
+                          "/user/renweetsreplies/" + uid,
+                        ]
+                      : [
+                          "/profile/renweets/" + uid,
+                          "/profile/renweetsreplies/" + uid,
+                        ]
+                  }
+                >
+                  <ProfileReNweetBox
+                    userObj={userObj}
+                    creatorInfo={creatorInfo}
+                  />
+                </Route>
+
+                <Route
+                  path={
+                    uid2.includes("/user/")
+                      ? ["/user/likenweets/" + uid, "/user/likereplies/" + uid]
+                      : [
+                          "/profile/likenweets/" + uid,
+                          "/profile/likereplies/" + uid,
+                        ]
+                  }
+                >
+                  <ProfileLikeBox userObj={userObj} />
+                </Route>
+
+                {userObj.email === uid && (
+                  <Route
+                    path={[
+                      "/profile/bookmarknweets/" + uid,
+                      "/profile/bookmarkreplies/" + uid,
+                    ]}
+                  >
+                    <Bookmark userObj={userObj} />
+                  </Route>
+                )}
+              </Switch>
+            </>
           ) : (
             <CircleLoader />
           )}

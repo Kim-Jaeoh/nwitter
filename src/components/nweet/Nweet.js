@@ -1,14 +1,12 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import React, { useEffect, useState } from "react";
-
 import { NweetBox } from "./NweetBox";
 import { useTimeToString } from "../../hooks/useTimeToString";
 import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 
 const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
   const [creatorInfo, setCreatorInfo] = useState({});
-
   const [loading, setLoading] = useState(false);
 
   //  map 처리 된 유저 정보들

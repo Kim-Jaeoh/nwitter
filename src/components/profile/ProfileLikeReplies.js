@@ -9,7 +9,8 @@ import {
 } from "firebase/firestore";
 import { dbService } from "../../fbase";
 import { useLocation } from "react-router-dom";
-import NweetsSum from "../nweet/NweetsSum";
+import Nweet from "../nweet/Nweet";
+import CircleLoader from "../loader/CircleLoader";
 
 const LikeReplies = ({ userObj }) => {
   const location = useLocation();
@@ -54,13 +55,12 @@ const LikeReplies = ({ userObj }) => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <>
           {myLikeReplies.length !== 0 ? (
             <div>
               {myLikeReplies.map((myNweet) => (
-                <NweetsSum
-                  info={"답글"}
+                <Nweet
                   isOwner={myNweet.creatorId === userObj.uid}
                   key={myNweet.id}
                   nweetObj={myNweet}
@@ -81,6 +81,8 @@ const LikeReplies = ({ userObj }) => {
             </div>
           )}
         </>
+      ) : (
+        <CircleLoader />
       )}
     </>
   );

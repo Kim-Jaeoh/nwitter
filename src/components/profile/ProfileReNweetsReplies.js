@@ -1,19 +1,27 @@
-import React from "react";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
 import styled from "./SelectNoInfo.module.css";
-import CircleLoader from "../loader/CircleLoader";
 import Nweet from "../nweet/Nweet";
+import CircleLoader from "../loader/CircleLoader";
 
-export const Replies = ({ userObj, creatorInfo }) => {
-  const [filterReplies, setFilterReplies] = useState([]);
+const ProfileReNweetsReplies = ({ userObj, creatorInfo }) => {
   const [reNweets, setReNweets] = useState([]);
+  const [replyReNweet, setReplyReNweet] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // 리트윗 가져오기
   useEffect(() => {
-    const q = query(collection(dbService, "reNweets"));
+    const q = query(
+      collection(dbService, "reNweets"),
+      orderBy("reNweetAt", "desc")
+    );
 
     onSnapshot(q, (snapshot) => {
       const reNweetArray = snapshot.docs.map((doc) => ({
@@ -22,22 +30,22 @@ export const Replies = ({ userObj, creatorInfo }) => {
       }));
 
       setReNweets(reNweetArray);
+      setLoading(true);
     });
   }, []);
 
-  // 답글 가져오기
+  // 답글의 리트윗 정보 가져오기
   useEffect(() => {
     const q = query(
       collection(dbService, "replies"),
-      where("email", "==", creatorInfo.email)
+      where("reNweet", "array-contains", creatorInfo.email)
     );
     onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setFilterReplies(userArray);
-      setLoading(true);
+      setReplyReNweet(userArray);
     });
   }, [creatorInfo.email]);
 
@@ -45,13 +53,13 @@ export const Replies = ({ userObj, creatorInfo }) => {
     <>
       {loading ? (
         <>
-          {filterReplies.length !== 0 ? (
+          {replyReNweet.length !== 0 ? (
             <div>
-              {filterReplies.map((myNweet) => (
+              {replyReNweet.map((reNweet) => (
                 <Nweet
-                  isOwner={myNweet.creatorId === userObj.uid}
-                  key={myNweet.id}
-                  nweetObj={myNweet}
+                  isOwner={reNweet.creatorId === userObj.uid}
+                  key={reNweet.id}
+                  nweetObj={reNweet}
                   userObj={userObj}
                   reNweetsObj={reNweets}
                 />
@@ -60,8 +68,8 @@ export const Replies = ({ userObj, creatorInfo }) => {
           ) : (
             <div className={styled.noInfoBox}>
               <div className={styled.noInfo}>
-                <h2>아직 답글이 없습니다</h2>
-                <p>좋은 트윗과 소통하고 싶다면 답글을 달아보세요.</p>
+                <h2>아직 리트윗한 답글이 없습니다</h2>
+                <p>좋은 트윗을 알리고 싶다면 리트윗을 눌러 표시를 해보세요.</p>
               </div>
             </div>
           )}
@@ -72,3 +80,5 @@ export const Replies = ({ userObj, creatorInfo }) => {
     </>
   );
 };
+
+export default ProfileReNweetsReplies;
