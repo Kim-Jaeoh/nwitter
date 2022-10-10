@@ -11,7 +11,6 @@ import { dbService } from "../../fbase";
 import styled from "./RecommendUser.module.css";
 import noneProfile from "../../image/noneProfile.jpg";
 import { useHistory } from "react-router-dom";
-import { GrRefresh } from "react-icons/gr";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
 import CircleLoader from "../loader/CircleLoader";
 

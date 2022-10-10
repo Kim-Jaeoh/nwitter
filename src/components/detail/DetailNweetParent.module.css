@@ -4,18 +4,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* margin: 0 auto; */
   flex: 1 1 auto;
   color: rgba(0, 0, 0, 0.8);
-  /* border-bottom: 1px solid #ebebeb; */
 }
 
 .nweet:hover {
-  /* background: #ececec70; */
 }
 
 .nweet .nweet__wrapper {
-  /* cursor: pointer; */
 }
 
 /* 리트윗 */
@@ -88,12 +84,12 @@
   height: 44px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   line-height: 20px;
 }
 
 .userInfo .userInfo__name .userInfo__one p {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -104,7 +100,7 @@
 }
 
 .userInfo .userInfo__name .userInfo__two {
-  font-size: 15px;
+  font-size: 14px;
   display: flex;
   color: #53716a;
   align-items: baseline;
@@ -112,7 +108,7 @@
 
 /* 텍스트 */
 .nweet__text {
-  font-size: 15px;
+  font-size: 14px;
   padding: 0 16px;
   margin: 12px 0;
   width: 100%;
@@ -181,12 +177,8 @@
 
 /* 트윗 액션 */
 .nweet .nweet__actions {
-  /* display: flex; */
-  /* justify-content: space-between; */
-  /* align-items: center; */
   max-width: 100%;
   overflow: hidden;
-  /* padding: 16px; */
   padding: 16px 16px 0;
 }
 
@@ -215,7 +207,6 @@
   height: 38.5px;
   border-radius: 50%;
   position: absolute;
-  /* z-index: -1; */
   background: transparent;
   transition: all 0.2s;
 }

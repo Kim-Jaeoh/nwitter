@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* margin: 0 auto; */
   flex: 1 1 auto;
   color: rgba(0, 0, 0, 0.8);
   border-bottom: 1px solid #ebebeb;
@@ -41,7 +40,6 @@
   object-fit: contain;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  /* cursor: pointer; */
   transition: all 0.2s;
   margin-right: 12px;
 }
@@ -85,15 +83,11 @@
 
 .nweet .nweet__container .reNweet__name:hover,
 .nweet .nweet__container .reNweetBox p span:first-child:hover {
-  /* cursor: pointer; */
   text-decoration: underline;
 }
 
 .nweet .nweet__container .reNweet__name {
   font-weight: 700;
-  /* flex-wrap: wrap; */
-  /* white-space: nowrap; */
-  /* text-overflow: ellipsis; */
 }
 
 .nweet .nweet__container .reNweet__time {

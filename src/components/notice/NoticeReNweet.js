@@ -28,7 +28,6 @@ export const NoticeReNweet = ({ reNweetsObj, userObj }) => {
   return (
     <>
       {loading && (
-        // creatorInfo.email !== userObj.email &&
         <NoticeInnerContents
           creatorInfo={creatorInfo}
           obj={reNweetsObj}

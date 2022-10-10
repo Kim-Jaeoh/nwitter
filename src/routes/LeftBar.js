@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AiOutlineHome, AiFillHome } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { BsPerson, BsBell, BsBellFill, BsPersonFill } from "react-icons/bs";

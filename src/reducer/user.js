@@ -50,6 +50,7 @@ const initialState = {
   load: {
     load: false,
   },
+  modal: false,
 };
 
 const user = (state = initialState, action) => {

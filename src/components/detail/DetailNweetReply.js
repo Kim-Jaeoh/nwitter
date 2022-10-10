@@ -6,7 +6,7 @@ import { useTimeToString } from "../../hooks/useTimeToString";
 import { NweetBox } from "../nweet/NweetBox";
 import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 
-const DetailNweetReply = ({ nweetObj, userObj, nweets, reNweetsObj }) => {
+const DetailNweetReply = ({ nweetObj, userObj, reNweetsObj }) => {
   // nweets = 원글 계정 정보
   // nweetObj = 답글 계정 정보
 

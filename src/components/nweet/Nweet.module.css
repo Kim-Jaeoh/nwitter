@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* margin: 0 auto; */
   flex: 1 1 auto;
   color: rgba(0, 0, 0, 0.8);
   border-bottom: 1px solid #ebebeb;
@@ -50,7 +49,6 @@
 
 /* 리플 */
 .nweet__reply {
-  /* display: flex; */
   display: none;
   margin: 8px 0 -8px 0;
   padding: 0 16px;
@@ -260,7 +258,6 @@
 
 /* 댓글 */
 .nweet .nweet__actions .actionBox.comment .actions__icon svg {
-  /* transform: scaleX(-1); */
 }
 
 .nweet .nweet__actions .actionBox.comment:hover .actions__icon svg {

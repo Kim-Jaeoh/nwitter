@@ -1,7 +1,6 @@
 import styled from "../modal/NweetModal.module.css";
 import Modal from "@mui/material/Modal";
 import { GrClose } from "react-icons/gr";
-import NweetFactory from "../nweet/NweetFactory";
 import { DetailReplyForm } from "../detail/DetailReplyForm";
 import { useSelector } from "react-redux";
 import BarLoader from "../loader/BarLoader";

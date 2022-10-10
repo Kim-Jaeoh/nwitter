@@ -42,7 +42,7 @@ export const useTimeToString = () => {
       " · " +
       date.getFullYear() +
       "년 " +
-      Number(date.getMonth() + 1) +
+      (date.getMonth() + 1) +
       "월 " +
       date.getDate() +
       "일 ";
@@ -54,7 +54,7 @@ export const useTimeToString = () => {
     let str =
       date.getFullYear() +
       "년 " +
-      Number(date.getMonth() + 1) +
+      (date.getMonth() + 1) +
       "월 " +
       date.getDate() +
       "일 ";

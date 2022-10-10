@@ -15,16 +15,10 @@ import {
   IoCloseSharp,
 } from "react-icons/io5";
 
-const UpdateProfileModal = ({
-  creatorInfo,
-  setCreatorInfo,
-  isEditing,
-  toggleEdit,
-}) => {
+const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const inputRef = useRef();
-  const editRef = useRef();
   const [newDisplayName, setNewDisplayName] = useState(creatorInfo.displayName);
   const [desc, setDesc] = useState(creatorInfo.description);
   const [editAttachment, setEditAttachment] = useState(creatorInfo.photoURL);
@@ -112,73 +106,59 @@ const UpdateProfileModal = ({
     }
   };
 
+  // 업데이트 버튼
   const onSubmit = async (e) => {
     e.preventDefault();
 
     await updateDoc(doc(dbService, "users", creatorInfo.email), {
       displayName: newDisplayName, // 바뀐 이름 업데이트
-      // photoURL: editAttachment === "" ? noneProfile : editAttachment,
-      // bgURL: editAttachmentBg === "" ? bgImg : editAttachmentBg,
       photoURL: editAttachment,
       bgURL: editAttachmentBg,
       description: desc,
     });
 
-    await dispatch(
+    dispatch(
       setCurrentUser({
-        // uid: currentUser.uid,
-        // ...currentUser,
         displayName: newDisplayName, // 바뀐 이름 디스패치
         photoURL: editAttachment,
         bgURL: editAttachmentBg,
         description: desc,
-        email: currentUser.email,
-        bookmark: currentUser.bookmark,
-        follower: currentUser.follower,
-        following: currentUser.following,
-        reNweet: currentUser.reNweet,
+        ...currentUser,
       })
     );
 
+    // 프로필 이미지 삭제 버튼 클릭 시
     if (isDeleteProfileURL) {
       await updateDoc(doc(dbService, "users", creatorInfo.email), {
         photoURL: noneProfile,
       });
-      await dispatch(
+      dispatch(
         setCurrentUser({
           photoURL: noneProfile,
           displayName: newDisplayName,
           description: desc,
-          email: currentUser.email,
-          bookmark: currentUser.bookmark,
-          follower: currentUser.follower,
-          following: currentUser.following,
-          reNweet: currentUser.reNweet,
+          ...currentUser,
         })
       );
     }
 
+    // 배경 이미지 삭제 버튼 클릭 시
     if (isDeleteBgURL) {
       await updateDoc(doc(dbService, "users", creatorInfo.email), {
         bgURL: bgImg,
       });
-      await dispatch(
+      dispatch(
         setCurrentUser({
           bgURL: bgImg,
           displayName: newDisplayName,
           description: desc,
-          email: currentUser.email,
-          bookmark: currentUser.bookmark,
-          follower: currentUser.follower,
-          following: currentUser.following,
-          reNweet: currentUser.reNweet,
+          ...currentUser,
         })
       );
     }
 
     alert(`프로필이 수정되었습니다.`);
     toggleEdit(false);
-    // history.push("/");
   };
 
   return (
@@ -319,7 +299,6 @@ const UpdateProfileModal = ({
                     onFocus={() => setSelect("desc")}
                     onBlur={() => setSelect("")}
                     value={desc}
-                    // onInput={handleResizeHeight}
                     onChange={(e) => {
                       onChangeInfo(e, "description");
                     }}

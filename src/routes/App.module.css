@@ -79,8 +79,6 @@ form {
 
 @media screen and (max-width: 705px) {
   .center__container {
-    /* width: 100%; */
     border: 0;
-    /* height: 100%; */
   }
 }

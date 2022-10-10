@@ -10,8 +10,6 @@
   background-color: rgba(255, 255, 255);
   box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
     rgb(101 119 134 / 15%) 0px 0px 3px 1px;
-  /* box-shadow: #429170 0px 0px 0px 1px, rgb(101 119 134 / 20%) 0px 0px 15px,
-    rgb(101 119 134 / 15%) 0px 0px 3px 1px; */
 }
 
 .container .notice {
@@ -41,7 +39,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* padding: 0 16px 12px; */
   padding: 12px 16px;
 }
 

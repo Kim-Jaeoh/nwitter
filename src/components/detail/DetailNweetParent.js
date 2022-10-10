@@ -14,7 +14,6 @@ import {
 } from "react-icons/fa";
 import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
 import { useTimeToString } from "../../hooks/useTimeToString";
-import { useToggleReNweet } from "../../hooks/useToggleReNweet";
 import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
 import { useGoPage } from "../../hooks/useGoPage";

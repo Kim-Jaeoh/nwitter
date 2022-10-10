@@ -1,4 +1,3 @@
-import CircleLoader from "../loader/CircleLoader";
 import styled from "./SearchBox.module.css";
 import SearchNweetsBox from "./SearchNweetsBox";
 import SearchUsersBox from "./SearchUsersBox";
@@ -37,9 +36,6 @@ const SearchBox = ({
                     <h2>유저</h2>
                   </div>
                   <ul className={styled.follows}>
-                    {/* {userResult.map((user, index) => (
-                      <SearchUsersBox key={user.uid} user={user} />
-                    ))} */}
                     <SearchUsersBox userResult={userResult} />
                   </ul>
                 </section>

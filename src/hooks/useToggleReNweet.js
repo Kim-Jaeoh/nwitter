@@ -15,7 +15,6 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [reNweetsId, setReNweetsId] = useState({});
   const [reNweet, setReNweet] = useState(false);
-  // const [time, setTime] = useState(Date.now());
 
   useEffect(() => {
     if (reNweetsObj) {

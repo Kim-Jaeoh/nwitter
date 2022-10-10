@@ -240,7 +240,6 @@ const Profile = ({ userObj }) => {
                   }
                   text={"리트윗"}
                 />
-
                 <SelectMenuBtn
                   num={4}
                   selected={selected}

@@ -1,7 +1,5 @@
 .container__box {
   filter: drop-shadow(rgba(101, 119, 134, 0.4) 0px 0.5px 5px);
-  /* box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
-    rgb(101 119 134 / 15%) 0px 0px 3px 1px; */
 }
 
 .container__box .box__triangle {
@@ -26,13 +24,10 @@
   z-index: 3;
   border-radius: 16px;
   background-color: #fff;
-  /* box-shadow: rgb(101 119 134 / 20%) 0px 0px 15px,
-    rgb(101 119 134 / 15%) 0px 0px 3px 1px; */
 }
 
 .container .btn {
   padding: 16px;
-  /* width: 100%; */
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -142,7 +137,6 @@
   }
 
   .container .btn .leftBar__userInfo .userInfo__etc {
-    /* overflow: hidden; */
     display: none;
   }
 

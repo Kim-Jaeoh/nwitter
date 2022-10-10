@@ -11,13 +11,11 @@ export const SearchBar = ({ userObj }) => {
   const searchRef = useRef();
   const textRef = useRef();
 
-  // const [focus, setFocus] = useState(false);
   const [search, setSearch] = useState("");
   const [userResult, setUserResult] = useState([]);
   const [nweetResult, setNweetResult] = useState([]);
   const [users, setUsers] = useState([]);
   const [nweets, setNweets] = useState([]);
-  const [select, setSelect] = useState("");
   const [loading, setLoading] = useState(false);
 
   const { nweetEtc: focus, setNweetEtc: setFocus } =
@@ -133,8 +131,6 @@ export const SearchBar = ({ userObj }) => {
           <input
             spellCheck={false}
             ref={textRef}
-            onFocus={() => setSelect("text")}
-            onBlur={() => setSelect("")}
             className={styled.search__bar}
             placeholder="트위터 검색"
             onChange={onChange}

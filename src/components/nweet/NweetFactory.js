@@ -7,7 +7,6 @@ import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
 import { GrEmoji } from "react-icons/gr";
 import styled from "./NweetFactory.module.css";
 import Picker from "emoji-picker-react";
-import BarLoader from "../loader/BarLoader";
 import imageCompression from "browser-image-compression";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
 import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
@@ -33,7 +32,6 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
       setLoading(true);
       dispatch(setProgressBar({ load: false }));
     });
-    // return () => setLoading(false);
   }, [dispatch, userObj]);
 
   const handleResizeHeight = useHandleResizeTextarea(textRef);
@@ -76,7 +74,6 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
         email: userObj.email,
         like: [],
         reNweet: [],
-        // reNweetAt: [],
         replyId: [],
       };
 

@@ -194,7 +194,6 @@ export const DetailReplyForm = ({
                 ref={textRef}
                 onChange={onChange}
                 onFocus={() => setSelect("text")}
-                // onBlur={() => setSelect("")}
                 onInput={handleResizeHeight}
                 maxLength={280}
                 placeholder="내 답글을 트윗합니다."

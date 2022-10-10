@@ -7,7 +7,6 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
-import styled from "./DetailNweet.module.css";
 import { useLocation } from "react-router-dom";
 import { dbService } from "../../fbase";
 import { TopCategory } from "../topCategory/TopCategory";
@@ -100,9 +99,7 @@ export const DetailNweet = ({ userObj }) => {
     <>
       {loading && (
         <>
-          <div className={styled.container}>
-            <TopCategory text={"트윗"} iconName={<IoArrowBackOutline />} />
-          </div>
+          <TopCategory text={"트윗"} iconName={<IoArrowBackOutline />} />
           <DetailNweetParent
             nweetObj={nweets}
             userObj={userObj}

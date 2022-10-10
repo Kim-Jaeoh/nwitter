@@ -35,27 +35,19 @@ const NweetEtcBtn = ({
 
   // 원글의 답글 정보 가져오기
   useEffect(() => {
-    const q = query(
-      collection(dbService, "nweets")
-      // where("replyId", "array-contains", nweetObj.id)
-    );
+    const q = query(collection(dbService, "nweets"));
     onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      // setLoading(true);
 
       const filter = userArray.filter((asd) =>
         asd?.replyId?.includes(nweetObj.id)
       );
 
       setNweets(filter[0]);
-      // setNweets(userArray[0]);
     });
-    // return () => {
-    //   setLoading(false);
-    // };
   }, [nweetObj.id]);
 
   // 답글 정보 가져오기
@@ -66,7 +58,6 @@ const NweetEtcBtn = ({
         id: doc.id,
         ...doc.data(),
       }));
-      // setLoading(true);
 
       const parentNweet = replyArray.findIndex(
         (reply) => reply.parent === nweetObj.id
