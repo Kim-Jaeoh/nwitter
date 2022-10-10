@@ -50,15 +50,21 @@ const LeftBar = ({ userObj }) => {
     // 렌더 시
     if (size < 500) {
       setResize(true);
-      history.push("/profile/bookmarknweets/" + userObj.email);
+      if (location.pathname.includes("bookmark")) {
+        history.push("/profile/bookmarknweets/" + userObj.email);
+      }
     } else if (size > 500) {
       setResize(false);
-      history.push("/bookmark/nweets");
+      if (location.pathname.includes("bookmark")) {
+        history.push("/bookmark/nweets");
+      }
     }
+
     const Resize = () => {
       let innerSize = window.innerWidth;
       setSize(innerSize);
     };
+
     window.addEventListener("resize", Resize);
     return () => window.addEventListener("resize", Resize);
   }, [history, size, userObj.email]);
