@@ -51,7 +51,7 @@
 .follow__user .follow__name p:nth-child(1) {
   font-weight: bold;
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
 }
 

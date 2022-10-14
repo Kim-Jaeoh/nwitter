@@ -99,7 +99,7 @@
   margin-bottom: 6px;
   width: 140px;
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
 }
 

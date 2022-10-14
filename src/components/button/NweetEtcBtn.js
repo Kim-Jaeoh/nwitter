@@ -5,7 +5,6 @@ import {
   onSnapshot,
   query,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useEffect, useState } from "react";

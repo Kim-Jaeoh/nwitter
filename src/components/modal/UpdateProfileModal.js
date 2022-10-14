@@ -270,6 +270,7 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
                 <div className={styled.edit__InputBox}>
                   <p>이름</p>
                   <input
+                    maxLength="25"
                     className={styled.edit__Input}
                     ref={inputRef}
                     spellCheck="false"
@@ -302,7 +303,7 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
                     onChange={(e) => {
                       onChangeInfo(e, "description");
                     }}
-                    maxLength={280}
+                    maxLength={100}
                   />
                 </div>
               </div>

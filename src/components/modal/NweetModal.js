@@ -4,7 +4,6 @@ import { GrClose } from "react-icons/gr";
 import NweetFactory from "../nweet/NweetFactory";
 import { useSelector } from "react-redux";
 import BarLoader from "../loader/BarLoader";
-import { useState } from "react";
 
 export const NweetModal = ({ nweetModal, userObj, setNweetModal }) => {
   const currentProgressBar = useSelector((state) => state.user.load);

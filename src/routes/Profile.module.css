@@ -1,85 +1,3 @@
-/* 카테고리 */
-.container .main__container .main__category {
-  position: sticky;
-  top: 0px;
-  z-index: 3;
-  display: flex;
-  /* justify-content: space-between; */
-  align-items: center;
-  width: 100%;
-  height: 60px;
-  font-size: 20px;
-  font-weight: bold;
-  border-bottom: 1px solid #ebebeb;
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  padding: 0 16px;
-}
-
-/* 이모지 */
-.container .main__container .main__category .main__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  margin-right: 30px;
-}
-
-.container .main__container .main__category .main__icon:last-child {
-  margin-left: auto;
-  margin-right: 0;
-}
-
-.container .main__container .main__category .main__icon::after {
-  display: block;
-  content: "";
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  z-index: -1;
-  transition: all 0.2s;
-}
-
-.container .main__container .main__category .main__icon svg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-.container .main__container .main__category .main__icon:hover::after {
-  background: #ececec;
-}
-
-/* 상단 닉네임 */
-.container .main__container .main__category .userInfo {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 8px 0;
-}
-
-.container .main__container .main__category .userInfo p {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.container .main__container .main__category .userInfo p:first-child {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.container .main__container .main__category .userInfo p:last-child {
-  font-size: 13px;
-  font-weight: 400;
-  color: #53716a;
-}
-
 /* 프로필 수정 칸 */
 .container .main__container .setUserInfo {
   position: relative;
@@ -218,22 +136,21 @@
 
 /* 프로필 안내 */
 .container .main__container .profile .profile__info .userInfo {
-  /* height: 100%; */
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   margin: 4px 0 16px;
+  gap: 8px;
+  /* overflow: hidden; */
 }
 
 .container .main__container .profile .profile__info .userInfo p {
+  /* overflow: hidden; */
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 .container .main__container .profile .profile__info .userInfo p:first-child {
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 6px;
 }
 
 .container .main__container .profile .profile__info .userInfo p:last-child {

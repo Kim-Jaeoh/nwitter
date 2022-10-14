@@ -119,11 +119,13 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 8px 0;
+  gap: 6px;
+  min-width: 200px;
+  overflow: hidden;
 }
 
 .minor__category .userInfo p {
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -133,7 +135,7 @@
 }
 
 .minor__category .userInfo .category__sub {
-  margin-top: 4px;
+  /* margin-top: 4px; */
   font-size: 13px;
   font-weight: 400;
   color: #53716a;
