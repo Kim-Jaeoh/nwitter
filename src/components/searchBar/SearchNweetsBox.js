@@ -16,8 +16,6 @@ const SearchNweetsBox = ({ users, nweet }) => {
     history.push("/nweet/" + nweet.id);
   };
 
-  console.log(filter);
-
   return (
     <>
       {filter[0] && (
