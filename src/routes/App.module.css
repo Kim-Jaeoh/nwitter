@@ -82,3 +82,19 @@ form {
     border: 0;
   }
 }
+
+::-webkit-scrollbar {
+  width: auto;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6fa78f;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 5px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  /* background: rgb(240, 240, 240); */
+  background: #42806613;
+}

@@ -1,3 +1,4 @@
+import { useHistory } from "react-router-dom";
 import styled from "./SearchBox.module.css";
 import SearchNweetsBox from "./SearchNweetsBox";
 import SearchUsersBox from "./SearchUsersBox";
@@ -10,6 +11,12 @@ const SearchBox = ({
   focus,
   userObj,
 }) => {
+  const history = useHistory();
+
+  const showMore = () => {
+    history.push("/explore/nweets/");
+  };
+
   return (
     <>
       {focus && (
@@ -29,38 +36,48 @@ const SearchBox = ({
               </div>
             )}
           <div className={styled.searchUser__container}>
-            <>
-              {userResult?.length !== 0 && (
-                <section className={styled.followBox}>
-                  <div className={styled.followBox__name}>
-                    <h2>유저</h2>
-                  </div>
-                  <ul className={styled.follows}>
-                    <SearchUsersBox userResult={userResult} />
-                  </ul>
-                </section>
-              )}
-              {userResult?.length !== 0 && nweetResult?.length !== 0 && (
-                <div className={styled.line} />
-              )}
-              {nweetResult?.length !== 0 && (
-                <section className={styled.followBox}>
-                  <div className={styled.followBox__name}>
-                    <h2>트윗</h2>
-                  </div>
-                  <ul className={styled.follows}>
-                    {nweetResult?.map((nweet) => (
-                      <SearchNweetsBox
-                        key={nweet.id}
-                        users={users}
-                        nweet={nweet}
-                        userObj={userObj}
-                      />
-                    ))}
-                  </ul>
-                </section>
-              )}
-            </>
+            <div style={{ overflow: "hidden" }}>
+              <>
+                {userResult?.length !== 0 && (
+                  <section className={styled.followBox}>
+                    <div className={styled.followBox__name}>
+                      <h2>유저</h2>
+                    </div>
+                    <ul className={styled.follows}>
+                      <SearchUsersBox userResult={userResult} />
+                    </ul>
+                  </section>
+                )}
+                {userResult?.length !== 0 && nweetResult?.length !== 0 && (
+                  <div className={styled.line} />
+                )}
+                {nweetResult?.length !== 0 && (
+                  <section className={styled.followBox}>
+                    <div className={styled.followBox__name}>
+                      <h2>트윗</h2>
+                    </div>
+                    <ul className={styled.follows}>
+                      {nweetResult?.map((nweet, index) => (
+                        <>
+                          {index < 4 && (
+                            <SearchNweetsBox
+                              key={nweet.id}
+                              users={users}
+                              nweet={nweet}
+                            />
+                          )}
+                        </>
+                      ))}
+                      {nweetResult.length >= 4 && (
+                        <div className={styled.more} onClick={showMore}>
+                          더 보기
+                        </div>
+                      )}
+                    </ul>
+                  </section>
+                )}
+              </>
+            </div>
           </div>
         </article>
       )}
