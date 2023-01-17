@@ -19,7 +19,7 @@ export const TopCategory = ({
           <div className={styled.main_text}>
             <h2>{text}</h2>
           </div>
-          <div className={styled.change__emoji}>{iconName}</div>
+          <div className={styled.effect_icon}>{iconName}</div>
         </div>
       ) : (
         <div className={styled.minor__category}>
