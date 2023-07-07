@@ -12,17 +12,27 @@ export const NoticeReNweet = ({ reNweetsObj, userObj }) => {
 
   // 정보 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", reNweetsObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "users", reNweetsObj.email),
+      (doc) => {
+        setCreatorInfo(doc.data());
+        setLoading(true);
+      }
+    );
+
+    return () => unsubscribe();
   }, [reNweetsObj, userObj.email]);
 
   // 트윗 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "nweets", reNweetsObj.parent), (doc) => {
-      setNweets(doc.data());
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "nweets", reNweetsObj.parent),
+      (doc) => {
+        setNweets(doc.data());
+      }
+    );
+
+    return () => unsubscribe();
   }, [reNweetsObj]);
 
   return (
@@ -30,7 +40,7 @@ export const NoticeReNweet = ({ reNweetsObj, userObj }) => {
       {loading && (
         <NoticeInnerContents
           creatorInfo={creatorInfo}
-          obj={reNweetsObj}
+          noticeUser={reNweetsObj}
           nweets={nweets}
           text={
             reNweetsObj?.replyId

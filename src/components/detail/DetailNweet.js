@@ -26,7 +26,6 @@ export const DetailNweet = ({ userObj }) => {
   const [reNweets, setReNweets] = useState([]);
   const [showReply, setShowReply] = useState("");
   const [loading, setLoading] = useState(false);
-
   const currentProgressBar = useSelector((state) => state.user.load);
   const currentNotModal = useSelector((state) => state.user.modal);
 

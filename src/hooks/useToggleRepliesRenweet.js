@@ -16,7 +16,6 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
   const [reNweetsId, setReNweetsId] = useState({});
   const [replyReNweetsId, setReplyReNweetsId] = useState({});
   const [reNweet, setReNweet] = useState(false);
-  // const [time, setTime] = useState(Date.now());
 
   // map 처리 된 리트윗 정보들 중 본인 ID와 같은 index 정보들만 필터링
   useEffect(() => {
@@ -69,18 +68,6 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
       }
     } else {
       setReNweet(true);
-      // const _nweetReply = {
-      //   text: nweetObj.text,
-      //   creatorId: userObj.uid,
-      //   email: userObj.email,
-      //   like: [],
-      //   reNweetAt: Date.now(),
-      //   parent: nweetObj.parent || null,
-      //   parentEmail: nweetObj.parentEmail || null,
-      //   replyId: nweetObj.id || null,
-      //   replyEmail: nweetObj.email || null,
-      // };
-      // await addDoc(collection(dbService, "reNweets"), _nweetReply);
 
       const copy = [...nweetObj.reNweet, userObj.email];
 

@@ -43,7 +43,7 @@ const LikeNweets = ({ userObj }) => {
       where("like", "array-contains", uid)
     );
 
-    onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const array = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -51,6 +51,8 @@ const LikeNweets = ({ userObj }) => {
       setMyLikeNweets(array);
       setLoading(true);
     });
+
+    return () => unsubscribe();
   }, [uid]);
 
   return (

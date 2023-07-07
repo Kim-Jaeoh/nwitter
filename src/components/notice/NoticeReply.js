@@ -31,7 +31,7 @@ export const NoticeReply = ({ replyObj, userObj }) => {
       {loading && (
         <NoticeInnerContents
           creatorInfo={creatorInfo}
-          obj={replyObj}
+          noticeUser={replyObj}
           nweets={nweets}
           text={"글에 답글을 달았습니다."}
         />

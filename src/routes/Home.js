@@ -76,7 +76,7 @@ const Home = ({ userObj }) => {
           <TopCategory
             home={"home"}
             text={"홈"}
-            iconName={<HiOutlineSparkles />}
+            // iconName={<HiOutlineSparkles />}
           />
           {currentProgressBar?.load && currentNotModal.modal && <BarLoader />}
           {loading && <NweetFactory userObj={userObj} />}

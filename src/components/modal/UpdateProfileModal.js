@@ -49,15 +49,19 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
     }
   };
 
-  // 이미지 URL로 바꾸는 로직 - hook 예정(useFileChange)
-  const onFileChange = async (e) => {
+  // 이미지 URL로 바꾸는 로직
+  const onFileChange = async (e, type) => {
     setIsAddFile(true);
     const theFile = e.target.files[0]; // 파일 1개만 첨부
     const compressedImage = await compressImage(theFile); // 이미지 압축
     const reader = new FileReader(); // 파일 이름 읽기
 
     reader.onloadend = (finishedEvent) => {
-      setEditAttachment(finishedEvent.currentTarget.result);
+      if (type === "profile") {
+        setEditAttachment(finishedEvent.currentTarget.result);
+      } else {
+        setEditAttachmentBg(finishedEvent.currentTarget.result);
+      }
     };
 
     /* 파일 선택 누르고 이미지 한 개 선택 뒤 다시 파일선택 누르고 취소 누르면
@@ -67,41 +71,20 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
     }
   };
 
-  const onFileBgChange = async (e) => {
-    setIsAddFile(true);
-    const theFile = e.target.files[0]; // 파일 1개만 첨부
-    const compressedImage = await compressImage(theFile); // 이미지 압축
-    const reader = new FileReader(); // 파일 이름 읽기
+  const onDeleteClick = async (type) => {
+    const profilType = type === "profile";
+    const confirmMessage = profilType
+      ? "프로필 사진을 삭제하시겠어요?"
+      : "배경사진을 삭제하시겠어요?";
+    const setDeleteType = profilType ? setIsDeleteProfileURL : setIsDeleteBgURL;
+    const setEditType = profilType ? setEditAttachment : setEditAttachmentBg;
 
-    reader.onloadend = (finishedEvent) => {
-      setEditAttachmentBg(finishedEvent.currentTarget.result);
-    };
-
-    /* 파일 선택 누르고 이미지 한 개 선택 뒤 다시 파일선택 누르고 취소 누르면
-          Failed to execute 'readAsDataURL' on 'FileReader': parameter 1 is not of type 'Blob'. 이런 오류가 나옴. -> if문으로 예외 처리 */
-    if (theFile) {
-      reader.readAsDataURL(compressedImage);
-    }
-  };
-
-  const onDeleteProfileClick = async () => {
-    const ok = window.confirm("프로필 사진을 삭제하시겠어요?");
+    const ok = window.confirm(confirmMessage);
     // 이미지 없는 글 삭제 시 에러가 나와서 예외 처리
     // (삭제 시 nweetObj.attachmentUrl로 찾아가기 때문)
     if (ok) {
-      setIsDeleteProfileURL(!isDeleteProfileURL);
-      setEditAttachment(noneProfile);
-      setIsAddFile(false);
-    }
-  };
-
-  const onDeleteBgClick = async () => {
-    const ok = window.confirm("배경사진을 삭제하시겠어요?");
-    // 이미지 없는 글 삭제 시 에러가 나와서 예외 처리
-    // (삭제 시 nweetObj.attachmentUrl로 찾아가기 때문)
-    if (ok) {
-      setIsDeleteBgURL(!isDeleteBgURL);
-      setEditAttachmentBg(bgImg);
+      setDeleteType(true);
+      setEditType(profilType ? noneProfile : bgImg);
       setIsAddFile(false);
     }
   };
@@ -206,7 +189,10 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
                   )}
                 </label>
                 {editAttachmentBg !== bgImg && (
-                  <div className={styled.image__icon} onClick={onDeleteBgClick}>
+                  <div
+                    className={styled.image__icon}
+                    onClick={() => onDeleteClick("bg")}
+                  >
                     <IoCloseSharp />
                   </div>
                 )}
@@ -214,7 +200,7 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
                   id="attach-bgfile"
                   type="file"
                   accept="image/*"
-                  onChange={onFileBgChange}
+                  onChange={(e) => onFileChange(e, "bg")}
                   style={{
                     display: "none",
                   }}
@@ -244,7 +230,7 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
                     {editAttachment !== noneProfile && (
                       <div
                         className={styled.image__icon}
-                        onClick={onDeleteProfileClick}
+                        onClick={() => onDeleteClick("profile")}
                       >
                         <IoCloseSharp />
                       </div>
@@ -253,7 +239,7 @@ const UpdateProfileModal = ({ creatorInfo, isEditing, toggleEdit }) => {
                       id="attach-file"
                       type="file"
                       accept="image/*"
-                      onChange={onFileChange}
+                      onChange={(e) => onFileChange(e, "profile")}
                       style={{
                         display: "none",
                       }}

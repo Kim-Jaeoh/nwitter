@@ -11,10 +11,14 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
 
   //  map 처리 된 유저 정보들
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "users", nweetObj.email),
+      (doc) => {
+        setCreatorInfo(doc.data());
+        setLoading(true);
+      }
+    );
+    return () => unsubscribe();
   }, [nweetObj]);
 
   const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(

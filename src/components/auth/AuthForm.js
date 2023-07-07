@@ -31,6 +31,16 @@ const AuthForm = ({ newAccount }) => {
     }
   };
 
+  const errorMessages = {
+    "(auth/email-already-in-use).": "이미 가입이 되어있는 이메일입니다.",
+    "(auth/invalid-email).": "올바르지 않은 이메일 형식입니다.",
+    "(auth/weak-password)": "비밀번호를 최소 6글자 이상 입력해주세요.",
+    "(auth/wrong-password).": "이메일이나 비밀번호가 틀립니다.",
+    "(auth/too-many-requests)":
+      "로그인 시도가 여러 번 실패하여 이 계정에 대한 액세스가 일시적으로 비활성화되었습니다. 비밀번호를 재설정하여 즉시 복원하거나 나중에 다시 시도할 수 있습니다.",
+    "(auth/user-not-found)": "가입된 아이디를 찾을 수 없습니다.",
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -42,32 +52,11 @@ const AuthForm = ({ newAccount }) => {
             let signUser = result.user;
             const docRef = doc(dbService, "users", signUser.email);
             const docSnap = await getDoc(docRef);
-            // .then((snap) => {
-            //   if (snap.exists()) {
-            //     console.log(snap.data());
-            //   }
-            // });
             if (docSnap.exists()) {
               dispatch(setLoginToken("login"));
               dispatch(
                 setCurrentUser({
                   ...docSnap.data(),
-                  // bookmark: docSnap.data().bookmark
-                  //   ? docSnap.data().bookmark
-                  //   : [],
-                  // followAt: docSnap.data().followAt
-                  //   ? docSnap.data().followAt
-                  //   : [],
-                  // follower: docSnap.data().follower
-                  //   ? docSnap.data().follower
-                  //   : [],
-                  // following: docSnap.data().following
-                  //   ? docSnap.data().following
-                  //   : [],
-                  // reNweet: docSnap.data().reNweet ? docSnap.data().reNweet : [],
-                  // reNweetAt: docSnap.data().reNweetAt
-                  //   ? docSnap.data().reNweetAt
-                  //   : [],
                 })
               );
             } else {
@@ -119,44 +108,11 @@ const AuthForm = ({ newAccount }) => {
       }
       history.push("/");
     } catch (error) {
-      if (error.message.includes("(auth/email-already-in-use).")) {
-        setError(
-          error.message.replace(
-            "Firebase: Error (auth/email-already-in-use).",
-            "이미 가입이 되어있는 이메일입니다."
-          )
-        );
-      } else if (error.message.includes("(auth/weak-password)")) {
-        setError(
-          error.message.replace(
-            "Firebase: Password should be at least 6 characters (auth/weak-password).",
-            "비밀번호를 최소 6글자 이상 입력해주세요."
-          )
-        );
-      } else if (error.message.includes("(auth/wrong-password).")) {
-        setError(
-          error.message.replace(
-            "Firebase: Error (auth/wrong-password).",
-            "이메일이나 비밀번호가 틀립니다."
-          )
-        );
-      } else if (error.message.includes("(auth/too-many-requests)")) {
-        setError(
-          error.message.replace(
-            "Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).",
-            "로그인 시도가 여러 번 실패하여 이 계정에 대한 액세스가 일시적으로 비활성화되었습니다. 비밀번호를 재설정하여 즉시 복원하거나 나중에 다시 시도할 수 있습니다."
-          )
-        );
-      } else if (error.message.includes("(auth/user-not-found)")) {
-        setError(
-          error.message.replace(
-            "Firebase: Error (auth/user-not-found).",
-            "가입된 아이디를 찾을 수 없습니다."
-          )
-        );
-      } else {
-        setError(error.message);
-      }
+      const errorKey = Object.keys(errorMessages).find((key) =>
+        error.message.includes(key)
+      );
+      const errorMessage = errorKey ? errorMessages[errorKey] : error.message;
+      setError(errorMessage);
     }
   };
 

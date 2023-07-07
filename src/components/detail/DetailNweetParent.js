@@ -16,18 +16,16 @@ import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
 import { useTimeToString } from "../../hooks/useTimeToString";
 import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
-import { useGoPage } from "../../hooks/useGoPage";
 import { ReplyModal } from "../modal/ReplyModal";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotModal } from "../../reducer/user";
 import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
+import { Link } from "react-router-dom";
 
 const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
-  const imgRef = useRef();
-  const nameRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj?.text);
   const [creatorInfo, setCreatorInfo] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -36,10 +34,15 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
 
   //  map 처리 된 각 유저 정보들
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "users", nweetObj.email),
+      (doc) => {
+        setCreatorInfo(doc.data());
+        setLoading(true);
+      }
+    );
+
+    return () => unsubscribe();
   }, [nweetObj]);
 
   const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
@@ -52,22 +55,34 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
 
   const { timeToString2 } = useTimeToString();
-  const { goParent } = useGoPage(nweetObj, etcRef, imgRef, nameRef, "");
 
-  // 좋아요 목록 중 본인 아이디 있으면 true
   useEffect(() => {
-    setLiked(nweetObj.like?.includes(currentUser.email));
-  }, [nweetObj.like, currentUser.email, setLiked]);
+    // 좋아요 목록 중 본인 아이디 있으면 true
+    const checkLiked = () => {
+      const hasCurrentUserLiked = nweetObj?.like?.includes(currentUser.email);
+      setLiked(hasCurrentUserLiked);
+    };
 
-  // 북마크된 본인 아이디 있으면 true
-  useEffect(() => {
-    setBookmark(currentUser?.bookmark?.includes(nweetObj.id));
-  }, [currentUser?.bookmark, nweetObj.id, setBookmark]);
+    // 리트윗된 본인 아이디 있으면 true
+    const checkReNweet = () => {
+      const hasCurrentUserReNweeted = nweetObj?.reNweet?.includes(
+        userObj.email
+      );
+      setReNweet(hasCurrentUserReNweeted);
+    };
 
-  // 리트윗된 본인 아이디 있으면 true
-  useEffect(() => {
-    setReNweet(nweetObj.reNweet?.includes(currentUser.email));
-  }, [currentUser.email, nweetObj.reNweet, setReNweet]);
+    // 북마크된 본인 아이디 있으면 true
+    const checkBookmark = () => {
+      const hasCurrentUserBookmarked = currentUser?.bookmark?.includes(
+        nweetObj.id
+      );
+      setBookmark(hasCurrentUserBookmarked);
+    };
+
+    checkLiked();
+    checkReNweet();
+    checkBookmark();
+  }, [nweetObj, currentUser, userObj, setLiked, setReNweet, setBookmark]);
 
   const toggleNweetEct = () => {
     setNweetEtc((prev) => !prev);
@@ -96,22 +111,25 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
               </div>
             )}
             <div className={styled.nweet__wrapper}>
-              <div
-                className={styled.nweet__container}
-                onClick={(e) => goParent(e)}
-              >
-                <div className={styled.nweet__profile} ref={imgRef}>
+              <div className={styled.nweet__container}>
+                <Link
+                  to={`/profile/mynweets/${nweetObj?.email}`}
+                  className={styled.nweet__profile}
+                >
                   <img
                     src={loading && creatorInfo.photoURL}
                     alt="profileImg"
                     className={styled.profile__image}
                   />
-                </div>
+                </Link>
                 <div className={styled.userInfo}>
                   <div className={styled.userInfo__name}>
-                    <div className={styled.userInfo__one} ref={nameRef}>
+                    <Link
+                      to={`/profile/mynweets/${nweetObj?.email}`}
+                      className={styled.userInfo__one}
+                    >
                       <p>{creatorInfo.displayName}</p>
-                    </div>
+                    </Link>
                     <div className={styled.userInfo__two}>
                       <p>
                         @

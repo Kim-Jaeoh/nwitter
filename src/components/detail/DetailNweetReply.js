@@ -9,16 +9,19 @@ import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 const DetailNweetReply = ({ nweetObj, userObj, reNweetsObj }) => {
   // nweets = 원글 계정 정보
   // nweetObj = 답글 계정 정보
-
   const [creatorInfo, setCreatorInfo] = useState({});
   const [loading, setLoading] = useState(false);
 
   //  map 처리 된 유저 정보들
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", nweetObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "users", nweetObj.email),
+      (doc) => {
+        setCreatorInfo(doc.data());
+        setLoading(true);
+      }
+    );
+    return () => unsubscribe();
   }, [nweetObj]);
 
   const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(

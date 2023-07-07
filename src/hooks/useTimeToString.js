@@ -17,11 +17,11 @@ export const useTimeToString = () => {
     }
 
     const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-    if (betweenTimeDay < 365) {
+    if (betweenTimeDay < 8) {
       return `${betweenTimeDay}일 전`;
     }
 
-    return `${Math.floor(betweenTimeDay / 365)}년 전`;
+    return `${Math.floor(betweenTimeDay / 7)}주 전`;
   };
 
   const timeToString2 = (timestamp) => {

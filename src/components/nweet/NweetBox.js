@@ -13,12 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
 import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
-import { useGoPage } from "../../hooks/useGoPage";
 import { useState } from "react";
 import UpdateNweetModal from "../modal/UpdateNweetModal";
 import { ReplyModal } from "../modal/ReplyModal";
 import { setNotModal } from "../../reducer/user";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export const NweetBox = ({
   loading,
@@ -33,45 +33,45 @@ export const NweetBox = ({
   timeToString,
 }) => {
   const dispatch = useDispatch();
-  const location = useLocation();
+  const history = useHistory();
+  const { pathname } = useLocation();
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
-  const nameRef = useRef();
-  const imgRef = useRef();
-  const replyRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj.text); // Modal 취소 후 다시 수정 시 내용 남게
   const [isEditing, setIsEditing] = useState(false);
   const [replyModal, setReplyModal] = useState(false);
-
   // 커스텀 훅
   const { liked, setLiked, toggleLike } = useToggleLike(nweetObj);
   const { bookmark, setBookmark, toggleBookmark } = useToggleBookmark(nweetObj);
   const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
 
-  const { goNweet, goProfile } = useGoPage(
-    nweetObj,
-    etcRef,
-    imgRef,
-    nameRef,
-    replyRef
-  );
-
-  // 좋아요 목록 중 본인 아이디 있으면 true
   useEffect(() => {
-    if (nweetObj?.like?.includes(currentUser.email)) {
-      setLiked(nweetObj?.like?.includes(currentUser.email));
-    }
-  }, [nweetObj?.like, setLiked, currentUser.email]);
+    // 좋아요 목록 중 본인 아이디 있으면 true
+    const checkLiked = () => {
+      const hasCurrentUserLiked = nweetObj?.like?.includes(currentUser.email);
+      setLiked(hasCurrentUserLiked);
+    };
 
-  // 리트윗된 본인 아이디 있으면 true
-  useEffect(() => {
-    setReNweet(nweetObj?.reNweet?.includes(userObj.email));
-  }, [userObj.email, nweetObj?.reNweet, setReNweet]);
+    // 리트윗된 본인 아이디 있으면 true
+    const checkReNweet = () => {
+      const hasCurrentUserReNweeted = nweetObj?.reNweet?.includes(
+        userObj.email
+      );
+      setReNweet(hasCurrentUserReNweeted);
+    };
 
-  // 북마크된 본인 아이디 있으면 true
-  useEffect(() => {
-    setBookmark(currentUser?.bookmark?.includes(nweetObj.id));
-  }, [currentUser?.bookmark, nweetObj.id, setBookmark]);
+    // 북마크된 본인 아이디 있으면 true
+    const checkBookmark = () => {
+      const hasCurrentUserBookmarked = currentUser?.bookmark?.includes(
+        nweetObj.id
+      );
+      setBookmark(hasCurrentUserBookmarked);
+    };
+
+    checkLiked();
+    checkReNweet();
+    checkBookmark();
+  }, [nweetObj, currentUser, userObj, setLiked, setReNweet, setBookmark]);
 
   const toggleNweetEct = () => {
     setNweetEtc((prev) => !prev);
@@ -82,9 +82,20 @@ export const NweetBox = ({
   };
 
   const toggleReplyModal = () => {
-    if (!location.pathname.includes("/nweet/" + nweetObj.parent)) {
+    if (!pathname.includes("/nweet/" + nweetObj.parent)) {
       setReplyModal((prev) => !prev);
       dispatch(setNotModal({ modal: false }));
+    }
+  };
+
+  const goNweet = (e) => {
+    if (pathname.includes("nweet")) {
+      return;
+    }
+    if (nweetObj?.parent) {
+      return history.push("/nweet/" + nweetObj.parent);
+    } else {
+      history.push("/nweet/" + nweetObj.id);
     }
   };
 
@@ -103,26 +114,24 @@ export const NweetBox = ({
             )}
             <div className={styled.nweet__wrapper} onClick={(e) => goNweet(e)}>
               <div className={styled.nweet__container}>
-                <div
+                <Link
                   className={styled.nweet__profile}
-                  ref={imgRef}
-                  onClick={(e) => goProfile(e)}
+                  to={`/profile/mynweets/${nweetObj.email}`}
                 >
                   <img
                     src={loading && creatorInfo.photoURL}
                     alt="profileImg"
                     className={styled.profile__image}
                   />
-                </div>
+                </Link>
                 <div className={styled.userInfo}>
                   <div className={styled.userInfo__name}>
-                    <div
+                    <Link
                       className={styled.userInfo__one}
-                      ref={nameRef}
-                      onClick={(e) => goProfile(e)}
+                      to={`/profile/mynweets/${nweetObj.email}`}
                     >
                       <p>{creatorInfo.displayName}</p>
-                    </div>
+                    </Link>
                     <div className={styled.userInfo__two}>
                       <p>
                         @
@@ -159,14 +168,13 @@ export const NweetBox = ({
               </div>
               {nweetObj.parent && (
                 <div className={`${styled.nweet__reply} ${styled.select}`}>
-                  <div
+                  <Link
                     className={styled.nweet__replyText}
-                    ref={replyRef}
-                    onClick={(e) => goProfile(e)}
+                    to={`/profile/mynweets/${nweetObj.parentEmail}`}
                   >
                     <p>@{nweetObj.parentEmail?.split("@")[0]}</p>
                     <p>&nbsp;님에게 보내는 답글</p>
-                  </div>
+                  </Link>
                 </div>
               )}
               <div className={styled.nweet__text}>

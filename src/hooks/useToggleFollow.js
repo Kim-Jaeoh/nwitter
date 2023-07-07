@@ -25,23 +25,27 @@ export const useToggleFollow = (myInfo) => {
         (at) => !myInfo.followingAt.includes(at)
       );
 
-      await updateDoc(doc(dbService, "users", myInfo.email), {
-        followingAt: followingAtCopyFilter,
-        following: followCopyFilter,
-      });
-
-      await updateDoc(doc(dbService, "users", userInfo.email), {
-        follower: followerCopyFilter,
-        followerAt: followerAtCopyFilter,
-      });
-
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          following: followCopyFilter,
+      const updateMyInfo = () =>
+        updateDoc(doc(dbService, "users", myInfo.email), {
           followingAt: followingAtCopyFilter,
-        })
-      );
+          following: followCopyFilter,
+        });
+
+      const updateUserInfo = () =>
+        updateDoc(doc(dbService, "users", userInfo.email), {
+          follower: followerCopyFilter,
+          followerAt: followerAtCopyFilter,
+        });
+
+      await Promise.all([updateMyInfo(), updateUserInfo()]).then(() => {
+        dispatch(
+          setCurrentUser({
+            ...currentUser,
+            following: followCopyFilter,
+            followingAt: followingAtCopyFilter,
+          })
+        );
+      });
     } else {
       const time = Date.now();
       const followCopy = [...myInfo.following, userInfo.email];
@@ -49,22 +53,26 @@ export const useToggleFollow = (myInfo) => {
       const followerCopy = [...userInfo.follower, myInfo.email];
       const followerAtCopy = [...userInfo.followerAt, time];
 
-      await updateDoc(doc(dbService, "users", myInfo.email), {
-        followingAt: followingAtCopy,
-        following: followCopy,
-      });
-      await updateDoc(doc(dbService, "users", userInfo.email), {
-        follower: followerCopy,
-        followerAt: followerAtCopy,
-      });
-
-      dispatch(
-        setCurrentUser({
-          ...currentUser,
-          following: followCopy,
+      const updateMyInfo = () =>
+        updateDoc(doc(dbService, "users", myInfo.email), {
           followingAt: followingAtCopy,
-        })
-      );
+          following: followCopy,
+        });
+      const updateUserInfo = () =>
+        updateDoc(doc(dbService, "users", userInfo.email), {
+          follower: followerCopy,
+          followerAt: followerAtCopy,
+        });
+
+      await Promise.all([updateMyInfo(), updateUserInfo()]).then(() => {
+        dispatch(
+          setCurrentUser({
+            ...currentUser,
+            following: followCopy,
+            followingAt: followingAtCopy,
+          })
+        );
+      });
     }
   };
 
