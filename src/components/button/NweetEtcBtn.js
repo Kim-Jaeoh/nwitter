@@ -22,15 +22,14 @@ const NweetEtcBtn = ({
 }) => {
   // nweets는 원글 정보
   // nweetObj는 답글 정보
-
-  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const [nweets, setNweets] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
+  const [replies, setReplies] = useState("");
+  const dispatch = useDispatch();
   const dbRef = doc(dbService, "nweets", `${nweetObj.id}`);
   const repliesRef = doc(dbService, "replies", `${nweetObj.id}`);
   const dbAttachmentRef = ref(storageService, nweetAttachment);
-  const [reNweets, setReNweets] = useState([]);
-  const [showReply, setShowReply] = useState("");
 
   // 원글의 답글 정보 가져오기
   useEffect(() => {
@@ -62,7 +61,7 @@ const NweetEtcBtn = ({
         (reply) => reply.parent === nweetObj.id
       );
 
-      setShowReply(replyArray[parentNweet]);
+      setReplies(replyArray[parentNweet]);
     });
   }, [currentUser, nweetObj.id]);
 
@@ -97,8 +96,8 @@ const NweetEtcBtn = ({
         await deleteDoc(reNweetsRef);
       }
       // 원글 삭제 시 답글 삭제
-      if (showReply?.parent?.includes(nweetObj.id)) {
-        const dbRepliesRef = doc(dbService, "replies", showReply.id);
+      if (replies?.parent?.includes(nweetObj.id)) {
+        const dbRepliesRef = doc(dbService, "replies", replies.id);
         await deleteDoc(dbRepliesRef); // 리트윗 삭제
       }
 
@@ -123,7 +122,8 @@ const NweetEtcBtn = ({
           })
         );
       }
-      setNweetEtc(false);
+
+      setNweetEtc && setNweetEtc(false);
     }
   };
 

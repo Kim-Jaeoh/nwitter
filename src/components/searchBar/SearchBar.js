@@ -94,22 +94,6 @@ export const SearchBar = ({ userObj }) => {
     }
   }, [focus, nweets, search, users]);
 
-  // 디바운스
-  // - 방법 1
-  // const onChange = useCallback((e) => {
-  //   textRef.current.focus();
-  //   setTimeout(() => {
-  //     setSearch(e.target.value);
-  //   }, 200);
-  // }, []);
-
-  // useEffect(() => {
-  //   return () => {
-  //     clearTimeout(onChange);
-  //   };
-  // }, [onChange]);
-
-  // - 방법 2
   const onChange = debounce((e) => {
     textRef.current.focus();
     setSearch(e.target.value);

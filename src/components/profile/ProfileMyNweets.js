@@ -1,32 +1,14 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { dbService } from "../../fbase";
 import CircleLoader from "../loader/CircleLoader";
 import Nweet from "../nweet/Nweet";
 import styled from "./SelectNoInfo.module.css";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const MyNweets = ({ myNweets, userObj }) => {
-  const [reNweets, setReNweets] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // 리트윗 정보
-  useEffect(() => {
-    const q = query(collection(dbService, "reNweets"));
-
-    onSnapshot(q, (snapshot) => {
-      const reNweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setReNweets(reNweetArray);
-      setLoading(true);
-    });
-  }, []);
+  const { reNweets } = useGetFbInfo();
 
   return (
     <>
-      {loading ? (
+      {reNweets ? (
         <>
           {myNweets.length !== 0 ? (
             <div>

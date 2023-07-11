@@ -11,14 +11,12 @@ import styled from "./DetailReplyForm.module.css";
 import { useHistory } from "react-router-dom";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
 import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
-import { useDispatch } from "react-redux";
-import { setNotModal, setProgressBar } from "../../reducer/user";
+import BarLoader from "../loader/BarLoader";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 export const DetailReplyForm = ({
-  loading,
   userObj,
   nweetObj,
-  creatorInfo,
   replyModal,
   setReplyModal,
 }) => {
@@ -29,26 +27,16 @@ export const DetailReplyForm = ({
   const [reply, setReply] = useState("");
   const [attachment, setAttachment] = useState("");
   const [select, setSelect] = useState("");
-  const dispatch = useDispatch();
-
-  const handleResizeHeight = useHandleResizeTextarea(textRef);
-
+  const [progressBarCount, setProgressBarCount] = useState(0);
   // 이모지 모달 밖 클릭 시 창 끔
   const { clickEmoji, toggleEmoji } = useEmojiModalOutClick(emojiRef, textRef);
-
-  const onEmojiClick = (event, emojiObject) => {
-    const textEmoji =
-      reply.slice(0, textRef.current.selectionStart) +
-      emojiObject.emoji +
-      reply.slice(textRef.current.selectionEnd, reply.length);
-    setReply(textEmoji);
-  };
+  const { myInfo } = useGetFbInfo();
 
   const onSubmit = async (e) => {
     e.preventDefault();
     let attachmentUrl = "";
-    dispatch(setProgressBar({ load: true }));
-
+    let start = 0;
+    setProgressBarCount(0); // 프로그레스 바 초기화
     // 입력 값 없을 시 업로드 X
     if (reply !== "") {
       // 이미지 있을 때만 첨부
@@ -79,8 +67,7 @@ export const DetailReplyForm = ({
         isReply: true,
       };
 
-      setTimeout(async () => {
-        dispatch(setProgressBar({ load: false }));
+      const addReply = async () => {
         const replies = await addDoc(
           collection(dbService, "replies"),
           nweetReply
@@ -88,19 +75,32 @@ export const DetailReplyForm = ({
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
           replyId: [...nweetObj?.replyId, replies.id],
         });
+
         setReply("");
         setAttachment("");
         setSelect("");
-
+        setProgressBarCount(0); // 프로그레스 바 초기화
         if (!replyModal) {
           textRef.current.style.height = "52px";
         } else {
           setReplyModal(false);
         }
-        dispatch(setNotModal({ modal: true }));
-      }, 500);
+      };
 
-      return () => clearTimeout();
+      const interval = setInterval(() => {
+        if (start <= 100) {
+          setProgressBarCount((prev) => (prev === 100 ? 100 : prev + 1));
+          start++; // progress 증가
+        }
+        if (start === 100) {
+          addReply();
+          return;
+        }
+      });
+
+      return () => {
+        clearInterval(interval);
+      };
     } else {
       alert("글자를 입력하세요");
     }
@@ -154,8 +154,17 @@ export const DetailReplyForm = ({
     history.push("/profile/mynweets/" + nweetObj.email);
   };
 
+  const onEmojiClick = (event, emojiObject) => {
+    const textEmoji =
+      reply.slice(0, textRef.current.selectionStart) +
+      emojiObject.emoji +
+      reply.slice(textRef.current.selectionEnd, reply.length);
+    setReply(textEmoji);
+  };
+
   return (
     <>
+      {progressBarCount !== 0 && <BarLoader count={progressBarCount} />}
       <div
         className={`${styled.nweet__reply} ${
           select === "text" && styled.select
@@ -172,13 +181,11 @@ export const DetailReplyForm = ({
       >
         <div className={styled.factoryInput__container}>
           <div className={styled.nweet__profile}>
-            {loading && (
-              <img
-                src={creatorInfo.photoURL}
-                alt="profileImg"
-                className={styled.profile__image}
-              />
-            )}
+            <img
+              src={myInfo?.photoURL}
+              alt="profileImg"
+              className={styled.profile__image}
+            />
           </div>
           <form onSubmit={onSubmit} className={styled.factoryInput}>
             <div
@@ -194,7 +201,6 @@ export const DetailReplyForm = ({
                 ref={textRef}
                 onChange={onChange}
                 onFocus={() => setSelect("text")}
-                onInput={handleResizeHeight}
                 maxLength={280}
                 placeholder="내 답글을 트윗합니다."
               />
@@ -221,7 +227,7 @@ export const DetailReplyForm = ({
             <div className={styled.factoryInput__add}>
               <div className={styled.factoryInput__iconBox}>
                 <label
-                  htmlFor="attach-file"
+                  htmlFor="reply-attach-file"
                   className={styled.factoryInput__label}
                 >
                   <div className={styled.factoryInput__icon}>
@@ -230,7 +236,7 @@ export const DetailReplyForm = ({
                 </label>
                 <input
                   ref={fileInput}
-                  id="attach-file"
+                  id="reply-attach-file"
                   type="file"
                   accept="image/*"
                   onChange={onFileChange}

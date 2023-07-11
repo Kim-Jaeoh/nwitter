@@ -9,7 +9,7 @@ import CircleLoader from "../loader/CircleLoader";
 import useGetFbInfo from "../../hooks/useGetFbInfo";
 import { cloneDeep } from "lodash";
 
-const ExploreUsers = ({ userObj }) => {
+const ExploreUsers = () => {
   const btnRef = useRef();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -30,12 +30,11 @@ const ExploreUsers = ({ userObj }) => {
 
       randomArray(cloneArr);
 
-      const followFilter = cloneArr.filter((asd) =>
-        myInfo?.following.some((email) => email === asd.email)
+      const followFilter = cloneArr.filter((arr) =>
+        myInfo?.following.some((follow) => follow.email === arr.email)
       );
 
       const combineArray = [...followFilter, ...cloneArr];
-
       setUsers([...Array.from(new Set(combineArray))].reverse()); // 중복 제거 후 팔로우 유저 뒤에 배치
       setLoading(true);
     });
@@ -81,7 +80,9 @@ const ExploreUsers = ({ userObj }) => {
                     </div>
                   </Link>
                   <div ref={btnRef}>
-                    {myInfo.following?.includes(userInfo?.email) ? (
+                    {myInfo.following?.some(
+                      (follow) => follow.email === userInfo?.email
+                    ) ? (
                       <div
                         className={`${styled.follow__btn} ${styled.follow} `}
                         onClick={() => toggleFollow(userInfo)}

@@ -15,18 +15,18 @@ import UserEtcBtn from "../components/button/UserEtcBtn";
 import { setCurrentUser, setLoginToken, setNotModal } from "../reducer/user";
 import { NweetModal } from "../components/modal/NweetModal";
 import { useNweetEctModalClick } from "../hooks/useNweetEctModalClick";
+import useGetFbInfo from "../hooks/useGetFbInfo";
 
 const LeftBar = ({ userObj }) => {
   const dispatch = useDispatch();
   const userEtcRef = useRef();
   const location = useLocation();
   const history = useHistory();
-  const [creatorInfo, setCreatorInfo] = useState({});
   const [selected, setSelected] = useState(1);
   const [size, setSize] = useState(window.innerWidth);
   const [resize, setResize] = useState(false);
   const [nweetModal, setNweetModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { myInfo } = useGetFbInfo();
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -69,13 +69,6 @@ const LeftBar = ({ userObj }) => {
     return () => window.addEventListener("resize", Resize);
   }, [history, size, userObj.email]);
 
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
-  }, [userObj]);
-
   const onSelect = (num) => {
     setSelected(num);
   };
@@ -86,7 +79,6 @@ const LeftBar = ({ userObj }) => {
 
   const toggleNweetModal = () => {
     setNweetModal((prev) => !prev);
-    dispatch(setNotModal({ modal: false }));
   };
 
   const onLogOutClick = () => {
@@ -222,11 +214,11 @@ const LeftBar = ({ userObj }) => {
                         </>
                       )}
 
-                      {loading && resize && (
+                      {myInfo && resize && (
                         <div className={styled.userInfo__profileHidden}>
                           <div className={styled.userInfo__profile}>
                             <img
-                              src={creatorInfo.photoURL}
+                              src={myInfo?.photoURL}
                               alt="profileImg"
                               className={styled.profile__image}
                             />
@@ -247,24 +239,19 @@ const LeftBar = ({ userObj }) => {
           </div>
           <div style={{ position: "relative" }} ref={userEtcRef}>
             {userEtc && (
-              <UserEtcBtn
-                onLogOutClick={onLogOutClick}
-                creatorInfo={creatorInfo}
-              />
+              <UserEtcBtn onLogOutClick={onLogOutClick} creatorInfo={myInfo} />
             )}
             <section className={styled.leftBar__user}>
               <div className={styled.leftBar__userInfo} onClick={toggleUserEtc}>
                 <div className={styled.userInfo__profile}>
                   <img
-                    src={
-                      creatorInfo.photoURL ? creatorInfo.photoURL : noneProfile
-                    }
+                    src={myInfo?.photoURL ? myInfo?.photoURL : noneProfile}
                     alt="profileImg"
                     className={styled.profile__image}
                   />
                 </div>
                 <div className={styled.userInfo__name}>
-                  <p>{creatorInfo.displayName}</p>
+                  <p>{myInfo?.displayName}</p>
                   <p>@{userObj.email.split("@")[0]}</p>
                 </div>
                 <div className={styled.userInfo__etc}>
@@ -279,7 +266,6 @@ const LeftBar = ({ userObj }) => {
         <NweetModal
           nweetModal={nweetModal}
           setNweetModal={setNweetModal}
-          creatorInfo={creatorInfo}
           userObj={userObj}
           toggleNweetModal={toggleNweetModal}
         />

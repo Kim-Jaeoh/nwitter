@@ -1,25 +1,16 @@
-import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
 import styled from "./RecommendUser.module.css";
 import noneProfile from "../../image/noneProfile.jpg";
-import { useHistory } from "react-router-dom";
 import { useToggleFollow } from "../../hooks/useToggleFollow";
 import CircleLoader from "../loader/CircleLoader";
 import { cloneDeep } from "lodash";
 import { GrRefresh } from "react-icons/gr";
 import useGetFbInfo from "../../hooks/useGetFbInfo";
 import { Link } from "react-router-dom";
-import TopButton from "../button/TopButton";
 
-const RecommendUser = ({ userObj }) => {
-  const history = useHistory();
+const RecommendUser = () => {
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -73,10 +64,6 @@ const RecommendUser = ({ userObj }) => {
     setRefresh(!refresh);
   };
 
-  const showMore = () => {
-    history.push("/explore/users/");
-  };
-
   return (
     <section className={styled.followBox}>
       {loading ? (
@@ -108,7 +95,9 @@ const RecommendUser = ({ userObj }) => {
                         <p>@{userInfo.email.split("@")[0]}</p>
                       </div>
                     </Link>
-                    {myInfo?.following?.includes(userInfo.email) ? (
+                    {myInfo?.following?.some(
+                      (follow) => follow.email === userInfo.email
+                    ) ? (
                       <div
                         className={`${styled.follow__btn} ${styled.follow} `}
                         onClick={() => toggleFollow(userInfo)}

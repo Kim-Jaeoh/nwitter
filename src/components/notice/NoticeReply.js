@@ -5,30 +5,36 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { NoticeInnerContents } from "./NoticeInnerContents";
 
-export const NoticeReply = ({ replyObj, userObj }) => {
+export const NoticeReply = ({ replyObj }) => {
   const [creatorInfo, setCreatorInfo] = useState([]);
   const [nweets, setNweets] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   // 정보 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "users", replyObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "users", replyObj.email),
+      (doc) => {
+        setCreatorInfo(doc.data());
+      }
+    );
+
+    return () => unsubscribe();
   }, [replyObj]);
 
   // 트윗 가져오기
   useEffect(() => {
-    onSnapshot(doc(dbService, "nweets", replyObj.parent), (doc) => {
-      setNweets(doc.data());
-      setLoading(true);
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "nweets", replyObj.parent),
+      (doc) => {
+        setNweets(doc.data());
+      }
+    );
+    return () => unsubscribe();
   }, [replyObj]);
 
   return (
     <>
-      {loading && (
+      {creatorInfo && nweets && (
         <NoticeInnerContents
           creatorInfo={creatorInfo}
           noticeUser={replyObj}

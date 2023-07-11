@@ -1,38 +1,14 @@
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { dbService } from "../../fbase";
 import styled from "./SelectNoInfo.module.css";
 import Nweet from "../nweet/Nweet";
 import CircleLoader from "../loader/CircleLoader";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const ProfileReNweetsReplies = ({ userObj, creatorInfo }) => {
-  const [reNweets, setReNweets] = useState([]);
   const [replyReNweet, setReplyReNweet] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // 리트윗 가져오기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "reNweets"),
-      orderBy("reNweetAt", "desc")
-    );
-
-    onSnapshot(q, (snapshot) => {
-      const reNweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setReNweets(reNweetArray);
-      setLoading(true);
-    });
-  }, []);
+  const { reNweets } = useGetFbInfo();
 
   // 답글의 리트윗 정보 가져오기
   useEffect(() => {
@@ -51,7 +27,7 @@ const ProfileReNweetsReplies = ({ userObj, creatorInfo }) => {
 
   return (
     <>
-      {loading ? (
+      {reNweets.length ? (
         <>
           {replyReNweet.length !== 0 ? (
             <div>

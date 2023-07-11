@@ -31,11 +31,11 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
 
   const toggleReNweet = async () => {
     const copy = [...nweetObj.reNweet];
-    const filter = copy.filter((email) => {
-      return email !== userObj.email;
+    const filter = copy.filter((reNweet) => {
+      return reNweet.email !== userObj.email;
     });
 
-    if (nweetObj.reNweet?.includes(userObj.email)) {
+    if (nweetObj.reNweet?.some((reNweet) => reNweet.email === userObj.email)) {
       if (!nweetObj?.isReply) {
         setReNweet(false);
 
@@ -69,7 +69,10 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
     } else {
       setReNweet(true);
 
-      const copy = [...nweetObj.reNweet, userObj.email];
+      const copy = [
+        ...nweetObj.reNweet,
+        { email: userObj.email, reNweetAt: Date.now() },
+      ];
 
       if (!nweetObj?.isReply) {
         const reNweetCreator = {

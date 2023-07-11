@@ -3,11 +3,12 @@ import { dbService } from "../../fbase";
 import { useEffect, useState } from "react";
 import Nweet from "../nweet/Nweet";
 import CircleLoader from "../loader/CircleLoader";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const ExploreNweets = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
-  const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { reNweets } = useGetFbInfo();
 
   useEffect(() => {
     const q = query(
@@ -15,7 +16,7 @@ const ExploreNweets = ({ userObj }) => {
       orderBy("createdAt", "desc") // asc(오름차순), desc(내림차순)
     );
 
-    onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const nweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -23,20 +24,8 @@ const ExploreNweets = ({ userObj }) => {
       setNweets(nweetArray);
       setLoading(true);
     });
-  }, []);
 
-  // 리트윗 정보
-  useEffect(() => {
-    const q = query(collection(dbService, "reNweets"));
-
-    onSnapshot(q, (snapshot) => {
-      const reNweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setReNweets(reNweetArray);
-    });
+    return () => unsubscribe();
   }, []);
 
   return (

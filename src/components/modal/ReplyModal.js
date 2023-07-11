@@ -2,19 +2,13 @@ import styled from "../modal/NweetModal.module.css";
 import Modal from "@mui/material/Modal";
 import { GrClose } from "react-icons/gr";
 import { DetailReplyForm } from "../detail/DetailReplyForm";
-import { useSelector } from "react-redux";
-import BarLoader from "../loader/BarLoader";
 
 export const ReplyModal = ({
-  loading,
   userObj,
   nweetObj,
-  creatorInfo,
   replyModal,
   setReplyModal,
 }) => {
-  const currentProgressBar = useSelector((state) => state.user.load);
-
   return (
     <Modal
       open={replyModal}
@@ -29,14 +23,11 @@ export const ReplyModal = ({
           </div>
         </div>
         <div className={styled.editInput__container}>
-          {currentProgressBar?.load && replyModal && <BarLoader />}
           <DetailReplyForm
             userObj={userObj}
-            creatorInfo={creatorInfo}
             nweetObj={nweetObj}
-            setReplyModal={setReplyModal}
             replyModal={replyModal}
-            loading={loading}
+            setReplyModal={setReplyModal}
           />
         </div>
       </div>

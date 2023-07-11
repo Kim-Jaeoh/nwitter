@@ -8,6 +8,12 @@ import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
   const [creatorInfo, setCreatorInfo] = useState({});
   const [loading, setLoading] = useState(false);
+  const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
+    reNweetsObj,
+    nweetObj,
+    userObj
+  );
+  const { timeToString } = useTimeToString();
 
   //  map 처리 된 유저 정보들
   useEffect(() => {
@@ -20,14 +26,6 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
     );
     return () => unsubscribe();
   }, [nweetObj]);
-
-  const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
-    reNweetsObj,
-    nweetObj,
-    userObj
-  );
-
-  const { timeToString } = useTimeToString();
 
   return (
     <>

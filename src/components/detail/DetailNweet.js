@@ -1,10 +1,4 @@
-import {
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
@@ -13,25 +7,19 @@ import { TopCategory } from "../topCategory/TopCategory";
 import { DetailReplyForm } from "./DetailReplyForm";
 import DetailNweetParent from "./DetailNweetParent";
 import DetailNweetReply from "./DetailNweetReply";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import BarLoader from "../loader/BarLoader";
-import { setNotModal } from "../../reducer/user";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export const DetailNweet = ({ userObj }) => {
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const uid = location.pathname.split("/")[2];
-  const [creatorInfo, setCreatorInfo] = useState({});
-  const [nweets, setNweets] = useState([]);
-  const [reNweets, setReNweets] = useState([]);
-  const [showReply, setShowReply] = useState("");
-  const [loading, setLoading] = useState(false);
   const currentProgressBar = useSelector((state) => state.user.load);
   const currentNotModal = useSelector((state) => state.user.modal);
-
-  useEffect(() => {
-    dispatch(setNotModal({ modal: true }));
-  }, [dispatch]);
+  const [nweets, setNweets] = useState([]);
+  const [reNweets, setReNweets] = useState([]);
+  const [replies, setReplies] = useState("");
+  const location = useLocation();
+  const history = useHistory();
+  const uid = location.pathname.split("/")[2];
 
   // 리트윗 가져오기
   useEffect(() => {
@@ -40,40 +28,38 @@ export const DetailNweet = ({ userObj }) => {
       orderBy("reNweetAt", "desc")
     );
 
-    onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const reNweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
       setReNweets(reNweetArray);
-      setLoading(true);
     });
-  }, [userObj.email]);
 
-  // 계정 정보 가져오기
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
-  }, [userObj]);
+    return () => unsubscribe();
+  }, [userObj.email]);
 
   // 원글 정보 가져오기
   useEffect(() => {
     const q = query(collection(dbService, "nweets"));
-    onSnapshot(q, (querySnapShot) => {
+    const unsubscribe = onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setLoading(true);
 
       const parentNweet = userArray.filter((reply) => reply.id === uid);
 
+      if (!parentNweet[0]) {
+        return history.goBack();
+      }
+
       setNweets(parentNweet[0]);
     });
-  }, [uid]);
+
+    return () => unsubscribe();
+  }, [history, uid]);
 
   // 답글 정보 가져오기
   useEffect(() => {
@@ -81,22 +67,23 @@ export const DetailNweet = ({ userObj }) => {
       collection(dbService, "replies"),
       orderBy("createdAt", "desc")
     );
-    onSnapshot(q, (querySnapShot) => {
+    const unsubscribe = onSnapshot(q, (querySnapShot) => {
       const replyArray = querySnapShot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setLoading(true);
 
       const parentNweet = replyArray.filter((reply) => reply.parent === uid);
 
-      setShowReply(parentNweet);
+      setReplies(parentNweet);
     });
+
+    return () => unsubscribe();
   }, [uid]);
 
   return (
     <>
-      {loading && (
+      {nweets && reNweets && replies && (
         <>
           <TopCategory text={"트윗"} iconName={<IoArrowBackOutline />} />
           <DetailNweetParent
@@ -105,14 +92,9 @@ export const DetailNweet = ({ userObj }) => {
             reNweetsObj={reNweets}
           />
           {currentProgressBar?.load && currentNotModal.modal && <BarLoader />}
-          <DetailReplyForm
-            nweetObj={nweets}
-            loading={loading}
-            creatorInfo={creatorInfo}
-            userObj={userObj}
-          />
-          {showReply &&
-            showReply.map((reply) => (
+          <DetailReplyForm nweetObj={nweets} userObj={userObj} />
+          {replies &&
+            replies.map((reply) => (
               <DetailNweetReply
                 key={reply.id}
                 nweets={nweets}

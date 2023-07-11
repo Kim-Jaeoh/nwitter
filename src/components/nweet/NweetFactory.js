@@ -1,6 +1,6 @@
-import { addDoc, collection, doc, onSnapshot } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { v4 } from "uuid";
 import { dbService, storageService } from "../../fbase";
 import { IoCloseSharp, IoImageOutline } from "react-icons/io5";
@@ -9,91 +9,20 @@ import styled from "./NweetFactory.module.css";
 import Picker from "emoji-picker-react";
 import imageCompression from "browser-image-compression";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
-import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
-import { useDispatch, useSelector } from "react-redux";
-import { setProgressBar } from "../../reducer/user";
+import BarLoader from "../loader/BarLoader";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
-const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
+const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
   const fileInput = useRef();
   const textRef = useRef();
   const emojiRef = useRef();
   const [nweet, setNweet] = useState("");
   const [attachment, setAttachment] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [creatorInfo, setCreatorInfo] = useState({});
+  const [progressBarCount, setProgressBarCount] = useState(0);
   const [select, setSelect] = useState("");
-  const dispatch = useDispatch();
-  const currentProgressBar = useSelector((state) => state.user.load);
-
-  // 정보 가져오기
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-      dispatch(setProgressBar({ load: false }));
-    });
-  }, [dispatch, userObj]);
-
-  const handleResizeHeight = useHandleResizeTextarea(textRef);
-
   // 이모지 모달 밖 클릭 시 창 끔
   const { clickEmoji, toggleEmoji } = useEmojiModalOutClick(emojiRef, textRef);
-
-  const onEmojiClick = (event, emojiObject) => {
-    const textEmoji =
-      nweet.slice(0, textRef.current.selectionStart) +
-      emojiObject.emoji +
-      nweet.slice(textRef.current.selectionEnd, nweet.length);
-    setNweet(textEmoji);
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    let attachmentUrl = "";
-    dispatch(setProgressBar({ load: true }));
-
-    // 입력 값 없을 시 업로드 X
-    if (nweet !== "") {
-      // 이미지 있을 때만 첨부
-      if (attachment !== "") {
-        //파일 경로 참조 만들기
-        const attachmentfileRef = ref(storageService, `${userObj.uid}/${v4()}`);
-
-        //storage 참조 경로로 파일 업로드 하기
-        await uploadString(attachmentfileRef, attachment, "data_url");
-
-        //storage 참조 경로에 있는 파일의 URL을 다운로드해서 attachmentUrl 변수에 넣어서 업데이트
-        attachmentUrl = await getDownloadURL(ref(attachmentfileRef));
-      }
-
-      const attachmentNweet = {
-        text: nweet,
-        createdAt: Date.now(),
-        creatorId: userObj.uid,
-        attachmentUrl,
-        email: userObj.email,
-        like: [],
-        reNweet: [],
-        replyId: [],
-      };
-
-      setTimeout(async () => {
-        dispatch(setProgressBar({ load: false }));
-        await addDoc(collection(dbService, "nweets"), attachmentNweet);
-        setNweet("");
-        setAttachment("");
-        if (!nweetModal) {
-          textRef.current.style.height = "52px";
-        } else {
-          setNweetModal(false);
-        }
-      }, 500);
-
-      return () => clearTimeout();
-    } else {
-      alert("글자를 입력하세요");
-    }
-  };
+  const { myInfo } = useGetFbInfo();
 
   const onChange = useCallback((e) => {
     setNweet(e.target.value);
@@ -134,22 +63,108 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
     };
   };
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    let attachmentUrl = "";
+    let start = 0;
+    setProgressBarCount(0); // 프로그레스 바 초기화
+
+    // 입력 값 없을 시 업로드 X
+    if (nweet !== "") {
+      // 이미지 있을 때만 첨부
+      if (attachment !== "") {
+        //파일 경로 참조 만들기
+        const attachmentfileRef = ref(storageService, `${userObj.uid}/${v4()}`);
+
+        //storage 참조 경로로 파일 업로드 하기
+        await uploadString(attachmentfileRef, attachment, "data_url");
+
+        //storage 참조 경로에 있는 파일의 URL을 다운로드해서 attachmentUrl 변수에 넣어서 업데이트
+        attachmentUrl = await getDownloadURL(ref(attachmentfileRef));
+      }
+
+      const attachmentNweet = {
+        text: nweet,
+        createdAt: Date.now(),
+        creatorId: userObj.uid,
+        attachmentUrl,
+        email: userObj.email,
+        like: [],
+        reNweet: [],
+        replyId: [],
+      };
+
+      const addNweet = async () => {
+        await addDoc(collection(dbService, "nweets"), attachmentNweet)
+          .then(() => {
+            setProgressBarCount(0); // 프로그레스 바 초기화
+            setNweet("");
+            setAttachment("");
+            if (!nweetModal) {
+              textRef.current.style.height = "52px";
+            } else {
+              setNweetModal(false);
+            }
+          })
+          .catch((error) => {
+            // 에러 처리
+            setProgressBarCount(0); // 프로그레스 바 초기화
+            console.error("Error adding document: ", error);
+          });
+      };
+
+      const interval = setInterval(() => {
+        if (start <= 100) {
+          setProgressBarCount((prev) => (prev === 100 ? 100 : prev + 1));
+          start++; // progress 증가
+        }
+        if (start === 100) {
+          addNweet();
+          return;
+        }
+      });
+
+      // await new Promise((resolve) => {
+      //   const checkProgress = setInterval(() => {
+      //     if (progressBarCount >= 100) {
+      //       clearInterval(checkProgress);
+      //       resolve();
+      //     }
+      //   }, 10);
+      // });
+
+      return () => {
+        clearInterval(interval);
+      };
+    } else {
+      alert("글자를 입력하세요");
+    }
+  };
+
   const onClearAttachment = () => {
     setAttachment("");
     fileInput.current.value = ""; // 취소 시 파일 문구 없애기
   };
 
+  const onEmojiClick = (event, emojiObject) => {
+    const textEmoji =
+      nweet.slice(0, textRef.current.selectionStart) +
+      emojiObject.emoji +
+      nweet.slice(textRef.current.selectionEnd, nweet.length);
+    setNweet(textEmoji);
+  };
+
   return (
     <>
-      {/* {currentProgressBar?.load && notModal && <BarLoader />} */}
+      {progressBarCount !== 0 && <BarLoader count={progressBarCount} />}
       <div
         className={`${styled.factoryForm} ${nweetModal && styled.modalBorder}`}
       >
         <div className={styled.factoryInput__container}>
           <div className={styled.nweet__profile}>
-            {loading && (
+            {myInfo && (
               <img
-                src={creatorInfo.photoURL}
+                src={myInfo?.photoURL}
                 alt="profileImg"
                 className={styled.profile__image}
               />
@@ -170,7 +185,6 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
                 onChange={onChange}
                 onFocus={() => setSelect("text")}
                 onBlur={() => setSelect("")}
-                onInput={handleResizeHeight}
                 maxLength={280}
                 placeholder="무슨 일이 일어나고 있나요?"
               />
@@ -197,7 +211,7 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
             <div className={styled.factoryInput__add}>
               <div className={styled.factoryInput__iconBox}>
                 <label
-                  htmlFor="attach-file"
+                  htmlFor={nweetModal ? "modal-attach-file" : "attach-file"}
                   className={styled.factoryInput__label}
                 >
                   <div className={styled.factoryInput__icon}>
@@ -206,7 +220,7 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal, notModal }) => {
                 </label>
                 <input
                   ref={fileInput}
-                  id="attach-file"
+                  id={nweetModal ? "modal-attach-file" : "attach-file"}
                   type="file"
                   accept="image/*"
                   onChange={onFileChange}

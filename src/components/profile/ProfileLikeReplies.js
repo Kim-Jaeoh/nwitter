@@ -11,30 +11,14 @@ import { dbService } from "../../fbase";
 import { useLocation } from "react-router-dom";
 import Nweet from "../nweet/Nweet";
 import CircleLoader from "../loader/CircleLoader";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const LikeReplies = ({ userObj }) => {
   const location = useLocation();
   const uid = location.pathname.split("/")[3];
-  const [reNweets, setReNweets] = useState([]);
   const [myLikeReplies, setMyLikeReplies] = useState([] || null);
   const [loading, setLoading] = useState(false);
-
-  // 리트윗 정보
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "reNweets"),
-      orderBy("reNweetAt", "desc")
-    );
-
-    onSnapshot(q, (snapshot) => {
-      const reNweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setReNweets(reNweetArray);
-    });
-  }, []);
+  const { reNweets } = useGetFbInfo();
 
   // 답글의 좋아요 정보 가져오기
   useEffect(() => {

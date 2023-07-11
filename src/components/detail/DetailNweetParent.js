@@ -65,8 +65,8 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
 
     // 리트윗된 본인 아이디 있으면 true
     const checkReNweet = () => {
-      const hasCurrentUserReNweeted = nweetObj?.reNweet?.includes(
-        userObj.email
+      const hasCurrentUserReNweeted = nweetObj?.reNweet?.some(
+        (arr) => arr.email === userObj.email
       );
       setReNweet(hasCurrentUserReNweeted);
     };
@@ -117,7 +117,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
                   className={styled.nweet__profile}
                 >
                   <img
-                    src={loading && creatorInfo.photoURL}
+                    src={creatorInfo.photoURL}
                     alt="profileImg"
                     className={styled.profile__image}
                   />

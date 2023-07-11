@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { dbService } from "../fbase";
 import { useEffect, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
@@ -17,6 +11,7 @@ import { TopCategory } from "../components/topCategory/TopCategory";
 import styled from "./Notice.module.css";
 import { NoticeFollow } from "../components/notice/NoticeFollow";
 import CircleLoader from "../components/loader/CircleLoader";
+import useGetFbInfo from "../hooks/useGetFbInfo";
 
 const Notice = ({ userObj }) => {
   const location = useLocation();
@@ -24,37 +19,7 @@ const Notice = ({ userObj }) => {
   const [reNweets, setReNweets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [replies, setReplies] = useState([]);
-  const [myFollowerInfo, setMyFollowerInfo] = useState({});
-  const [userInfo, setUserInfo] = useState([]);
-
-  // 본인 정보 가져오기
-  useEffect(() => {
-    onSnapshot(doc(dbService, "users", userObj.email), (doc) => {
-      setUserInfo(doc.data());
-      setLoading(true);
-    });
-  }, [userObj]);
-
-  // 본인 팔로워 정보 가져오기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "users"),
-      orderBy("followingAt", "desc")
-    );
-
-    onSnapshot(q, (snapshot) => {
-      const reNweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      const filter = reNweetArray.filter((obj) =>
-        obj.following.includes(userObj.email)
-      );
-
-      setMyFollowerInfo(filter);
-    });
-  }, [userObj.email]);
+  const { myInfo } = useGetFbInfo();
 
   // 리트윗 가져오기
   useEffect(() => {
@@ -63,7 +28,7 @@ const Notice = ({ userObj }) => {
       orderBy("reNweetAt", "desc")
     );
 
-    onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const reNweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -79,6 +44,8 @@ const Notice = ({ userObj }) => {
       setReNweets(filter);
       setLoading(true);
     });
+
+    return () => unsubscribe();
   }, [userObj.email]);
 
   // 답글 가져오기
@@ -87,7 +54,7 @@ const Notice = ({ userObj }) => {
       collection(dbService, "replies"),
       orderBy("createdAt", "desc")
     );
-    onSnapshot(q, (querySnapShot) => {
+    const unsubscribe = onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -99,6 +66,8 @@ const Notice = ({ userObj }) => {
       setReplies(notMe);
       setLoading(true);
     });
+
+    return () => unsubscribe();
   }, [userObj.email]);
 
   useEffect(() => {
@@ -184,15 +153,17 @@ const Notice = ({ userObj }) => {
             </Route>
             <Route path="/notice/followers">
               <>
-                {myFollowerInfo.length !== 0 ? (
-                  myFollowerInfo.map((follow, index) => (
-                    <NoticeFollow
-                      key={index}
-                      userObj={userObj}
-                      followObj={follow}
-                      loading={loading}
-                    />
-                  ))
+                {myInfo ? (
+                  myInfo.follower
+                    .sort((a, b) => b.followAt - a.followAt)
+                    .map((follow, index) => (
+                      <NoticeFollow
+                        key={index}
+                        userObj={userObj}
+                        followObj={follow}
+                        loading={loading}
+                      />
+                    ))
                 ) : (
                   <div className={styled.noInfoBox}>
                     <div className={styled.noInfo}>

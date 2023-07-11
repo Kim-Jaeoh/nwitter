@@ -11,30 +11,14 @@ import {
 import { dbService } from "../../fbase";
 import { useLocation } from "react-router-dom";
 import CircleLoader from "../loader/CircleLoader";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const LikeNweets = ({ userObj }) => {
   const location = useLocation();
   const uid = location.pathname.split("/")[3];
-  const [reNweets, setReNweets] = useState([]);
   const [myLikeNweets, setMyLikeNweets] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // 리트윗 정보
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "reNweets"),
-      orderBy("reNweetAt", "desc")
-    );
-
-    onSnapshot(q, (snapshot) => {
-      const reNweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setReNweets(reNweetArray);
-    });
-  }, []);
+  const { reNweets } = useGetFbInfo();
 
   // 원글의 좋아요 정보 가져오기
   useEffect(() => {
@@ -61,15 +45,17 @@ const LikeNweets = ({ userObj }) => {
         <>
           {myLikeNweets.length !== 0 ? (
             <div>
-              {myLikeNweets.map((myNweet) => (
-                <Nweet
-                  isOwner={myNweet.creatorId === userObj.uid}
-                  key={myNweet.id}
-                  nweetObj={myNweet}
-                  userObj={userObj}
-                  reNweetsObj={reNweets}
-                />
-              ))}
+              {myLikeNweets
+                .sort((a, b) => b.createdAt - a.createdAt)
+                .map((myNweet) => (
+                  <Nweet
+                    isOwner={myNweet.creatorId === userObj.uid}
+                    key={myNweet.id}
+                    nweetObj={myNweet}
+                    userObj={userObj}
+                    reNweetsObj={reNweets}
+                  />
+                ))}
             </div>
           ) : (
             <div className={styled.noInfoBox}>

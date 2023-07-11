@@ -39,7 +39,8 @@
   width: 100%;
   max-height: 100%;
   height: 52px;
-  overflow: hidden;
+  max-height: 80px;
+  /* overflow: hidden; */
   box-sizing: border-box;
   outline: none;
   resize: none;
@@ -174,6 +175,8 @@
   align-items: center;
   position: relative;
   margin: 16px 0;
+  overflow: hidden;
+  max-width: 400px;
 }
 
 .factoryForm__Image {

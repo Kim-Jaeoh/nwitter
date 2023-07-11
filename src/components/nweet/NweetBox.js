@@ -9,14 +9,13 @@ import {
   FaRegComment,
   FaRegHeart,
 } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
 import { useNweetEctModalClick } from "../../hooks/useNweetEctModalClick";
 import { useState } from "react";
 import UpdateNweetModal from "../modal/UpdateNweetModal";
 import { ReplyModal } from "../modal/ReplyModal";
-import { setNotModal } from "../../reducer/user";
 import { Link, useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
@@ -32,7 +31,6 @@ export const NweetBox = ({
   isOwner,
   timeToString,
 }) => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const { pathname } = useLocation();
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -54,8 +52,8 @@ export const NweetBox = ({
 
     // 리트윗된 본인 아이디 있으면 true
     const checkReNweet = () => {
-      const hasCurrentUserReNweeted = nweetObj?.reNweet?.includes(
-        userObj.email
+      const hasCurrentUserReNweeted = nweetObj?.reNweet?.some(
+        (arr) => arr.email === userObj.email
       );
       setReNweet(hasCurrentUserReNweeted);
     };
@@ -82,19 +80,21 @@ export const NweetBox = ({
   };
 
   const toggleReplyModal = () => {
-    if (!pathname.includes("/nweet/" + nweetObj.parent)) {
-      setReplyModal((prev) => !prev);
-      dispatch(setNotModal({ modal: false }));
-    }
+    // if (!pathname.includes("/nweet/" + nweetObj.parent)) {
+    setReplyModal((prev) => !prev);
+    // dispatch(setNotModal({ modal: false }));
+    // }
   };
 
   const goNweet = (e) => {
-    if (pathname.includes("nweet")) {
+    if (pathname.includes("nweet/") && pathname.split("/")[2]) {
       return;
     }
-    if (nweetObj?.parent) {
-      return history.push("/nweet/" + nweetObj.parent);
-    } else {
+    if (nweetObj?.parent && !etcRef?.current?.contains(e.target)) {
+      console.log("d");
+      history.push("/nweet/" + nweetObj.parent);
+    } else if (!nweetObj?.parent && !etcRef?.current?.contains(e.target)) {
+      console.log("s");
       history.push("/nweet/" + nweetObj.id);
     }
   };
@@ -121,6 +121,7 @@ export const NweetBox = ({
                   <img
                     src={loading && creatorInfo.photoURL}
                     alt="profileImg"
+                    loading="lazy"
                     className={styled.profile__image}
                   />
                 </Link>
@@ -183,7 +184,11 @@ export const NweetBox = ({
             </div>
             {nweetObj.attachmentUrl ? (
               <div className={styled.nweet__image}>
-                <img src={nweetObj.attachmentUrl} alt="uploaded file" />
+                <img
+                  src={nweetObj.attachmentUrl}
+                  alt="uploaded file"
+                  loading="lazy"
+                />
               </div>
             ) : null}
             <nav className={styled.nweet__actions}>

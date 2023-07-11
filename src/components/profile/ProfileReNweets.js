@@ -10,29 +10,11 @@ import { dbService } from "../../fbase";
 import styled from "./SelectNoInfo.module.css";
 import Nweet from "../nweet/Nweet";
 import CircleLoader from "../loader/CircleLoader";
+import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const ProfileReNweets = ({ userObj, creatorInfo }) => {
   const [ogNweets, setOgNweets] = useState([]);
-  const [reNweets, setReNweets] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // 리트윗 가져오기
-  useEffect(() => {
-    const q = query(
-      collection(dbService, "reNweets"),
-      orderBy("reNweetAt", "desc")
-    );
-
-    onSnapshot(q, (snapshot) => {
-      const reNweetArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setReNweets(reNweetArray);
-      setLoading(true);
-    });
-  }, []);
+  const { reNweets } = useGetFbInfo();
 
   // 원글의 리트윗 정보 가져오기
   useEffect(() => {
@@ -40,18 +22,20 @@ const ProfileReNweets = ({ userObj, creatorInfo }) => {
       collection(dbService, "nweets"),
       where("reNweet", "array-contains", creatorInfo.email)
     );
-    onSnapshot(q, (querySnapShot) => {
+    const unsubscribe = onSnapshot(q, (querySnapShot) => {
       const userArray = querySnapShot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setOgNweets(userArray);
     });
+
+    return () => unsubscribe();
   }, [creatorInfo.email]);
 
   return (
     <>
-      {loading ? (
+      {reNweets ? (
         <>
           {ogNweets.length !== 0 ? (
             <div>

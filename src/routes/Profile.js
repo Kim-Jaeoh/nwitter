@@ -164,7 +164,9 @@ const Profile = ({ userObj }) => {
                             </div>
                           ) : (
                             <>
-                              {myInfo.following.includes(creatorInfo.email) ? (
+                              {myInfo.following.some(
+                                (follow) => follow.email === creatorInfo.email
+                              ) ? (
                                 <div
                                   className={`${styled.profile__editBtn} ${styled.follow} `}
                                   onClick={() => toggleFollow(creatorInfo)}
