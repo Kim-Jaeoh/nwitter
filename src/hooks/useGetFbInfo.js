@@ -13,6 +13,10 @@ const useGetFbInfo = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [myInfo, setMyInfo] = useState(null);
   const [reNweets, setReNweets] = useState([]);
+  const [fbLoading, setFbLoading] = useState({
+    myInfo: false,
+    reNweets: false,
+  });
 
   // 본인 정보 가져오기
   useEffect(() => {
@@ -20,10 +24,13 @@ const useGetFbInfo = () => {
       doc(dbService, "users", currentUser.email),
       (doc) => {
         setMyInfo(doc.data());
+        setFbLoading((prev) => ({ ...prev, myInfo: true }));
       }
     );
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, [currentUser.email]);
 
   // 리트윗 정보
@@ -40,12 +47,15 @@ const useGetFbInfo = () => {
       }));
 
       setReNweets(reNweetArray);
+      setFbLoading((prev) => ({ ...prev, reNweets: true }));
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
-  return { myInfo, reNweets };
+  return { myInfo, reNweets, fbLoading };
 };
 
 export default useGetFbInfo;

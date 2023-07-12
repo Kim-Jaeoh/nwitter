@@ -23,18 +23,22 @@ export const Replies = ({ userObj, creatorInfo }) => {
         id: doc.id,
         ...doc.data(),
       }));
-      setFilterReplies(userArray);
+
+      const sortArr = userArray.sort((a, b) => b.createdAt - a.createdAt);
+      setFilterReplies(sortArr);
       setLoading(true);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, [creatorInfo.email]);
 
   return (
     <>
       {loading ? (
         <>
-          {filterReplies.length !== 0 ? (
+          {filterReplies.length ? (
             <div>
               {filterReplies.map((myNweet) => (
                 <Nweet

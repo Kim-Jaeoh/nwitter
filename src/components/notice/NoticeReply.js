@@ -34,7 +34,7 @@ export const NoticeReply = ({ replyObj }) => {
 
   return (
     <>
-      {creatorInfo && nweets && (
+      {creatorInfo.length !== 0 && nweets.length !== 0 && (
         <NoticeInnerContents
           creatorInfo={creatorInfo}
           noticeUser={replyObj}

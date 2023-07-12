@@ -8,10 +8,10 @@ export const useToggleLike = (nweetObj) => {
   const currentUser = useSelector((state) => state.user.currentUser);
 
   const toggleLike = async () => {
-    if (nweetObj.like?.includes(currentUser.email)) {
+    if (nweetObj.like?.some((info) => info.email === currentUser.email)) {
       setLiked(false);
       const copy = [...nweetObj.like];
-      const filter = copy.filter((email) => email !== currentUser.email);
+      const filter = copy.filter((info) => info.email !== currentUser.email);
 
       if (!nweetObj?.parent) {
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {
@@ -24,8 +24,10 @@ export const useToggleLike = (nweetObj) => {
       }
     } else {
       setLiked(true);
-      const copy = [...nweetObj.like];
-      copy.push(currentUser.email);
+      const copy = [
+        ...nweetObj.like,
+        { email: currentUser.email, likeAt: Date.now() },
+      ];
 
       if (!nweetObj?.parent) {
         await updateDoc(doc(dbService, "nweets", nweetObj.id), {

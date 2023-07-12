@@ -18,6 +18,7 @@ import UpdateNweetModal from "../modal/UpdateNweetModal";
 import { ReplyModal } from "../modal/ReplyModal";
 import { Link, useLocation } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useTimeToString } from "../../hooks/useTimeToString";
 
 export const NweetBox = ({
   loading,
@@ -29,7 +30,6 @@ export const NweetBox = ({
   setReNweet,
   toggleReNweet,
   isOwner,
-  timeToString,
 }) => {
   const history = useHistory();
   const { pathname } = useLocation();
@@ -42,18 +42,21 @@ export const NweetBox = ({
   const { liked, setLiked, toggleLike } = useToggleLike(nweetObj);
   const { bookmark, setBookmark, toggleBookmark } = useToggleBookmark(nweetObj);
   const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
+  const { timeToString } = useTimeToString();
 
   useEffect(() => {
     // 좋아요 목록 중 본인 아이디 있으면 true
     const checkLiked = () => {
-      const hasCurrentUserLiked = nweetObj?.like?.includes(currentUser.email);
+      const hasCurrentUserLiked = nweetObj?.like?.some(
+        (info) => info?.email === currentUser.email
+      );
       setLiked(hasCurrentUserLiked);
     };
 
     // 리트윗된 본인 아이디 있으면 true
     const checkReNweet = () => {
       const hasCurrentUserReNweeted = nweetObj?.reNweet?.some(
-        (arr) => arr.email === userObj.email
+        (arr) => arr.email === currentUser.email
       );
       setReNweet(hasCurrentUserReNweeted);
     };
@@ -69,7 +72,16 @@ export const NweetBox = ({
     checkLiked();
     checkReNweet();
     checkBookmark();
-  }, [nweetObj, currentUser, userObj, setLiked, setReNweet, setBookmark]);
+  }, [
+    currentUser?.bookmark,
+    currentUser.email,
+    nweetObj.id,
+    nweetObj?.like,
+    nweetObj?.reNweet,
+    setBookmark,
+    setLiked,
+    setReNweet,
+  ]);
 
   const toggleNweetEct = () => {
     setNweetEtc((prev) => !prev);
@@ -80,10 +92,7 @@ export const NweetBox = ({
   };
 
   const toggleReplyModal = () => {
-    // if (!pathname.includes("/nweet/" + nweetObj.parent)) {
     setReplyModal((prev) => !prev);
-    // dispatch(setNotModal({ modal: false }));
-    // }
   };
 
   const goNweet = (e) => {
@@ -91,10 +100,8 @@ export const NweetBox = ({
       return;
     }
     if (nweetObj?.parent && !etcRef?.current?.contains(e.target)) {
-      console.log("d");
       history.push("/nweet/" + nweetObj.parent);
     } else if (!nweetObj?.parent && !etcRef?.current?.contains(e.target)) {
-      console.log("s");
       history.push("/nweet/" + nweetObj.id);
     }
   };
@@ -112,7 +119,7 @@ export const NweetBox = ({
                 <p>{currentUser.displayName} 님이 리트윗 했습니다</p>
               </div>
             )}
-            <div className={styled.nweet__wrapper} onClick={(e) => goNweet(e)}>
+            <div className={styled.nweet__wrapper} onClick={goNweet}>
               <div className={styled.nweet__container}>
                 <Link
                   className={styled.nweet__profile}
@@ -183,7 +190,7 @@ export const NweetBox = ({
               </div>
             </div>
             {nweetObj.attachmentUrl ? (
-              <div className={styled.nweet__image}>
+              <div className={styled.nweet__image} onClick={goNweet}>
                 <img
                   src={nweetObj.attachmentUrl}
                   alt="uploaded file"

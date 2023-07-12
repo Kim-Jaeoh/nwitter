@@ -17,9 +17,12 @@ const Notice = ({ userObj }) => {
   const location = useLocation();
   const [selected, setSelected] = useState(1);
   const [reNweets, setReNweets] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    reNweets: false,
+    replies: false,
+  });
   const [replies, setReplies] = useState([]);
-  const { myInfo } = useGetFbInfo();
+  const { myInfo, fbLoading } = useGetFbInfo();
 
   // 리트윗 가져오기
   useEffect(() => {
@@ -42,7 +45,7 @@ const Notice = ({ userObj }) => {
       );
 
       setReNweets(filter);
-      setLoading(true);
+      setLoading((prev) => ({ ...prev, reNweets: true }));
     });
 
     return () => unsubscribe();
@@ -64,7 +67,7 @@ const Notice = ({ userObj }) => {
       const notMe = filter.filter((obj) => obj.email !== userObj.email);
 
       setReplies(notMe);
-      setLoading(true);
+      setLoading((prev) => ({ ...prev, replies: true }));
     });
 
     return () => unsubscribe();
@@ -107,77 +110,95 @@ const Notice = ({ userObj }) => {
           </nav>
         </div>
 
-        {loading ? (
-          <Switch>
-            <Route path="/notice/renweets">
-              <>
-                {reNweets.length !== 0 ? (
-                  reNweets?.map((reNweet, index) => (
-                    <NoticeReNweet
-                      key={reNweet.id}
-                      reNweetsObj={reNweet}
-                      loading={loading}
-                      userObj={userObj}
-                    />
-                  ))
-                ) : (
-                  <div className={styled.noInfoBox}>
-                    <div className={styled.noInfo}>
-                      <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                      <p>누군가가 나의 트윗을 리트윗 하면 여기에 표시됩니다.</p>
-                    </div>
-                  </div>
-                )}
-              </>
-            </Route>
-            <Route path="/notice/replies">
-              <>
-                {replies.length !== 0 ? (
-                  replies?.map((reply) => (
-                    <NoticeReply
-                      key={reply.id}
-                      userObj={userObj}
-                      replyObj={reply}
-                      loading={loading}
-                    />
-                  ))
-                ) : (
-                  <div className={styled.noInfoBox}>
-                    <div className={styled.noInfo}>
-                      <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                      <p>누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.</p>
-                    </div>
-                  </div>
-                )}
-              </>
-            </Route>
-            <Route path="/notice/followers">
-              <>
-                {myInfo ? (
-                  myInfo.follower
-                    .sort((a, b) => b.followAt - a.followAt)
-                    .map((follow, index) => (
-                      <NoticeFollow
-                        key={index}
+        <Switch>
+          <Route path="/notice/renweets">
+            <>
+              {loading.reNweets ? (
+                <>
+                  {reNweets.length !== 0 ? (
+                    reNweets?.map((reNweet, index) => (
+                      <NoticeReNweet
+                        key={reNweet.id}
+                        reNweetsObj={reNweet}
+                        loading={loading}
                         userObj={userObj}
-                        followObj={follow}
+                      />
+                    ))
+                  ) : (
+                    <div className={styled.noInfoBox}>
+                      <div className={styled.noInfo}>
+                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                        <p>
+                          누군가가 나의 트윗을 리트윗 하면 여기에 표시됩니다.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <CircleLoader />
+              )}
+            </>
+          </Route>
+          <Route path="/notice/replies">
+            <>
+              {loading.replies ? (
+                <>
+                  {replies.length !== 0 ? (
+                    replies?.map((reply) => (
+                      <NoticeReply
+                        key={reply.id}
+                        userObj={userObj}
+                        replyObj={reply}
                         loading={loading}
                       />
                     ))
-                ) : (
-                  <div className={styled.noInfoBox}>
-                    <div className={styled.noInfo}>
-                      <h2>아직은 여기에 아무 것도 없습니다.</h2>
-                      <p>누군가가 나를 팔로우 하면 여기에 표시됩니다.</p>
+                  ) : (
+                    <div className={styled.noInfoBox}>
+                      <div className={styled.noInfo}>
+                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                        <p>
+                          누군가가 나의 트윗에 답글을 달면 여기에 표시됩니다.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </>
-            </Route>
-          </Switch>
-        ) : (
-          <CircleLoader />
-        )}
+                  )}
+                </>
+              ) : (
+                <CircleLoader />
+              )}
+            </>
+          </Route>
+          <Route path="/notice/followers">
+            <>
+              {fbLoading.myInfo ? (
+                <>
+                  {myInfo ? (
+                    myInfo.follower
+                      .sort((a, b) => b.followAt - a.followAt)
+                      .map((follow, index) => (
+                        <NoticeFollow
+                          key={index}
+                          userObj={userObj}
+                          followObj={follow}
+                          loading={loading}
+                        />
+                      ))
+                  ) : (
+                    <div className={styled.noInfoBox}>
+                      <div className={styled.noInfo}>
+                        <h2>아직은 여기에 아무 것도 없습니다.</h2>
+                        <p>누군가가 나를 팔로우 하면 여기에 표시됩니다.</p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <CircleLoader />
+              )}
+            </>
+          </Route>
+        </Switch>
       </div>
     </>
   );

@@ -1,41 +1,47 @@
 import styled from "./SelectNoInfo.module.css";
 import { useEffect, useState } from "react";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { dbService } from "../../fbase";
-import { useLocation } from "react-router-dom";
 import Nweet from "../nweet/Nweet";
 import CircleLoader from "../loader/CircleLoader";
 import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const LikeReplies = ({ userObj }) => {
-  const location = useLocation();
-  const uid = location.pathname.split("/")[3];
   const [myLikeReplies, setMyLikeReplies] = useState([] || null);
   const [loading, setLoading] = useState(false);
   const { reNweets } = useGetFbInfo();
 
   // 답글의 좋아요 정보 가져오기
   useEffect(() => {
-    const q = query(
-      collection(dbService, "replies"),
-      where("like", "array-contains", uid)
-    );
+    const q = query(collection(dbService, "replies"));
 
-    onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const array = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setMyLikeReplies(array);
+
+      const filterArr = array.filter((arr) =>
+        arr.like.some((like) => like.email === userObj.email)
+      );
+
+      const sortArr = filterArr
+        .map((arr) => {
+          const filter = arr.like.filter(
+            (like) => like?.email === userObj.email
+          );
+          return { id: arr.id, likeAt: filter[0].likeAt, ...arr };
+        })
+        .sort((a, b) => b.likeAt - a.likeAt);
+
+      setMyLikeReplies(sortArr);
       setLoading(true);
     });
-  }, [uid]);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userObj.email]);
 
   return (
     <>
@@ -45,8 +51,8 @@ const LikeReplies = ({ userObj }) => {
             <div>
               {myLikeReplies.map((myNweet) => (
                 <Nweet
-                  isOwner={myNweet.creatorId === userObj.uid}
                   key={myNweet.id}
+                  isOwner={myNweet.creatorId === userObj.uid}
                   nweetObj={myNweet}
                   userObj={userObj}
                   reNweetsObj={reNweets}

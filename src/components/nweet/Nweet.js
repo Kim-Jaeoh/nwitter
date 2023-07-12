@@ -5,7 +5,7 @@ import { NweetBox } from "./NweetBox";
 import { useTimeToString } from "../../hooks/useTimeToString";
 import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 
-const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
+const Nweet = ({ isOwner, nweetObj, userObj, reNweetsObj }) => {
   const [creatorInfo, setCreatorInfo] = useState({});
   const [loading, setLoading] = useState(false);
   const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
@@ -13,7 +13,6 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
     nweetObj,
     userObj
   );
-  const { timeToString } = useTimeToString();
 
   //  map 처리 된 유저 정보들
   useEffect(() => {
@@ -40,7 +39,6 @@ const Nweet = ({ nweetObj, isOwner, userObj, reNweetsObj }) => {
           setReNweet={setReNweet}
           toggleReNweet={toggleReNweet}
           isOwner={isOwner}
-          timeToString={timeToString}
         />
       )}
     </>

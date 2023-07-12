@@ -1,43 +1,47 @@
 import Nweet from "../nweet/Nweet";
 import styled from "./SelectNoInfo.module.css";
 import { useEffect, useState } from "react";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { dbService } from "../../fbase";
-import { useLocation } from "react-router-dom";
 import CircleLoader from "../loader/CircleLoader";
 import useGetFbInfo from "../../hooks/useGetFbInfo";
 
 const LikeNweets = ({ userObj }) => {
-  const location = useLocation();
-  const uid = location.pathname.split("/")[3];
   const [myLikeNweets, setMyLikeNweets] = useState([]);
-  const [loading, setLoading] = useState(false);
   const { reNweets } = useGetFbInfo();
+  const [loading, setLoading] = useState(false);
 
   // 원글의 좋아요 정보 가져오기
   useEffect(() => {
-    const q = query(
-      collection(dbService, "nweets"),
-      where("like", "array-contains", uid)
-    );
+    const q = query(collection(dbService, "nweets"));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const array = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setMyLikeNweets(array);
+
+      const filterArr = array.filter((arr) =>
+        arr.like.some((like) => like.email === userObj.email)
+      );
+
+      const sortArr = filterArr
+        .map((arr) => {
+          const filter = arr.like.filter(
+            (like) => like?.email === userObj.email
+          );
+          return { id: arr.id, likeAt: filter[0].likeAt, ...arr };
+        })
+        .sort((a, b) => b.likeAt - a.likeAt);
+
+      setMyLikeNweets(sortArr);
       setLoading(true);
     });
 
-    return () => unsubscribe();
-  }, [uid]);
+    return () => {
+      unsubscribe();
+    };
+  }, [userObj.email]);
 
   return (
     <>
@@ -45,17 +49,15 @@ const LikeNweets = ({ userObj }) => {
         <>
           {myLikeNweets.length !== 0 ? (
             <div>
-              {myLikeNweets
-                .sort((a, b) => b.createdAt - a.createdAt)
-                .map((myNweet) => (
-                  <Nweet
-                    isOwner={myNweet.creatorId === userObj.uid}
-                    key={myNweet.id}
-                    nweetObj={myNweet}
-                    userObj={userObj}
-                    reNweetsObj={reNweets}
-                  />
-                ))}
+              {myLikeNweets.map((myNweet) => (
+                <Nweet
+                  isOwner={myNweet.creatorId === userObj.uid}
+                  key={myNweet.id}
+                  nweetObj={myNweet}
+                  userObj={userObj}
+                  reNweetsObj={reNweets}
+                />
+              ))}
             </div>
           ) : (
             <div className={styled.noInfoBox}>

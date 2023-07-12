@@ -154,6 +154,8 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
     setNweet(textEmoji);
   };
 
+  console.log(textRef.current.selectionEnd, nweet.length);
+
   return (
     <>
       {progressBarCount !== 0 && <BarLoader count={progressBarCount} />}

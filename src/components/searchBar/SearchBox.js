@@ -57,21 +57,21 @@ const SearchBox = ({
                       <h2>트윗</h2>
                     </div>
                     <ul className={styled.follows}>
-                      {nweetResult?.map((nweet, index) => (
-                        <>
-                          {index < 4 && (
-                            <SearchNweetsBox
-                              key={nweet.id}
-                              users={users}
-                              nweet={nweet}
-                            />
-                          )}
-                        </>
+                      {nweetResult?.slice(0, 5).map((nweet, index) => (
+                        <SearchNweetsBox
+                          key={nweet.id}
+                          users={users}
+                          nweet={nweet}
+                        />
                       ))}
                       {nweetResult.length >= 4 && (
-                        <div className={styled.more} onClick={showMore}>
+                        <button
+                          type="button"
+                          className={styled.more}
+                          onClick={showMore}
+                        >
                           더 보기
-                        </div>
+                        </button>
                       )}
                     </ul>
                   </section>

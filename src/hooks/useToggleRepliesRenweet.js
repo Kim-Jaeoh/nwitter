@@ -43,7 +43,7 @@ export const useToggleRepliesRenweet = (reNweetsObj, nweetObj, userObj) => {
           reNweet: filter,
         });
 
-        const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
+        const reNweetsRef = doc(dbService, "reNweets", reNweetsId?.id);
         await deleteDoc(reNweetsRef); // 원글의 리트윗 삭제
         dispatch(
           setCurrentUser({

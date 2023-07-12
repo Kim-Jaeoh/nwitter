@@ -1,6 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
 import { dbService } from "../../fbase";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "./UpdateNweetModal.module.css";
 import Modal from "@mui/material/Modal";
 import noneProfile from "../../image/noneProfile.jpg";
@@ -8,7 +8,6 @@ import { GrEmoji } from "react-icons/gr";
 import { GrClose } from "react-icons/gr";
 import Picker from "emoji-picker-react";
 import { useEmojiModalOutClick } from "../../hooks/useEmojiModalOutClick";
-import { useHandleResizeTextarea } from "../../hooks/useHandleResizeTextarea";
 
 const UpdateNweetModal = ({
   creatorInfo,
@@ -26,17 +25,7 @@ const UpdateNweetModal = ({
   const [filterReNweetId, setFilterReNweetId] = useState({});
   const [select, setSelect] = useState("");
 
-  const handleResizeHeight = useHandleResizeTextarea(editRef);
-
   const { clickEmoji, toggleEmoji } = useEmojiModalOutClick(emojiRef, editRef);
-
-  const onEmojiClick = (event, emojiObject) => {
-    const textEmoji =
-      newNweet.slice(0, editRef.current.selectionStart) +
-      emojiObject.emoji +
-      newNweet.slice(editRef.current.selectionEnd, newNweet.length);
-    setNewNweet(textEmoji);
-  };
 
   // 수정된 글 firebase에 업데이트
   useEffect(() => {
@@ -82,6 +71,14 @@ const UpdateNweetModal = ({
     }
 
     setIsEditing(false);
+  };
+
+  const onEmojiClick = (event, emojiObject) => {
+    const textEmoji =
+      newNweet.slice(0, editRef.current.selectionStart) +
+      emojiObject.emoji +
+      newNweet.slice(editRef.current.selectionEnd, newNweet.length);
+    setNewNweet(textEmoji);
   };
 
   return (
@@ -130,9 +127,7 @@ const UpdateNweetModal = ({
                   onChange={onChange}
                   onFocus={() => setSelect("text")}
                   onBlur={() => setSelect("")}
-                  onInput={handleResizeHeight}
                   maxLength={280}
-                  // style={{ height: isAreaHeight }}
                   placeholder="무슨 일이 일어나고 있나요?"
                 />
                 <div className={styled.editInput__add}>

@@ -17,13 +17,11 @@ import { useTimeToString } from "../../hooks/useTimeToString";
 import { useToggleLike } from "../../hooks/useToggleLike";
 import { useToggleBookmark } from "../../hooks/useToggleBookmark";
 import { ReplyModal } from "../modal/ReplyModal";
-import { useDispatch, useSelector } from "react-redux";
-import { setNotModal } from "../../reducer/user";
+import { useSelector } from "react-redux";
 import { useToggleRepliesRenweet } from "../../hooks/useToggleRepliesRenweet";
 import { Link } from "react-router-dom";
 
 const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
-  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const etcRef = useRef();
   const [newNweet, setNewNweet] = useState(nweetObj?.text);
@@ -31,6 +29,15 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [replyModal, setReplyModal] = useState(false);
+  const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
+    reNweetsObj,
+    nweetObj,
+    userObj
+  );
+  const { liked, setLiked, toggleLike } = useToggleLike(nweetObj);
+  const { bookmark, setBookmark, toggleBookmark } = useToggleBookmark(nweetObj);
+  const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
+  const { timeToString2 } = useTimeToString();
 
   //  map 처리 된 각 유저 정보들
   useEffect(() => {
@@ -45,21 +52,12 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
     return () => unsubscribe();
   }, [nweetObj]);
 
-  const { reNweet, setReNweet, toggleReNweet } = useToggleRepliesRenweet(
-    reNweetsObj,
-    nweetObj,
-    userObj
-  );
-  const { liked, setLiked, toggleLike } = useToggleLike(nweetObj);
-  const { bookmark, setBookmark, toggleBookmark } = useToggleBookmark(nweetObj);
-  const { nweetEtc, setNweetEtc } = useNweetEctModalClick(etcRef);
-
-  const { timeToString2 } = useTimeToString();
-
   useEffect(() => {
     // 좋아요 목록 중 본인 아이디 있으면 true
     const checkLiked = () => {
-      const hasCurrentUserLiked = nweetObj?.like?.includes(currentUser.email);
+      const hasCurrentUserLiked = nweetObj?.like?.some(
+        (like) => like.email === currentUser.email
+      );
       setLiked(hasCurrentUserLiked);
     };
 
@@ -94,7 +92,6 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
 
   const toggleReplyModal = () => {
     setReplyModal((prev) => !prev);
-    dispatch(setNotModal({ modal: false }));
   };
 
   return (
@@ -120,6 +117,7 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
                     src={creatorInfo.photoURL}
                     alt="profileImg"
                     className={styled.profile__image}
+                    loading="lazy"
                   />
                 </Link>
                 <div className={styled.userInfo}>
@@ -170,7 +168,11 @@ const DetailNweetParent = ({ nweetObj, userObj, reNweetsObj }) => {
             </div>
             {nweetObj.attachmentUrl ? (
               <div className={styled.nweet__image}>
-                <img src={nweetObj.attachmentUrl} alt="uploaded file" />
+                <img
+                  src={nweetObj.attachmentUrl}
+                  alt="uploaded file"
+                  loading="lazy"
+                />
               </div>
             ) : null}
             <nav className={styled.nweet__actions}>

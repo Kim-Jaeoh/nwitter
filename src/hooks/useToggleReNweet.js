@@ -27,55 +27,54 @@ export const useToggleReNweet = (reNweetsObj, nweetObj, userObj) => {
   }, [nweetObj?.id, reNweetsObj, userObj?.email]);
 
   const toggleReNweet = async () => {
-    console.log("dd");
-    // if (nweetObj.reNweet?.some((reNweet) => reNweet.email === userObj.email)) {
-    //   setReNweet(false);
-    //   const copy = [...nweetObj.reNweet];
-    //   const filter = copy.filter((arr) => {
-    //     return arr.some((el) => el.email !== userObj.email);
-    //   });
+    if (nweetObj.reNweet?.some((reNweet) => reNweet.email === userObj.email)) {
+      setReNweet(false);
+      const copy = [...nweetObj.reNweet];
+      const filter = copy.filter((arr) => {
+        return arr.some((el) => el.email !== userObj.email);
+      });
 
-    //   await updateDoc(doc(dbService, "nweets", nweetObj.id), {
-    //     reNweet: filter,
-    //   });
+      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+        reNweet: filter,
+      });
 
-    //   const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
-    //   await deleteDoc(reNweetsRef); // 원글의 리트윗 삭제
+      const reNweetsRef = doc(dbService, "reNweets", reNweetsId.id);
+      await deleteDoc(reNweetsRef); // 원글의 리트윗 삭제
 
-    //   dispatch(
-    //     setCurrentUser({
-    //       ...currentUser,
-    //       reNweet: filter,
-    //     })
-    //   );
-    // } else {
-    //   setReNweet(true);
-    //   const reNweetCreator = {
-    //     parentText: nweetObj.text,
-    //     creatorId: userObj.uid,
-    //     email: userObj.email,
-    //     like: [],
-    //     reNweetAt: Date.now(),
-    //     parent: nweetObj.id || null,
-    //     parentEmail: nweetObj.email || null,
-    //   };
-    //   await addDoc(collection(dbService, "reNweets"), reNweetCreator);
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          reNweet: filter,
+        })
+      );
+    } else {
+      setReNweet(true);
+      const reNweetCreator = {
+        parentText: nweetObj.text,
+        creatorId: userObj.uid,
+        email: userObj.email,
+        like: [],
+        reNweetAt: Date.now(),
+        parent: nweetObj.id || null,
+        parentEmail: nweetObj.email || null,
+      };
+      await addDoc(collection(dbService, "reNweets"), reNweetCreator);
 
-    //   const copy = [
-    //     ...nweetObj.reNweet,
-    //     { email: userObj.email, reNweetAt: Date.now() },
-    //   ];
-    //   await updateDoc(doc(dbService, "nweets", nweetObj.id), {
-    //     reNweet: copy,
-    //   });
+      const copy = [
+        ...nweetObj.reNweet,
+        { email: userObj.email, reNweetAt: Date.now() },
+      ];
+      await updateDoc(doc(dbService, "nweets", nweetObj.id), {
+        reNweet: copy,
+      });
 
-    //   dispatch(
-    //     setCurrentUser({
-    //       ...currentUser,
-    //       reNweet: copy,
-    //     })
-    //   );
-    // }
+      dispatch(
+        setCurrentUser({
+          ...currentUser,
+          reNweet: copy,
+        })
+      );
+    }
   };
   return { reNweet, setReNweet, toggleReNweet };
 };
