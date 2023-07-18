@@ -23,11 +23,6 @@ import ProfileReNweetBox from "../components/profile/ProfileReNweetBox";
 import useGetFbInfo from "../hooks/useGetFbInfo";
 
 const Profile = ({ userObj }) => {
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const history = useHistory();
-  const uid = location.pathname.split("/")[3];
-  const uid2 = location.pathname.split("/").slice(0, 3).join("/");
   const [creatorInfo, setCreatorInfo] = useState({});
   const [loading, setLoading] = useState(false);
   const [myNweets, setMyNweets] = useState([]);
@@ -35,51 +30,59 @@ const Profile = ({ userObj }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [size, setSize] = useState(window.innerWidth);
   const [resize, setResize] = useState(false);
-  // 커스텀 훅
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { pathname } = useLocation();
+  const userEmail = pathname.split("/")[3];
   const { myInfo } = useGetFbInfo();
   const { timeToString3 } = useTimeToString();
   const toggleFollow = useToggleFollow(myInfo);
 
   useEffect(() => {
-    if (location.pathname.includes("/mynweets")) {
-      setSelected(1);
-    } else if (location.pathname.includes("/replies")) {
-      setSelected(2);
-    } else if (location.pathname.includes("/renweets")) {
-      setSelected(3);
-    } else if (location.pathname.includes("/like")) {
-      setSelected(4);
-    } else if (location.pathname.includes("/bookmark")) {
-      setSelected(5);
-    }
-  }, [location.pathname, userObj.email]);
+    const paths = {
+      mynweets: 1,
+      replies: 2,
+      renweets: 3,
+      like: 4,
+      bookmark: 5,
+    };
+
+    const selectedValue = paths[pathname.split("/")[2]];
+
+    setSelected(selectedValue);
+  }, [pathname, userObj.email]);
 
   // 필터링 방법 (본인이 작성한 것 확인)
   useEffect(() => {
     const q = query(
       collection(dbService, "nweets"),
-      where("email", "==", uid),
+      where("email", "==", userEmail),
       orderBy("createdAt", "desc")
     );
 
-    onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const array = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setMyNweets(array);
     });
-  }, [uid]);
+
+    return () => unsubscribe();
+  }, [userEmail]);
 
   // 렌더링 시 실시간 정보 가져오고 이메일, 닉네임, 사진 바뀔 때마다 리렌더링(업데이트)
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(dbService, "users", uid), (doc) => {
-      setCreatorInfo(doc.data());
-      setLoading(true);
-    });
+    const unsubscribe = onSnapshot(
+      doc(dbService, "users", userEmail),
+      (doc) => {
+        setCreatorInfo(doc.data());
+        setLoading(true);
+      }
+    );
 
     return () => unsubscribe();
-  }, [uid]);
+  }, [userEmail]);
 
   // 리사이징
   useEffect(() => {
@@ -105,7 +108,7 @@ const Profile = ({ userObj }) => {
       dispatch(
         setCurrentUser({
           photoURL: "",
-          uid: "",
+          userEmail: "",
           displayName: "",
           email: "",
           description: "",
@@ -155,7 +158,7 @@ const Profile = ({ userObj }) => {
                             />
                           </div>
 
-                          {userObj.email === uid ? (
+                          {userObj.email === userEmail ? (
                             <div
                               className={styled.profile__editBtn}
                               onClick={toggleEdit}
@@ -220,86 +223,51 @@ const Profile = ({ userObj }) => {
                       <SelectMenuBtn
                         num={1}
                         selected={selected}
-                        url={
-                          uid2.includes("user")
-                            ? "/user/mynweets/" + uid
-                            : "/profile/mynweets/" + uid
-                        }
+                        url={"/profile/mynweets/" + userEmail}
                         text={"트윗"}
                       />
                       <SelectMenuBtn
                         num={2}
                         selected={selected}
-                        url={
-                          uid2.includes("/user/")
-                            ? "/user/replies/" + uid
-                            : "/profile/replies/" + uid
-                        }
+                        url={"/profile/replies/" + userEmail}
                         text={"답글"}
                       />
                       <SelectMenuBtn
                         num={3}
                         selected={selected}
-                        url={
-                          uid2.includes("/user/")
-                            ? "/user/renweets/" + uid
-                            : "/profile/renweets/" + uid
-                        }
+                        url={"/profile/renweets/" + userEmail}
                         text={"리트윗"}
                       />
                       <SelectMenuBtn
                         num={4}
                         selected={selected}
-                        url={
-                          uid2.includes("/user/")
-                            ? "/user/likenweets/" + uid
-                            : "/profile/likenweets/" + uid
-                        }
+                        url={"/profile/likenweets/" + userEmail}
                         text={"좋아요"}
                       />
-                      {resize && userObj.email === uid && (
+                      {resize && userObj.email === userEmail && (
                         <SelectMenuBtn
                           num={5}
                           selected={selected}
-                          url={"/profile/bookmarknweets/" + uid}
+                          url={"/profile/bookmarknweets/" + userEmail}
                           text={"북마크"}
                         />
                       )}
                     </nav>
 
                     <Switch>
-                      <Route
-                        path={
-                          uid2.includes("/user/")
-                            ? "/user/mynweets/" + uid
-                            : "/profile/mynweets/" + uid
-                        }
-                      >
+                      <Route path={"/profile/mynweets/" + userEmail}>
                         <MyNweets myNweets={myNweets} userObj={userObj} />
                       </Route>
 
-                      <Route
-                        path={
-                          uid2.includes("/user/")
-                            ? "/user/replies/" + uid
-                            : "/profile/replies/" + uid
-                        }
-                      >
+                      <Route path={"/profile/replies/" + userEmail}>
                         <Replies userObj={userObj} creatorInfo={creatorInfo} />
                       </Route>
 
                       <Route
-                        path={
-                          uid2.includes("/user/")
-                            ? [
-                                "/user/renweets/" + uid,
-                                "/user/renweetsreplies/" + uid,
-                              ]
-                            : [
-                                "/profile/renweets/" + uid,
-                                "/profile/renweetsreplies/" + uid,
-                              ]
-                        }
+                        path={[
+                          "/profile/renweets/" + userEmail,
+                          "/profile/renweetsreplies/" + userEmail,
+                        ]}
                       >
                         <ProfileReNweetBox
                           userObj={userObj}
@@ -308,26 +276,19 @@ const Profile = ({ userObj }) => {
                       </Route>
 
                       <Route
-                        path={
-                          uid2.includes("/user/")
-                            ? [
-                                "/user/likenweets/" + uid,
-                                "/user/likereplies/" + uid,
-                              ]
-                            : [
-                                "/profile/likenweets/" + uid,
-                                "/profile/likereplies/" + uid,
-                              ]
-                        }
+                        path={[
+                          "/profile/likenweets/" + userEmail,
+                          "/profile/likereplies/" + userEmail,
+                        ]}
                       >
                         <ProfileLikeBox userObj={userObj} />
                       </Route>
 
-                      {userObj.email === uid && (
+                      {userObj.email === userEmail && (
                         <Route
                           path={[
-                            "/profile/bookmarknweets/" + uid,
-                            "/profile/bookmarkreplies/" + uid,
+                            "/profile/bookmarknweets/" + userEmail,
+                            "/profile/bookmarkreplies/" + userEmail,
                           ]}
                         >
                           <Bookmark userObj={userObj} />

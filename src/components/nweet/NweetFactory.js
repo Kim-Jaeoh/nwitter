@@ -66,7 +66,6 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     let attachmentUrl = "";
-    let start = 0;
     setProgressBarCount(0); // 프로그레스 바 초기화
 
     // 입력 값 없을 시 업로드 X
@@ -108,34 +107,24 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
           })
           .catch((error) => {
             // 에러 처리
-            setProgressBarCount(0); // 프로그레스 바 초기화
             console.error("Error adding document: ", error);
+            setProgressBarCount(0); // 프로그레스 바 초기화
+            clearInterval(interval);
           });
       };
 
+      let start = 0;
       const interval = setInterval(() => {
         if (start <= 100) {
           setProgressBarCount((prev) => (prev === 100 ? 100 : prev + 1));
           start++; // progress 증가
         }
         if (start === 100) {
-          addNweet();
-          return;
+          addNweet().then(() => {
+            clearInterval(interval);
+          });
         }
       });
-
-      // await new Promise((resolve) => {
-      //   const checkProgress = setInterval(() => {
-      //     if (progressBarCount >= 100) {
-      //       clearInterval(checkProgress);
-      //       resolve();
-      //     }
-      //   }, 10);
-      // });
-
-      return () => {
-        clearInterval(interval);
-      };
     } else {
       alert("글자를 입력하세요");
     }
@@ -148,13 +137,11 @@ const NweetFactory = ({ userObj, setNweetModal, nweetModal }) => {
 
   const onEmojiClick = (event, emojiObject) => {
     const textEmoji =
-      nweet.slice(0, textRef.current.selectionStart) +
+      nweet.slice(0, textRef.current?.selectionStart) +
       emojiObject.emoji +
-      nweet.slice(textRef.current.selectionEnd, nweet.length);
+      nweet.slice(textRef.current?.selectionEnd, nweet.length);
     setNweet(textEmoji);
   };
-
-  console.log(textRef.current.selectionEnd, nweet.length);
 
   return (
     <>

@@ -1,22 +1,13 @@
-import { useRef } from "react";
-import { useEffect } from "react";
 import styled from "./Loading.module.css";
 
-const BarLoader = ({ height, count }) => {
-  const barRef = useRef();
-
-  useEffect(() => {
-    barRef.current.style.width = count + "%";
-  }, [count]);
-
+const BarLoader = ({ count }) => {
   return (
-    <div className={styled.loader} style={{ marginBottom: height }}>
+    <div className={styled.loader}>
       <div
-        ref={barRef}
         className={styled.loader__bar}
-        // style={{
-        //   width: `${count}%`,
-        // }}
+        style={{
+          width: `${count}%`,
+        }}
       />
     </div>
   );

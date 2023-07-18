@@ -17,7 +17,7 @@ import Notice from "./Notice";
 import { DetailNweet } from "../components/detail/DetailNweet";
 import TopButton from "../components/button/TopButton";
 
-const AppRouters = ({ refreshUser, isLoggedIn, userObj }) => {
+const AppRouters = ({ isLoggedIn, userObj }) => {
   return (
     <Router>
       <Switch>

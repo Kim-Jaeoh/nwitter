@@ -16,7 +16,7 @@ const App = () => {
       } else {
         setUserObj(null);
       }
-      setInit(true); // 어플리케이션이 언제 시작해도 onAuthStateChanged가 실행돼야 하기 때문에 true
+      setInit(true);
     });
   }, []);
 

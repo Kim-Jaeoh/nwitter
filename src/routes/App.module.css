@@ -21,6 +21,8 @@ input {
 body {
   overflow-x: hidden;
   color: #0f1419;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 a {
